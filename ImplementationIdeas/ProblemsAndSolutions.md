@@ -65,4 +65,4 @@ if (offset < 3) // negative = adjust to the left
 ```
 ##### 2. Vertical Centring
 
-The exact same thing but no turning of the robot involved and moving sensors to 0 and 180 instead of 90 and -90.
+The exact same thing but no turning of the robot involved and moving sensors to values 0 and 180 instead of 90 and -90. Also the sensor is about 8cm in front of the wheelbase when measuring frontwards and 2cm in front of the wheelbase when measuring backwards. Account for this for finding the vertical offset of the wheelbase.
