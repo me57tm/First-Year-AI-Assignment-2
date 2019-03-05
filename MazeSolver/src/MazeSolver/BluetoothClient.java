@@ -1,5 +1,6 @@
+package MazeSolver;
 
-public class Behaviour
+public class BluetoothClient
 {
 
 	public static void main(String[] args)
