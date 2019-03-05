@@ -16,7 +16,8 @@ public class CustomOccupancyMap
 	 */
 	
 	
-	/** Creates arrayMap of size of parameters
+	/** 
+	 * Creates arrayMap of size of parameters
 	 * @param width
 	 * @param length
 	 */
@@ -25,7 +26,7 @@ public class CustomOccupancyMap
 	}
 	
 	/**
-	 * Initialises arrayMap (everything unknown apart from path at [0][0])
+	 * Initialises arrayMap (everything unknown apart from known path at [0][0])
 	 */
 	public void initializeArrayMap() {
 		

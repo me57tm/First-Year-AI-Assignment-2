@@ -24,21 +24,30 @@ public class EV3Server {
 	 * Port of Server set to first digits of Euler's number
 	 */
 	public static final int PORT = 2718;
+	private static ServerSocket server;
+	private static Socket client;
 	
 	/**
 	 * Initialises Connection with the PCClient
 	 * @throws IOException
 	 */
-	public static void InitializeBluetoothConnection() throws IOException {
-		ServerSocket server = new ServerSocket(PORT);
+	public static void initializeBluetoothConnection() throws IOException {
+		server = new ServerSocket(PORT);
 		System.out.println("Awaiting client..");
-		Socket client = server.accept();
+		client = server.accept();
 		System.out.println("CONNECTED");
 		OutputStream out = client.getOutputStream();
 		DataOutputStream dOut = new DataOutputStream(out);
 		dOut.writeUTF("Battery: " + Battery.getVoltage());
 		dOut.flush();
-		// Don't close for initialisation
+	}
+	
+	public static void closeBluetoothConnection() throws IOException
+	{
+		OutputStream out = client.getOutputStream();
+		DataOutputStream dOut = new DataOutputStream(out);
+		dOut.writeUTF("Closing Server...");
+		dOut.flush();
 		server.close();
 	}
 	

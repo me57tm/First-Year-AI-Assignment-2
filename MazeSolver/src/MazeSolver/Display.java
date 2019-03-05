@@ -16,7 +16,11 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Dimension;
 import java.awt.Cursor;
-
+/**
+ * GUI on the local machine displaying current progress of the robot in exploring the Maze
+ * @author jonasschaefer
+ *
+ */
 public class Display {
 
 	private JFrame frame;
