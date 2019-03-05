@@ -1,8 +1,6 @@
 package MazeSolver;
 
 import java.io.IOException;
-import lejos.hardware.motor.*;
-import lejos.robotics.chassis.*;
 
 /**
  * Main method to map the maze and manoeuvre through the maze
@@ -62,8 +60,10 @@ public class General
 	
 	/**
 	 * Main method to execute by the robot
-	 * @param args
-	 * @throws IOException
+	 * @param args 
+	 * The default parameter for main()
+	 * @throws IOException 
+	 * IOException
 	 */
 	public static void main(String[] args) throws IOException
 	{
