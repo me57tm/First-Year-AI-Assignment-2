@@ -16,7 +16,7 @@ import lejos.hardware.Battery;
  */
 public class EV3Server {
 
-	public static final int port = 314159;
+	public static final int port = 3141;
 	
 	public static void main(String[] args) throws IOException {
 		ServerSocket server = new ServerSocket(port);
