@@ -83,15 +83,13 @@ public class Display {
 	 * The colour for the GUI to display for this state.
 	 */
 	public static Color getBGColour(int state) {
-			if (state == -1) {
+			if (state == -1)
 				return Color.BLACK;
-			}
-			if (state == 0) {
+			if (state == 0)
 				return Color.LIGHT_GRAY;
-			}
-			if (state == 1) {
+			if (state == 1)
 				return Color.WHITE;
-			}
+			
 			else return Color.ORANGE;
 			
 		}
@@ -103,15 +101,13 @@ public class Display {
 	 * The colour for the GUI to display for this state.
 	 */
 	public static Color getFGColour(int state) {
-			if (state == -1) {
+			if (state == -1)
 				return Color.WHITE;
-			}
-			if (state == 0) {
+			if (state == 0) 
 				return Color.BLACK;
-			}
-			if (state == 1) {
+			if (state == 1)
 				return Color.BLACK;
-			}
+			
 			else return Color.BLACK;
 			
 		}
