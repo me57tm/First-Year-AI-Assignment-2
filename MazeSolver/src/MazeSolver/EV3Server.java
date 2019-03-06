@@ -30,7 +30,9 @@ public class EV3Server {
 	/**
 	 * Send PCClient current state of maze and orientation of the robot for the GUI
 	 * @param map
+	 * The current map version
 	 * @param orientation
+	 * The orientation the robot faces currently
 	 */
 	public static void updateClient(CustomOccupancyMap map, int orientation) {
 		
@@ -39,6 +41,7 @@ public class EV3Server {
 	/**
 	 * Initialises Connection with the PCClient
 	 * @throws IOException
+	 * Default exception throw
 	 */
 	public static void initializeBluetoothConnection() throws IOException {
 		server = new ServerSocket(PORT);
@@ -55,6 +58,7 @@ public class EV3Server {
 	/**
 	 * Ends connection with the PCClient
 	 * @throws IOException
+	 * Default exception throw
 	 */
 	public static void closeBluetoothConnection() throws IOException {
 		OutputStream out = client.getOutputStream();

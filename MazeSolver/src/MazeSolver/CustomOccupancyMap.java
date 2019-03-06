@@ -58,16 +58,6 @@ public class CustomOccupancyMap
 	}
 	
 	/**
-	 * Initialises arrayMap (everything unknown apart from origin)
-	 */
-	public void initializeArrayMap() {
-		
-		for (int i = 0; i < mazeMap.length; i++) 
-			for (int j = 0; j < mazeMap[0].length; j++)
-				mazeMap[i][j] = 0;
-		
-	}
-	/**
 	 * Returns whether or not the maze is fully mapped (only works if maze is fully accessible)
 	 * @return boolean true if maze is fully mapped
 	 */
@@ -93,8 +83,11 @@ public class CustomOccupancyMap
 	/**
 	 * Updates maze map at position [width][length] to the new value, don't assign wrong value! No test for value 
 	 * @param width
+	 * The width-position
 	 * @param length
+	 * The length-position
 	 * @param value
+	 * The new value assigned
 	 */
 	public void updateMazeMap(int width, int length, int value) {
 		// if (value > 1 || value < -1)
@@ -113,6 +106,7 @@ public class CustomOccupancyMap
 	/**
 	 * Updates robotPosition, execute when robot moves. 
 	 * @param orientation
+	 * The orientation the robot faces for the movement
 	 */
 	public void updateRobotPosition(int orientation) {
 		if (orientation == 0)

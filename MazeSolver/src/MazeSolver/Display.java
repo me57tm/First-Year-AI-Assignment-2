@@ -39,7 +39,9 @@ public class Display {
 	//private JButton[][] cells = new JButton[6][9];
 
 	/**
-	 * Main method for testing purposes only
+	 * Default main method
+	 * @param args
+	 * Default parameter
 	 */
 	public static void main(String[] args) {
 		Display window = new Display();
