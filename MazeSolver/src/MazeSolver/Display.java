@@ -32,8 +32,6 @@ public class Display {
 	private boolean activeButtons;
 
 	private JFrame frmEvMazeSolver;
-	private JLabel label_11_1;
-	private JLabel label_16_1;
 	private JComponent[][] grid = new JComponent[18][12];
 	private JButton[][] cells = new JButton[9][6];
 
@@ -55,7 +53,10 @@ public class Display {
 	}
 	
 	
-	
+	/**
+	 * Update the display to have the correct colours.
+	 * @param map A 2D array representation of the map status (see CustomOccupancyMap).
+	 */
 	public void update(int[][] map) {
 		for(int i = 0; i < 12; i++) {
 			for(int j = 0; j < 18; i++) {
@@ -65,7 +66,11 @@ public class Display {
 		}
 			
 	}
-	
+	/**
+	 * Get the correct colour for the grid square.
+	 * @param state The state of the grid square (-1 occupied, 0 unknown, 1, clear).
+	 * @return The colour for the GUI to display for this state.
+	 */
 	public static Color getColour(int state) {
 			if (state == -1) {
 				return Color.LIGHT_GRAY;
@@ -80,23 +85,43 @@ public class Display {
 			
 		}
 	/**
-	 * Create the application.
+	 * Create the application, with buttons inactive.
 	 */
 	public Display() {
 		activeButtons = false;
 		initialize();
 	}
+	
+	/**
+	 * Create the application.
+	 * @param active Whether or not the buttons should be active.
+	 */
 	public Display(boolean active) {
 		activeButtons = active;
 		initialize();
 	}
 	
+	/**
+	 * Get the grid.
+	 * @return The 2D array containing all swing components on the grid.
+	 */
 	public JComponent[][] getGrid() {
 		return grid;
 	}
+	/**
+	 * Get a specific swing component from the grid.
+	 * @param x x coordinate.
+	 * @param y y coordinate.
+	 * @return swing component at this location.
+	 */
 	public JComponent getItem(int x,int y) {
 		return grid[x][y];
 	}
+	/**
+	 * Get a specific swing component from the grid.
+	 * @param coords coordinates [x,y].
+	 * @return swing component at this location.
+	 */
 	public JComponent getItem(int[] coords) {
 		return grid[coords[0]][coords[1]];
 	}
@@ -131,14 +156,8 @@ public class Display {
 		for (int i=0;i<18;i++) {
 			for (int j=0;j<12;j++) {
 				if(i%2 == 0) {
-					if (j%2==1) { //Create a wide label at this location (Grid Space)
-						lblTemp = new JLabel("");
-						lblTemp.setSize(new Dimension(59, 19));
-						lblTemp.setPreferredSize(new Dimension(59, 19));
-						lblTemp.setOpaque(true);
-						lblTemp.setMinimumSize(new Dimension(59, 19));
-						lblTemp.setMaximumSize(new Dimension(59, 19));
-						lblTemp.setBackground(getColour(-1));
+					if (j%2==1) { //Create a wide label
+						lblTemp = createWall(59,19);
 						gbc_lblTemp = new GridBagConstraints();
 						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
 						gbc_lblTemp.gridx = i;
@@ -171,34 +190,19 @@ public class Display {
 					}
 				}
 				
-				else { // Create a square label
+				else { // Create a small square label
 					if (j%2==1) {
-						lblTemp = new JLabel("");
-						lblTemp.setSize(new Dimension(19, 19));
-						lblTemp.setPreferredSize(new Dimension(19, 19));
-						lblTemp.setOpaque(true);
-						lblTemp.setMinimumSize(new Dimension(19, 19));
-						lblTemp.setMaximumSize(new Dimension(19, 19));
-						lblTemp.setBackground(getColour(-1));
+						lblTemp = createWall(19,19);
 						gbc_lblTemp = new GridBagConstraints();
 						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
 						gbc_lblTemp.gridx = i;
 						gbc_lblTemp.gridy = 11-j;
 						pnlGridMap.add(lblTemp, gbc_lblTemp);
 						grid[i][j] = lblTemp;
-						
-						
 					}
 					
 					else {// Create a tall label
-						
-						lblTemp = new JLabel("");
-						lblTemp.setSize(new Dimension(19, 59));
-						lblTemp.setPreferredSize(new Dimension(19, 59));
-						lblTemp.setOpaque(true);
-						lblTemp.setMinimumSize(new Dimension(19, 59));
-						lblTemp.setMaximumSize(new Dimension(19, 59));
-						lblTemp.setBackground(getColour(-1));
+						lblTemp = createWall(19,59);
 						gbc_lblTemp = new GridBagConstraints();
 						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
 						gbc_lblTemp.gridx = i;
@@ -209,7 +213,17 @@ public class Display {
 				}
 			}
 			
-		}
-		
+		}	
+	}
+	
+	private JLabel createWall(int width, int height) {
+		JLabel out = new JLabel("");
+		out.setSize(new Dimension(width, height));
+		out.setPreferredSize(new Dimension(width, height));
+		out.setMinimumSize(new Dimension(width, height));
+		out.setMaximumSize(new Dimension(width, height));
+		out.setBackground(getColour(-1));
+		out.setOpaque(true);
+		return out;
 	}
 }
