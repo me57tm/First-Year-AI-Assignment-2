@@ -2,11 +2,10 @@ package MazeSolver;
 
 import java.io.IOException;
 
-import lejos.utility.Delay;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Keys;
-import lejos.hardware.ev3.EV3;
 import lejos.hardware.Button;
+import lejos.hardware.ev3.EV3;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
@@ -29,10 +28,41 @@ import lejos.robotics.navigation.*;
 
 public class General
 {
+	// Motors, Sensors and other mandatory variables
+	public static EV3 ev3Brick;
+	public static Keys buttons;
+	
+	public static EV3LargeRegulatedMotor LEFT_MOTOR;
+	public static EV3LargeRegulatedMotor RIGHT_MOTOR;
+	public static EV3MediumRegulatedMotor ROTATION_MOTOR;
+	
+	public static Wheel wheel1;
+	public static Wheel wheel2;
+	public static Chassis chassis;
+	public static MovePilot pilot;
+	
+	public static EV3IRSensor IRSensor;
+	public static EV3UltrasonicSensor USSensor;
+	public static EV3ColorSensor ColourSensor;
+	
+	
+	public static float[] IR;
+	public static float[] US;
+	public static float[] Colour;
+	
+	public static SampleProvider IRSampler;
+	public static SampleProvider USSampler;
+	public static SampleProvider ColourSampler;
+	
+	
+	
 	/**
-	 *  Orientation the robot is facing in degrees
+	 *  Orientation the robot is facing in degrees: 
+	 *  0 = Forward, 90 = Right, 180 = Backwards, 270 = Left
+	 *  
+	 *  Will be set in the beginning of the program
 	 */
-	public static int orientation = 0;
+	private static int orientation;
 	
 	/**
 	 * Width of one Path square
@@ -77,8 +107,10 @@ public class General
 	 */
 	public static final int DISTANCE_SQUARETOSQUARE = PATH_WIDTH + WALL_WIDTH;
 	
+	public static CustomOccupancyMap map;
+	
 	/**
-	 * Main method to execute by the robot
+	 * Main method the robot will execute
 	 * @param args 
 	 * The default parameter for main()
 	 * @throws IOException 
@@ -86,34 +118,74 @@ public class General
 	 */
 	public static void main(String[] args) throws IOException
 	{
-		initialize();
+		setup();
 		EV3Server.initializeBluetoothConnection();
-		CustomOccupancyMap map = new CustomOccupancyMap(12,18);
-		map.initializeArrayMap();
+		
+		map = new CustomOccupancyMap(18,12);
+		
+		buttons.waitForAnyPress();
+		// Robot looks along the width side
+		if (buttons.getButtons() == Keys.ID_DOWN)
+			orientation = 0;
+		// Robot looks along the length side
+		if (buttons.getButtons() == Keys.ID_LEFT)
+			orientation = 90;
+		
+		
+		
+		
+		
+		
+		
 		// Last line of code
 		EV3Server.closeBluetoothConnection();
 	}
+	/**
+	 * Updates orientation of robot relative to the Maze
+	 * @param degrees
+	 */
+	public void updateOrientation(int degrees) {
+		orientation += degrees;
+		if (orientation > 270)
+			orientation -= 360;
+		if (orientation < 0)
+			orientation += 360;
+	}
+	/**
+	 * Returns current orientation
+	 * @return orientation
+	 */
+	public int getOrientation() {
+		return orientation;
+	}
 	
-	public static void initialize() {
-		EV3LargeRegulatedMotor LEFT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.C);
-		EV3LargeRegulatedMotor RIGHT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.A);
-		EV3MediumRegulatedMotor ROTATION_MOTOR = new EV3MediumRegulatedMotor(MotorPort.D);
-		EV3 ev3Brick = (EV3) BrickFinder.getLocal();
-		Keys buttons = ev3Brick.getKeys();
-		EV3IRSensor IRSensor = new EV3IRSensor(SensorPort.S1);
-		EV3UltrasonicSensor USSensor = new EV3UltrasonicSensor(SensorPort.S4);
-		EV3ColorSensor ColourSensor = new EV3ColorSensor(SensorPort.S2);
+	
+	/**
+	 * Sets values for all motors, sensors, controls and more 
+	 */
+	public static void setup() {
+		ev3Brick = (EV3) BrickFinder.getLocal();
+		buttons = ev3Brick.getKeys();
 		
-		Wheel wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR,5.5).offset(-5.2);
-		Wheel wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR,5.5).offset(5.2);
-		Chassis chassis = new WheeledChassis(new Wheel[] {wheel1,wheel2},WheeledChassis.TYPE_DIFFERENTIAL);
-		MovePilot pilot = new MovePilot(chassis);
+		LEFT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.C);
+		RIGHT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.A);
+		ROTATION_MOTOR = new EV3MediumRegulatedMotor(MotorPort.D);
 		
-		float[] IR = new float[1];
-		float[] US = new float[1];
-		float[] Colour = new float[3];
-		SampleProvider IRSampler = IRSensor.getDistanceMode();
-		SampleProvider USSampler = USSensor.getDistanceMode();
-		SampleProvider ColourSampler = ColourSensor.getRGBMode();
+		wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR,5.5).offset(-5.2);
+		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR,5.5).offset(5.2);
+		chassis = new WheeledChassis(new Wheel[] {wheel1,wheel2},WheeledChassis.TYPE_DIFFERENTIAL);
+		pilot = new MovePilot(chassis);
+		
+		IRSensor = new EV3IRSensor(SensorPort.S1);
+		USSensor = new EV3UltrasonicSensor(SensorPort.S4);
+		ColourSensor = new EV3ColorSensor(SensorPort.S2);
+		
+		IR = new float[1];
+		US = new float[1];
+		Colour = new float[3];
+		
+		IRSampler = IRSensor.getDistanceMode();
+		USSampler = USSensor.getDistanceMode();
+		ColourSampler = ColourSensor.getRGBMode();
 	}
 }

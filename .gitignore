@@ -4,3 +4,6 @@
 *.class
 *.log
 *.jar
+
+#Javadoc:
+doc
