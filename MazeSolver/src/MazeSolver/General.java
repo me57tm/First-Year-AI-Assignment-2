@@ -19,6 +19,7 @@ import lejos.robotics.chassis.Chassis;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.*;
+import lejos.utility.Delay;
 
 /**
  * Main method to map the maze and manoeuvre through the maze
@@ -26,8 +27,8 @@ import lejos.robotics.navigation.*;
  *
  */
 
-public class General
-{
+public class General {
+	
 	// Motors, Sensors and other mandatory variables
 	public static EV3 ev3Brick;
 	public static Keys buttons;
@@ -62,7 +63,7 @@ public class General
 	 *  
 	 *  Will be set in the beginning of the program
 	 */
-	private static int orientation;
+	private static int robotOrientation;
 	
 	/**
 	 * Width of one Path square
@@ -116,57 +117,71 @@ public class General
 	 * @throws IOException 
 	 * IOException
 	 */
-	public static void main(String[] args) throws IOException
-	{
+	public static void main(String[] args) throws IOException {
 		setup();
-		EV3Server.initializeBluetoothConnection();
 		
-		map = new CustomOccupancyMap(18,12);
-		
-		buttons.waitForAnyPress();
-		// Robot looks along the width side
-		if (buttons.getButtons() == Keys.ID_DOWN)
-			orientation = 0;
-		// Robot looks along the length side
-		if (buttons.getButtons() == Keys.ID_LEFT)
-			orientation = 90;
-		
-		
-		
-		
-		
-		
+
 		
 		// Last line of code
 		EV3Server.closeBluetoothConnection();
 	}
+	
 	/**
-	 * Updates orientation of robot relative to the Maze
-	 * @param degrees
+	 * One step of mapping the maze
 	 */
-	public void updateOrientation(int degrees) {
-		orientation += degrees;
-		if (orientation > 270)
-			orientation -= 360;
-		if (orientation < 0)
-			orientation += 360;
+	public static void mapMazeStep() {
+		
 	}
+	
 	/**
 	 * Returns current orientation
 	 * @return orientation
 	 */
 	public int getOrientation() {
-		return orientation;
+		return robotOrientation;
+	}
+	
+	/**
+	 * Updates orientation of robot relative to the Maze by 
+	 * @param degrees of turn
+	 */
+	public void updateOrientation(int degrees) {
+		// Check for invalid turns
+		if (degrees != 90 && degrees != -90)
+			
+		robotOrientation += degrees;
+		if (robotOrientation > 270)
+			robotOrientation -= 360;
+		if (robotOrientation < 0)
+			robotOrientation += 360;
 	}
 	
 	
 	/**
-	 * Sets values for all motors, sensors, controls and more 
+	 * Sets values for all motors, sensors, controls and sets up a Bluetooth connection with the PC
+	 * @throws IOException 
 	 */
-	public static void setup() {
+	public static void setup() throws IOException {
 		ev3Brick = (EV3) BrickFinder.getLocal();
 		buttons = ev3Brick.getKeys();
 		
+		// Set up direction the robot is facing
+		LCD.drawString("Press Button for", 0, 0);
+		LCD.drawString("Direction-Setup", 0, 1);
+		buttons.waitForAnyPress();
+		// Robot looks along the width side
+		if (buttons.getButtons() == Keys.ID_DOWN) {
+			robotOrientation = 0;
+			LCD.clear();
+		}
+		// Robot looks along the length side
+		if (buttons.getButtons() == Keys.ID_LEFT) {
+			robotOrientation = 90;
+			LCD.clear();
+		}
+		
+		// Set up motors
+		LCD.drawString("Setting up motors...", 0, 0);
 		LEFT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.C);
 		RIGHT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.A);
 		ROTATION_MOTOR = new EV3MediumRegulatedMotor(MotorPort.D);
@@ -175,7 +190,10 @@ public class General
 		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR,5.5).offset(5.2);
 		chassis = new WheeledChassis(new Wheel[] {wheel1,wheel2},WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(chassis);
+		LCD.clear();
 		
+		// Set up sensors
+		LCD.drawString("Setting up sensors...", 0, 0);
 		IRSensor = new EV3IRSensor(SensorPort.S1);
 		USSensor = new EV3UltrasonicSensor(SensorPort.S4);
 		ColourSensor = new EV3ColorSensor(SensorPort.S2);
@@ -187,5 +205,15 @@ public class General
 		IRSampler = IRSensor.getDistanceMode();
 		USSampler = USSensor.getDistanceMode();
 		ColourSampler = ColourSensor.getRGBMode();
+		
+		map = new CustomOccupancyMap(18,12);
+		
+		// Set up Bluetooth Connection
+		EV3Server.initializeBluetoothConnection();
+		LCD.clear();
+		LCD.drawString("Setup complete!", 0, 0);
+		LCD.drawString("Wait 5 seconds", 0, 1);
+		Delay.msDelay(5000);
+		LCD.clear();
 	}
 }

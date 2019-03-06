@@ -2,9 +2,6 @@ package MazeSolver;
 
 import java.io.*;
 import java.net.*;
-import java.util.Map;
-
-import lejos.hardware.Battery;
 
 /**
  * Set up EV3 as a server to send data to the PCClient
@@ -26,8 +23,18 @@ public class EV3Server {
 	 * Port of Server set to first digits of Euler's number
 	 */
 	public static final int PORT = 2718;
+	
 	private static ServerSocket server;
 	private static Socket client;
+	
+	/**
+	 * Send PCClient current state of maze and orientation of the robot for the GUI
+	 * @param map
+	 * @param orientation
+	 */
+	public static void updateClient(CustomOccupancyMap map, int orientation) {
+		
+	}
 	
 	/**
 	 * Initialises Connection with the PCClient
@@ -38,14 +45,18 @@ public class EV3Server {
 		System.out.println("Awaiting client..");
 		client = server.accept();
 		System.out.println("CONNECTED");
+		/*
 		OutputStream out = client.getOutputStream();
 		DataOutputStream dOut = new DataOutputStream(out);
-		dOut.writeUTF("Battery: " + Battery.getVoltage());
 		dOut.flush();
+		*/
 	}
 	
-	public static void closeBluetoothConnection() throws IOException
-	{
+	/**
+	 * Ends connection with the PCClient
+	 * @throws IOException
+	 */
+	public static void closeBluetoothConnection() throws IOException {
 		OutputStream out = client.getOutputStream();
 		DataOutputStream dOut = new DataOutputStream(out);
 		dOut.writeUTF("Closing Server...");

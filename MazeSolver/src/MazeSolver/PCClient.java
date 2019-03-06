@@ -29,5 +29,7 @@ public class PCClient {
 		String str = dIn.readUTF();
 		System.out.println(str);
 		sock.close();
+		Display display = new Display();
+		
 	}
 }
