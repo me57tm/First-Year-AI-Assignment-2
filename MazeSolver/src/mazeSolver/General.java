@@ -1,4 +1,4 @@
-package MazeSolver;
+package mazeSolver;
 
 import java.io.IOException;
 
@@ -136,6 +136,7 @@ public class General {
 	/**
 	 * Returns current orientation
 	 * @return orientation
+	 * orientation
 	 */
 	public int getOrientation() {
 		return robotOrientation;
@@ -143,7 +144,8 @@ public class General {
 	
 	/**
 	 * Updates orientation of robot relative to the Maze by 
-	 * @param degrees of turn
+	 * @param degrees
+	 * Degrees of turning
 	 */
 	public void updateOrientation(int degrees) {
 		// Check for invalid turns
@@ -160,6 +162,7 @@ public class General {
 	/**
 	 * Sets values for all motors, sensors, controls and sets up a Bluetooth connection with the PC
 	 * @throws IOException 
+	 * Default exception
 	 */
 	public static void setup() throws IOException {
 		ev3Brick = (EV3) BrickFinder.getLocal();

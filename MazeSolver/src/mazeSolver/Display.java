@@ -1,4 +1,4 @@
-package MazeSolver;
+package mazeSolver;
 
 import java.awt.EventQueue;
 
@@ -26,8 +26,8 @@ import javax.swing.SwingConstants;
  * @author jonathancaines
  *
  */
-
 public class Display {
+	
 	
 	private final int GRID_WIDTH = 18;
 	private final int GRID_HEIGHT = 12;

@@ -1,4 +1,4 @@
-package MazeSolver;
+package mazeSolver;
 
 import java.io.*;
 import java.net.*;
@@ -24,7 +24,14 @@ public class EV3Server {
 	 */
 	public static final int PORT = 2718;
 	
+	/**
+	 * Socket of the EV3 server
+	 */
 	private static ServerSocket server;
+	
+	/**
+	 * Socket of the PC client
+	 */
 	private static Socket client;
 	
 	/**

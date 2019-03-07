@@ -1,4 +1,4 @@
-package MazeSolver;
+package mazeSolver;
 
 public class Scan
 {
