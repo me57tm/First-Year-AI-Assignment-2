@@ -10,8 +10,26 @@ public class Action {
 	/**
 	 * Measure Surrounding for walls
 	 */
-	public static void lookForWalls() {
-		int[] robot = Coordinator.map.getRobotPosition();
+	public static void lookForWalls(int robotOrientation) {
+		int[] robotPosition = Coordinator.map.getRobotPosition();
+		Boolean left = true;
+		Boolean front = true;
+		Boolean right = true;
+		if (robotPosition[0] == 0) {
+			up = -robotOrientation;
+			if (robotOrientation == 0) {
+				left = false
+			}
+		}
+		if (robotPosition[0] == 0) {
+			
+		}
+		if (robotPosition[0] == 0) {
+			
+		}
+		if (robotPosition[0] == 0) {
+			
+		}
 	}
 	
 	/**

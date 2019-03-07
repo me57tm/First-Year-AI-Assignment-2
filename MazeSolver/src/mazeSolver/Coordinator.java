@@ -135,7 +135,7 @@ public class Coordinator {
 	 * One step of mapping the maze.
 	 */
 	public static void mapMazeStep() {
-		Action.lookForWalls();
+		Action.lookForWalls(robotOrientation);
 		Action.moveToNextSquare();
 	}
 	
