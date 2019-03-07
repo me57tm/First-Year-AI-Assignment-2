@@ -144,7 +144,7 @@ public class Coordinator {
 	 * @return orientation
 	 * orientation
 	 */
-	public int getOrientation() {
+	public int getRobotOrientation() {
 		return robotOrientation;
 	}
 	

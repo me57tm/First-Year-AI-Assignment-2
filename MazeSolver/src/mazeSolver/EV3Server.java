@@ -41,7 +41,9 @@ public class EV3Server {
 	 * @param orientation
 	 * The orientation the robot faces currently.
 	 */
-	public static void updateClient(CustomOccupancyMap map, int orientation) {
+	public static void updateClient() {
+		Coordinator.map.getMazeMap();
+		Coordinator.getOrienta
 		
 	}
 	
