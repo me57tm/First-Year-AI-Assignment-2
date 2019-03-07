@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Keys;
-import lejos.hardware.Button;
 import lejos.hardware.ev3.EV3;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
@@ -45,7 +44,6 @@ public class Coordinator {
 	public static EV3UltrasonicSensor USSensor;
 	public static EV3ColorSensor ColourSensor;
 	
-	
 	public static float[] IR;
 	public static float[] US;
 	public static float[] Colour;
@@ -64,16 +62,6 @@ public class Coordinator {
 	 */
 	private static int robotOrientation;
 	
-	/**
-	 * Width of one Path square.
-	 */
-	public static final int PATH_WIDTH = 30;
-	
-	/**
-	 * Length of one Path square.
-	 */
-	public static final int PATH_LENGTH = 30;
-	
 	/* 
 	 *   30(W)
 	 *   _____
@@ -84,15 +72,15 @@ public class Coordinator {
 	 */ 
 
 	/**
-	 * Width of a Wall element.
+	 * Width of one Path square.
 	 */
-	public static final int WALL_WIDTH = 10;
+	public static final int PATH_WIDTH = 30;
 	
 	/**
-	 * Length of a Wall element.
+	 * Length of one Path square.
 	 */
-	public static final int WALL_LENGTH = 30;
-	
+	public static final int PATH_LENGTH = 30;
+
 	/*
 	 *   10(W)
 	 *    __
@@ -103,11 +91,30 @@ public class Coordinator {
 	 */
 	
 	/**
+	 * Width of a Wall element.
+	 */
+	public static final int WALL_WIDTH = 10;
+	
+	/**
+	 * Length of a Wall element.
+	 */
+	public static final int WALL_LENGTH = 30;
+	
+	
+	/**
 	 * Distance to travel from one centre of the square to the next one.
 	 */
 	public static final int DISTANCE_SQUARETOSQUARE = PATH_WIDTH + WALL_WIDTH;
 	
+	/**
+	 * The maze representation out of the view of the robot. Will get updated throughout the program.
+	 */
 	public static CustomOccupancyMap map;
+	
+	
+	
+	
+	
 	
 	/**
 	 * Main method the robot will execute.
@@ -128,7 +135,8 @@ public class Coordinator {
 	 * One step of mapping the maze.
 	 */
 	public static void mapMazeStep() {
-		
+		Action.lookForWalls();
+		Action.moveToNextSquare();
 	}
 	
 	/**
@@ -155,6 +163,8 @@ public class Coordinator {
 		if (robotOrientation < 0)
 			robotOrientation += 360;
 	}
+	
+	
 	
 	
 	/**
@@ -191,6 +201,8 @@ public class Coordinator {
 		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR,5.5).offset(5.2);
 		chassis = new WheeledChassis(new Wheel[] {wheel1,wheel2},WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(chassis);
+		pilot.setAngularSpeed(50);
+		pilot.setLinearSpeed(50);
 		LCD.clear();
 		
 		// Set up sensors

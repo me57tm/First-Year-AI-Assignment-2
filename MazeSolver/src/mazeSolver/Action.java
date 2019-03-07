@@ -1,18 +1,23 @@
 package mazeSolver;
 
+/**
+ * Mostly uses Coordinator methods to implement all typical actions the robot takes while mapping and solving the maze.
+ * @author jonasschafer
+ *
+ */
 public class Action {
 	
 	/**
 	 * Measure Surrounding for walls
 	 */
-	public static void measure() {
+	public static void lookForWalls() {
 		
 	}
 	
 	/**
 	 * Move from one Path to the next Path
 	 */
-	public static void move() {
+	public static void moveToNextSquare() {
 		
 	}
 	

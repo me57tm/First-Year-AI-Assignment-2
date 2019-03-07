@@ -28,7 +28,6 @@ import javax.swing.SwingConstants;
  */
 public class Display {
 	
-	// Substitute with Coordinator.map.getMapWidth() if functional
 	private final int GRID_WIDTH = Coordinator.map.getMapWidth();
 	private final int GRID_HEIGHT = Coordinator.map.getMapLength();
 	
@@ -46,7 +45,6 @@ public class Display {
 	public static void main(String[] args) {
 		Display window = new Display();
 		int[][] map = new int[][] {
-			
 			{  1, -1,  0, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 			{  1, -1,  0, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 			{  1, -1, -1, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
@@ -61,7 +59,6 @@ public class Display {
 			{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 		};
 		window.update(map);
-		
 	}
 	
 	/**
@@ -93,7 +90,6 @@ public class Display {
 				return Color.WHITE;
 			
 			else return Color.ORANGE;
-			
 		}
 	/**
 	 * Get the correct foreground colour for the grid square.
@@ -111,7 +107,6 @@ public class Display {
 				return Color.BLACK;
 			
 			else return Color.BLACK;
-			
 		}
 	/**
 	 * Create the application with buttons inactive.
@@ -196,7 +191,8 @@ public class Display {
 			for (int j=0;j<GRID_WIDTH;j++) {
 				System.out.println("Initialising grid "+i+" "+j);
 				if(i%2 == 0) {
-					if (j%2==1) { //Create a tall label
+					//Create a tall label
+					if (j%2==1) { 
 						lblTemp = createWall(19,59);
 						gbc_lblTemp = new GridBagConstraints();
 						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
@@ -206,8 +202,8 @@ public class Display {
 						grid[i][j] = lblTemp;
 						
 					}
-					
-					else {// Create a button
+					// Create a button
+					else {
 						btnTemp = new JButton("("+String.valueOf(i/2)+","+String.valueOf(j/2)+")");
 						btnTemp.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
@@ -232,7 +228,8 @@ public class Display {
 					}
 				}
 				
-				else { // Create a small square label
+				else {
+					// Create a small square label
 					if (j%2==1) {
 						lblTemp = createWall(19,19);
 						gbc_lblTemp = new GridBagConstraints();
@@ -242,8 +239,8 @@ public class Display {
 						pnlGridMap.add(lblTemp, gbc_lblTemp);
 						grid[i][j] = lblTemp;
 					}
-					
-					else {// Create a wide label
+					// Create a wide label
+					else {
 						lblTemp = createWall(59,19);
 						gbc_lblTemp = new GridBagConstraints();
 						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
@@ -254,7 +251,6 @@ public class Display {
 					}
 				}
 			}
-			
 		}	
 	}
 	

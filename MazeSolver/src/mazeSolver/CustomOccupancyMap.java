@@ -1,7 +1,7 @@
 package mazeSolver;
 
 /**
- * Custom Map Object to represent a to be explored Maze.
+ * Custom Map Object to represent a to-be-explored Maze.
  * @author jonasschaefer
  *
  */
