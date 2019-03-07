@@ -16,7 +16,7 @@ public class Action {
 		Boolean front = true;
 		Boolean right = true;
 		if (robotPosition[0] == 0) {
-			up = -robotOrientation;
+			//up = -robotOrientation;
 			if (robotOrientation == 0) {
 				left = false;
 			}
