@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 
 /**
- * Set up EV3 as a server to send data to the PCClient
+ * Set up EV3 as a server to send data to the PCClient.
  * @author jonasschaefer
  * 
  * Maximum LEGO EV3: Building Robots with Java Brains
@@ -20,35 +20,35 @@ import java.net.*;
 public class EV3Server {
 
 	/**
-	 * Port of Server set to first digits of Euler's number
+	 * Port of Server set to first digits of Euler's number.
 	 */
 	public static final int PORT = 2718;
 	
 	/**
-	 * Socket of the EV3 server
+	 * Socket of the EV3 server.
 	 */
 	private static ServerSocket server;
 	
 	/**
-	 * Socket of the PC client
+	 * Socket of the PC client.
 	 */
 	private static Socket client;
 	
 	/**
-	 * Send PCClient current state of maze and orientation of the robot for the GUI
+	 * Send PCClient current state of maze and orientation of the robot for the GUI.
 	 * @param map
-	 * The current map version
+	 * The current map version.
 	 * @param orientation
-	 * The orientation the robot faces currently
+	 * The orientation the robot faces currently.
 	 */
 	public static void updateClient(CustomOccupancyMap map, int orientation) {
 		
 	}
 	
 	/**
-	 * Initialises Connection with the PCClient
+	 * Initialises Connection with the PCClient.
 	 * @throws IOException
-	 * Default exception throw
+	 * Default exception throw.
 	 */
 	public static void initializeBluetoothConnection() throws IOException {
 		server = new ServerSocket(PORT);
@@ -63,9 +63,9 @@ public class EV3Server {
 	}
 	
 	/**
-	 * Ends connection with the PCClient
+	 * Ends connection with the PCClient.
 	 * @throws IOException
-	 * Default exception throw
+	 * Default exception throw.
 	 */
 	public static void closeBluetoothConnection() throws IOException {
 		OutputStream out = client.getOutputStream();

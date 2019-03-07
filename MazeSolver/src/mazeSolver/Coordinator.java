@@ -22,12 +22,11 @@ import lejos.robotics.navigation.*;
 import lejos.utility.Delay;
 
 /**
- * Main method to map the maze and manoeuvre through the maze
+ * Main class to map the maze.
  * @author jonasschaefer
  *
  */
-
-public class General {
+public class Coordinator {
 	
 	// Motors, Sensors and other mandatory variables
 	public static EV3 ev3Brick;
@@ -59,19 +58,19 @@ public class General {
 	
 	/**
 	 *  Orientation the robot is facing in degrees: 
-	 *  0 = Forward, 90 = Right, 180 = Backwards, 270 = Left
+	 *  0 = Forward, 90 = Right, 180 = Backwards, 270 = Left.
 	 *  
-	 *  Will be set in the beginning of the program
+	 *  Will be set in the beginning of the program.
 	 */
 	private static int robotOrientation;
 	
 	/**
-	 * Width of one Path square
+	 * Width of one Path square.
 	 */
 	public static final int PATH_WIDTH = 30;
 	
 	/**
-	 * Length of one Path square
+	 * Length of one Path square.
 	 */
 	public static final int PATH_LENGTH = 30;
 	
@@ -85,12 +84,12 @@ public class General {
 	 */ 
 
 	/**
-	 * Width of a Wall element
+	 * Width of a Wall element.
 	 */
 	public static final int WALL_WIDTH = 10;
 	
 	/**
-	 * Length of a Wall element
+	 * Length of a Wall element.
 	 */
 	public static final int WALL_LENGTH = 30;
 	
@@ -104,22 +103,21 @@ public class General {
 	 */
 	
 	/**
-	 * Distance to travel from one centre of the square to the next one
+	 * Distance to travel from one centre of the square to the next one.
 	 */
 	public static final int DISTANCE_SQUARETOSQUARE = PATH_WIDTH + WALL_WIDTH;
 	
 	public static CustomOccupancyMap map;
 	
 	/**
-	 * Main method the robot will execute
+	 * Main method the robot will execute.
 	 * @param args 
-	 * The default parameter for main()
+	 * The default parameter for main().
 	 * @throws IOException 
-	 * IOException
+	 * IOException.
 	 */
 	public static void main(String[] args) throws IOException {
 		setup();
-		
 
 		
 		// Last line of code
@@ -127,14 +125,14 @@ public class General {
 	}
 	
 	/**
-	 * One step of mapping the maze
+	 * One step of mapping the maze.
 	 */
 	public static void mapMazeStep() {
 		
 	}
 	
 	/**
-	 * Returns current orientation
+	 * Returns current orientation.
 	 * @return orientation
 	 * orientation
 	 */
@@ -143,9 +141,9 @@ public class General {
 	}
 	
 	/**
-	 * Updates orientation of robot relative to the Maze by 
+	 * Updates orientation of robot relative to the Maze by the number of degrees the robot is instructed to turn.
 	 * @param degrees
-	 * Degrees of turning
+	 * Degrees of turning.
 	 */
 	public void updateOrientation(int degrees) {
 		// Check for invalid turns
@@ -160,9 +158,9 @@ public class General {
 	
 	
 	/**
-	 * Sets values for all motors, sensors, controls and sets up a Bluetooth connection with the PC
+	 * Sets values for all motors, sensors, controls and sets up a Bluetooth connection with the PC Client.
 	 * @throws IOException 
-	 * Default exception
+	 * Default exception.
 	 */
 	public static void setup() throws IOException {
 		ev3Brick = (EV3) BrickFinder.getLocal();

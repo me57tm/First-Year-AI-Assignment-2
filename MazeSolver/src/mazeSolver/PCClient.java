@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 
 /**
- * The Client that receives information from the EV3 Server
+ * The Client that receives information from the EV3 Server.
  * @author jonasschaefer
  * 
  * Maximum LEGO EV3: Building Robots with Java Brains
@@ -18,6 +18,13 @@ import java.net.*;
  */
 public class PCClient {
 
+	/**
+	 * Connects from the client side.
+	 * @param args
+	 * Default arguments.
+	 * @throws IOException
+	 * Default exception.
+	 */
 	public static void main(String[] args) throws IOException {
 		String ip = "10.0.1.1"; // BT
 		if(args.length > 0)

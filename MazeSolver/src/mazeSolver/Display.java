@@ -22,15 +22,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
 
 /**
- * GUI on the local machine displaying current progress of the robot in exploring the Maze
+ * GUI on the local machine displaying current progress of the robot in exploring the Maze.
  * @author jonathancaines
  *
  */
 public class Display {
 	
-	
-	private final int GRID_WIDTH = 18;
-	private final int GRID_HEIGHT = 12;
+	// Substitute with Coordinator.map.getMapWidth() if functional
+	private final int GRID_WIDTH = Coordinator.map.getMapWidth();
+	private final int GRID_HEIGHT = Coordinator.map.getMapLength();
 	
 	private boolean activeButtons;
 

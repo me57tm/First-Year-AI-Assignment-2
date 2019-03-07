@@ -1,20 +1,19 @@
 package mazeSolver;
 
 /**
- * Custom Map Object
+ * Custom Map Object to represent a to be explored Maze.
  * @author jonasschaefer
  *
  */
-// always bottom left, front is width
 public class CustomOccupancyMap
 {
 	/**
-	 * Representation of the maze: every entry has value -1 for an obstacle, 0 for unknown and 1 for a path surface
+	 * Representation of the maze: every entry has value -1 for an obstacle, 0 for unknown and 1 for a path surface.
 	 */
 	private static int[][] mazeMap; 
 	
 	/**
-	 * Current position of the robot in the arrayMap (array of length 2 with value 0 = width and value 1 = length)
+	 * Current position of the robot in the arrayMap (array of length 2 with value 0 = width and value 1 = length).
 	 */
 	private static int[] robotPosition;
 	
@@ -34,11 +33,11 @@ public class CustomOccupancyMap
 	private static int numberOfPaths;
 	
 	/** 
-	 * Creates arrayMap of size of parameters
+	 * Creates arrayMap of size of parameters.
 	 * @param width
-	 * The width of the maze including both walls and paths
+	 * Width - The total number of sections being either walls or paths.
 	 * @param length
-	 * The length of the maze including both walls and paths
+	 * Length - The total number of sections being either walls or paths.
 	 */
 	public CustomOccupancyMap(int width, int length) {
 		mazeMap = new int[width][length];
@@ -58,36 +57,34 @@ public class CustomOccupancyMap
 	}
 	
 	/**
-	 * Returns whether or not the maze is fully mapped (only works if maze is fully accessible)
-	 * @return boolean true if maze is fully mapped
+	 * Returns whether or not the maze is fully mapped (only works if maze is fully accessible).
+	 * @return boolean
+	 * Whether the maze is fully mapped or not (i.e. has unknown spots).
 	 */
 	public boolean hasMappedWholeMaze() {
-		
-		for (int i = 0; i < mazeMap.length; i++) 
-			for (int j = 0; j < mazeMap[0].length; j++)
-				if (mazeMap[i][j] == 0)
-					return false;
-		
-		return true;
-		// Alternative if numberOfUnknown == 0 if we can trust that all measures are perfect
+		if (numberOfUnknowns == 0)
+			return false;
+		else
+			return true;
 	}
 	
 	/**
-	 * Returns int[][] mazeMap
+	 * Gets mazeMap array.
 	 * @return mazeMap
+	 * mazeMap.
 	 */
 	public int[][] getMazeMap() {
 		return mazeMap;
 	}
 	
 	/**
-	 * Updates maze map at position [width][length] to the new value, don't assign wrong value! No test for value 
+	 * Updates maze map at position [width][length] to the new value.
 	 * @param width
-	 * The width-position
+	 * The width-position.
 	 * @param length
-	 * The length-position
+	 * The length-position.
 	 * @param value
-	 * The new value assigned
+	 * The new value assigned.
 	 */
 	public void updateMazeMap(int width, int length, int value) {
 		// if (value > 1 || value < -1)
@@ -96,8 +93,9 @@ public class CustomOccupancyMap
 	}
 	
 	/**
-	 * Returns position of the Robot in the maze
+	 * Returns position of the Robot in the maze.
 	 * @return robotPosition
+	 * Position of the robot.
 	 */
 	public int[] getRobotPosition() {
 		return robotPosition;
@@ -106,7 +104,7 @@ public class CustomOccupancyMap
 	/**
 	 * Updates robotPosition, execute when robot moves. 
 	 * @param orientation
-	 * The orientation the robot faces for the movement
+	 * The orientation the robot faces for the movement.
 	 */
 	public void updateRobotPosition(int orientation) {
 		if (orientation == 0)
@@ -117,5 +115,23 @@ public class CustomOccupancyMap
 			robotPosition[1]--;
 		if (orientation == 270)
 			robotPosition[0]--;
+	}
+	
+	/**
+	 * Getter to get the width of the mazeMap.
+	 * @return mazeMap.length
+	 * The width of the mazeMap.
+	 */
+	public int getMapWidth() {
+		return mazeMap.length;
+	}
+	
+	/**
+	 * Getter to get the length of the mazeMap.
+	 * @return mazeMap[0].length
+	 * The length of the mazeMap.
+	 */
+	public int getMapLength() {
+		return mazeMap[0].length;
 	}
 }
