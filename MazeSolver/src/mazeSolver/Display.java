@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
@@ -20,6 +21,7 @@ import java.awt.Cursor;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
+import java.awt.Point;
 
 /**
  * GUI on the local machine displaying current progress of the robot in exploring the Maze.
@@ -27,6 +29,7 @@ import javax.swing.SwingConstants;
  *
  */
 public class Display {
+	
 	
 	private final int GRID_WIDTH = Coordinator.map.getMapWidth();
 	private final int GRID_HEIGHT = Coordinator.map.getMapLength();
@@ -45,9 +48,9 @@ public class Display {
 	public static void main(String[] args) {
 		Display window = new Display();
 		int[][] map = new int[][] {
-			{  1, -1,  0, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 			{  1, -1,  0, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  1, -1, -1, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
+			{  1, -1,  0, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
+			{  1, -1,  0, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 			{  1, -1, -1, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 			{  1,  1,  1,  1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
 			{ -1, -1, -1, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
@@ -74,6 +77,14 @@ public class Display {
 			}
 		}		
 	}
+	
+	public void update(CustomOccupancyMap data) {
+		update(data.getMazeMap());
+		int[] position = data.getRobotPosition();
+		grid[position[0]][position[1]].setBackground(Color.blue);
+	}
+	
+	
 	/**
 	 * Get the correct background colour for the grid square.
 	 * @param state 
@@ -165,12 +176,24 @@ public class Display {
 	 */
 	private void initialize() {
 		frmEvMazeSolver = new JFrame();
+		frmEvMazeSolver.setResizable(false);
 		frmEvMazeSolver.setTitle("EV3 Maze Solver");
-		frmEvMazeSolver.setBounds(100, 100, 848, 604);
+		frmEvMazeSolver.setBounds(100, 100, 750, 580);
 		frmEvMazeSolver.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel pnlMiscInfo = new JPanel();
+		pnlMiscInfo.setPreferredSize(new Dimension(720, 50));
 		frmEvMazeSolver.getContentPane().add(pnlMiscInfo, BorderLayout.NORTH);
+		pnlMiscInfo.setLayout(null);
+		
+		JLabel lblButtonsEnabled = new JLabel("Buttons Disabled");
+		if (activeButtons)
+			lblButtonsEnabled = new JLabel("Buttons Enabled.");
+		else
+			lblButtonsEnabled = new JLabel("Buttons Disabled.");
+		lblButtonsEnabled.setSize(102, 16);
+		lblButtonsEnabled.setLocation(new Point(12, 13));
+		pnlMiscInfo.add(lblButtonsEnabled);
 		
 		JPanel pnlGridMap = new JPanel();
 		pnlGridMap.setPreferredSize(new Dimension(720, 480));
@@ -189,7 +212,6 @@ public class Display {
 		GridBagConstraints gbc_lblTemp;
 		for (int i=0;i<GRID_HEIGHT;i++) {
 			for (int j=0;j<GRID_WIDTH;j++) {
-				System.out.println("Initialising grid "+i+" "+j);
 				if(i%2 == 0) {
 					//Create a tall label
 					if (j%2==1) { 
@@ -206,9 +228,13 @@ public class Display {
 					else {
 						btnTemp = new JButton("("+String.valueOf(i/2)+","+String.valueOf(j/2)+")");
 						btnTemp.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
+							public void actionPerformed(ActionEvent e) { //The code executed when this button is pressed
+								if (activeButtons)
+								System.out.println(e.getActionCommand());
 							}
 						});
+						if (activeButtons)
+							btnTemp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));;
 						btnTemp.setPreferredSize(new Dimension(60, 60));
 						btnTemp.setMinimumSize(new Dimension(59, 59));
 						btnTemp.setMaximumSize(new Dimension(59, 59));
@@ -220,8 +246,6 @@ public class Display {
 						gbc_btnTemp.gridx = j;
 						gbc_btnTemp.gridy = 11-i;
 						pnlGridMap.add(btnTemp, gbc_btnTemp);
-						
-						//cells[i/2][j/2] = new JButton("("+String.valueOf(i/2)+","+String.valueOf(j/2)+")");
 						grid[i][j] = btnTemp;
 						
 						
