@@ -31,8 +31,8 @@ import java.awt.Point;
 public class Display {
 	
 	
-	private final int GRID_WIDTH = Coordinator.map.getMapWidth();
-	private final int GRID_HEIGHT = Coordinator.map.getMapLength();
+	private final int GRID_WIDTH =  18;//Coordinator.map.getMapWidth();
+	private final int GRID_HEIGHT =  12;//Coordinator.map.getMapLength();
 	
 	private boolean activeButtons;
 
@@ -46,22 +46,15 @@ public class Display {
 	 * Default parameter
 	 */
 	public static void main(String[] args) {
-		Display window = new Display();
-		int[][] map = new int[][] {
-			{  1, -1,  0, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  1, -1,  0, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  1, -1,  0, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  1, -1, -1, -1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  1,  1,  1,  1,  1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{ -1, -1, -1, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-			{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-		};
+		Display window = new Display(true);
+		int[][] map = new int[18][12];
+		for (int i = 0; i < 18; i++) {
+			for (int j = 0; j < 12; j++) {
+				map[i][j] = -1;
+			}
+		}
 		window.update(map);
+		System.out.println(window.getItem(16, 4));
 	}
 	
 	/**
@@ -72,8 +65,8 @@ public class Display {
 	public void update(int[][] map) {
 		for(int i = 0; i < GRID_HEIGHT; i++) {
 			for(int j = 0; j < GRID_WIDTH; j++) {
-				grid[i][j].setBackground(getBGColour(map[i][j]));
-				grid[i][j].setForeground(getFGColour(map[i][j]));
+				grid[i][j].setBackground(getBGColour(map[j][i]));
+				grid[i][j].setForeground(getFGColour(map[j][i]));
 			}
 		}		
 	}
@@ -81,7 +74,7 @@ public class Display {
 	public void update(CustomOccupancyMap data) {
 		update(data.getMazeMap());
 		int[] position = data.getRobotPosition();
-		grid[position[0]][position[1]].setBackground(Color.blue);
+		grid[position[1]][position[0]].setBackground(Color.blue);
 	}
 	
 	
@@ -158,7 +151,7 @@ public class Display {
 	 * Swing component at this location.
 	 */
 	public JComponent getItem(int x,int y) {
-		return grid[x][y];
+		return grid[y][x];
 	}
 	/**
 	 * Get a specific swing component from the grid.
@@ -168,7 +161,7 @@ public class Display {
 	 * Swing component at this location.
 	 */
 	public JComponent getItem(int[] coords) {
-		return grid[coords[0]][coords[1]];
+		return grid[coords[1]][coords[0]];
 	}
 
 	/**
@@ -226,7 +219,7 @@ public class Display {
 					}
 					// Create a button
 					else {
-						btnTemp = new JButton("("+String.valueOf(i/2)+","+String.valueOf(j/2)+")");
+						btnTemp = new JButton("("+String.valueOf(j/2)+","+String.valueOf(i/2)+")");
 						btnTemp.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) { //The code executed when this button is pressed
 								if (activeButtons)
