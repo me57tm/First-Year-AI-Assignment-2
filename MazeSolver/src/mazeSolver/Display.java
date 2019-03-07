@@ -58,8 +58,12 @@ public class Display {
 				}
 			}
 		}
+		PathFinder p = new PathFinder(map);
 		window.update(map);
-		System.out.println(window.getItem(18, 4));
+		int[][] path = p.getPathU(new int[] {11,9},new int[] {1,1});
+		for (int[] square: path) {
+			window.setColour(square,Color.BLUE);
+		}
 	}
 	
 	/**
@@ -74,6 +78,10 @@ public class Display {
 				grid[i][j].setForeground(getFGColour(map[j][i]));
 			}
 		}		
+	}
+	
+	public void setColour(int[] xy,Color c) {
+		grid[xy[1]][xy[0]].setBackground(c);
 	}
 	
 	public void update(CustomOccupancyMap data) {
