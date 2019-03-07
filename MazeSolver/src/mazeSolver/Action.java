@@ -90,13 +90,33 @@ public class Action {
 			}
 		}
 		if (left == true) {
+			Coordinator.ROTATION_MOTOR.rotateTo(-90);
+			Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
+			if (Coordinator.IR[0] < 20) {
+				Coordinator.map.updateMazeMap(leftPosition[0], leftPosition[1], -1);
+			}else {
+				Coordinator.map.updateMazeMap(leftPosition[0], leftPosition[1], 1);
+			}
+			Coordinator.ROTATION_MOTOR.rotateTo(0);
 			
 		}
 		if (front == true) {
-			
+			Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
+			if (Coordinator.IR[0] < 20) {
+				Coordinator.map.updateMazeMap(frontPosition[0], frontPosition[1], -1);
+			}else {
+				Coordinator.map.updateMazeMap(frontPosition[0], frontPosition[1], 1);
+			}
 		}
 		if (right == true) {
-			
+			Coordinator.ROTATION_MOTOR.rotateTo(90);
+			Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
+			if (Coordinator.IR[0] < 20) {
+				Coordinator.map.updateMazeMap(rightPosition[0], rightPosition[1], -1);
+			}else {
+				Coordinator.map.updateMazeMap(rightPosition[0], rightPosition[1], 1);
+			}
+			Coordinator.ROTATION_MOTOR.rotateTo(0);
 		}
 	}
 	
