@@ -11,7 +11,7 @@ public class Action {
 	 * Measure Surrounding for walls
 	 */
 	public static void lookForWalls() {
-		
+		int[] robot = Coordinator.map.getRobotPosition();
 	}
 	
 	/**

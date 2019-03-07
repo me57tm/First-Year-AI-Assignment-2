@@ -10,27 +10,27 @@ public class CustomOccupancyMap
 	/**
 	 * Representation of the maze: every entry has value -1 for an obstacle, 0 for unknown and 1 for a path surface.
 	 */
-	private static int[][] mazeMap; 
+	private int[][] mazeMap; 
 	
 	/**
 	 * Current position of the robot in the arrayMap (array of length 2 with value 0 = width and value 1 = length).
 	 */
-	private static int[] robotPosition;
+	private int[] robotPosition;
 	
 	/**
 	 * Current number of walls.
 	 */
-	private static int numberOfWalls;
+	private int numberOfWalls;
 	
 	/**
 	 * Current number of unknowns.
 	 */
-	private static int numberOfUnknowns;
+	private int numberOfUnknowns;
 	
 	/**
 	 * Current number of paths.
 	 */
-	private static int numberOfPaths;
+	private int numberOfPaths;
 	
 	/** 
 	 * Creates arrayMap of size of parameters.
