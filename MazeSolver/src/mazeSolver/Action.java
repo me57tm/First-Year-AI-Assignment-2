@@ -18,7 +18,7 @@ public class Action {
 		if (robotPosition[0] == 0) {
 			up = -robotOrientation;
 			if (robotOrientation == 0) {
-				left = false
+				left = false;
 			}
 		}
 		if (robotPosition[0] == 0) {
