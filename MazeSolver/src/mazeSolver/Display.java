@@ -31,8 +31,8 @@ import java.awt.Point;
 public class Display {
 	
 	
-	private final int GRID_WIDTH =  18;//Coordinator.map.getMapWidth();
-	private final int GRID_HEIGHT =  12;//Coordinator.map.getMapLength();
+	private final int GRID_WIDTH =  19;//Coordinator.map.getMapWidth();
+	private final int GRID_HEIGHT =  13;//Coordinator.map.getMapLength();
 	
 	private boolean activeButtons;
 
@@ -47,14 +47,19 @@ public class Display {
 	 */
 	public static void main(String[] args) {
 		Display window = new Display(true);
-		int[][] map = new int[18][12];
-		for (int i = 0; i < 18; i++) {
-			for (int j = 0; j < 12; j++) {
-				map[i][j] = -1;
+		int[][] map = new int[19][13];
+		for (int i = 0; i < 19; i++) {
+			for (int j = 0; j < 13; j++) {
+				if (i == 0 || j == 0 || i == 18 || j == 12) {
+					map[i][j] = -1;
+				}
+				else {
+					map[i][j] = 0;
+				}
 			}
 		}
 		window.update(map);
-		System.out.println(window.getItem(16, 4));
+		System.out.println(window.getItem(18, 4));
 	}
 	
 	/**
@@ -119,7 +124,7 @@ public class Display {
 		this.activeButtons = false;
 		initialize();
 		frmEvMazeSolver.setVisible(true);
-		//cells[0][0].setBackground(Color.BLUE);
+		grid[1][0].setBackground(Color.BLUE);
 	}
 	
 	/**
@@ -169,13 +174,13 @@ public class Display {
 	 */
 	private void initialize() {
 		frmEvMazeSolver = new JFrame();
-		frmEvMazeSolver.setResizable(false);
+		frmEvMazeSolver.setResizable(true);
 		frmEvMazeSolver.setTitle("EV3 Maze Solver");
-		frmEvMazeSolver.setBounds(100, 100, 750, 580);
+		frmEvMazeSolver.setBounds(100, 100, 740, 600);
 		frmEvMazeSolver.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel pnlMiscInfo = new JPanel();
-		pnlMiscInfo.setPreferredSize(new Dimension(720, 50));
+		pnlMiscInfo.setPreferredSize(new Dimension(740, 50));
 		frmEvMazeSolver.getContentPane().add(pnlMiscInfo, BorderLayout.NORTH);
 		pnlMiscInfo.setLayout(null);
 		
@@ -189,12 +194,12 @@ public class Display {
 		pnlMiscInfo.add(lblButtonsEnabled);
 		
 		JPanel pnlGridMap = new JPanel();
-		pnlGridMap.setPreferredSize(new Dimension(720, 480));
-		pnlGridMap.setSize(new Dimension(720, 480));
+		//pnlGridMap.setPreferredSize(new Dimension(720, 480));
+		pnlGridMap.setSize(new Dimension(740, 500));
 		frmEvMazeSolver.getContentPane().add(pnlGridMap, BorderLayout.CENTER);
 		GridBagLayout gbl_pnlGridMap = new GridBagLayout();
-		gbl_pnlGridMap.rowHeights = new int[] {20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60};
-		gbl_pnlGridMap.columnWidths = new int[] {60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20};
+		gbl_pnlGridMap.rowHeights = new int[] {20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20};
+		gbl_pnlGridMap.columnWidths = new int[] {20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20};
 		//gbl_panel.columnWeights = new double[]{};
 		//gbl_panel.rowWeights = new double[]{0.0};
 		pnlGridMap.setLayout(gbl_pnlGridMap);
@@ -205,14 +210,14 @@ public class Display {
 		GridBagConstraints gbc_lblTemp;
 		for (int i=0;i<GRID_HEIGHT;i++) {
 			for (int j=0;j<GRID_WIDTH;j++) {
-				if(i%2 == 0) {
+				if(i%2 == 1) {
 					//Create a tall label
-					if (j%2==1) { 
+					if (j%2==0) { 
 						lblTemp = createWall(19,59);
 						gbc_lblTemp = new GridBagConstraints();
 						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
 						gbc_lblTemp.gridx = j;
-						gbc_lblTemp.gridy = 11-i;
+						gbc_lblTemp.gridy = 12-i;
 						pnlGridMap.add(lblTemp, gbc_lblTemp);
 						grid[i][j] = lblTemp;
 						
@@ -237,7 +242,7 @@ public class Display {
 						gbc_btnTemp = new GridBagConstraints();
 						//gbc_btnTemp.insets = new Insets(0, 0, 5, 5);
 						gbc_btnTemp.gridx = j;
-						gbc_btnTemp.gridy = 11-i;
+						gbc_btnTemp.gridy = 12-i;
 						pnlGridMap.add(btnTemp, gbc_btnTemp);
 						grid[i][j] = btnTemp;
 						
@@ -247,12 +252,12 @@ public class Display {
 				
 				else {
 					// Create a small square label
-					if (j%2==1) {
+					if (j%2==0) {
 						lblTemp = createWall(19,19);
 						gbc_lblTemp = new GridBagConstraints();
 						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
 						gbc_lblTemp.gridx = j;
-						gbc_lblTemp.gridy = 11-i;
+						gbc_lblTemp.gridy = 12-i;
 						pnlGridMap.add(lblTemp, gbc_lblTemp);
 						grid[i][j] = lblTemp;
 					}
@@ -262,7 +267,7 @@ public class Display {
 						gbc_lblTemp = new GridBagConstraints();
 						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
 						gbc_lblTemp.gridx = j;
-						gbc_lblTemp.gridy = 11-i;
+						gbc_lblTemp.gridy = 12-i;
 						pnlGridMap.add(lblTemp, gbc_lblTemp);
 						grid[i][j] = lblTemp;
 					}
