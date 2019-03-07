@@ -219,7 +219,7 @@ public class Coordinator {
 		USSampler = USSensor.getDistanceMode();
 		ColourSampler = ColourSensor.getRGBMode();
 		
-		map = new CustomOccupancyMap(18,12);
+		map = new CustomOccupancyMap(19,13);
 		
 		// Set up Bluetooth Connection
 		EV3Server.initializeBluetoothConnection();

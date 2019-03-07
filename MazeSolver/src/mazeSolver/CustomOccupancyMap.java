@@ -13,7 +13,7 @@ public class CustomOccupancyMap
 	private int[][] mazeMap; 
 	
 	/**
-	 * Current position of the robot in the arrayMap (array of length 2 with value 0 = width and value 1 = length).
+	 * Current position of the robot in the arrayMap (array of length 2 with value 0 = width and value 1 = height).
 	 */
 	private int[] robotPosition;
 	
@@ -35,25 +35,25 @@ public class CustomOccupancyMap
 	/** 
 	 * Creates arrayMap of size of parameters.
 	 * @param width
-	 * Width - The total number of sections being either walls or paths.
-	 * @param length
-	 * Length - The total number of sections being either walls or paths.
+	 * The total number of sections being either walls or paths.
+	 * @param height
+	 * The total number of sections being either walls or paths.
 	 */
-	public CustomOccupancyMap(int width, int length) {
-		mazeMap = new int[width][length];
+	public CustomOccupancyMap(int width, int height) {
+		mazeMap = new int[width][height];
 		
 		// Set map to unknown
 		for (int i = 0; i < mazeMap.length; i++) 
 			for (int j = 0; j < mazeMap[0].length; j++)
 				mazeMap[i][j] = 0;
 		
-		// Set origin to a Path
 		robotPosition = new int[] {0,0};
-		mazeMap[0][0] = 1;
+		// Set origin to a Path
+		mazeMap[1][1] = 1;
 		
-		numberOfWalls = 0;
-		numberOfUnknowns = width*length - 1;
+		numberOfWalls = 2*width + 2*(height-1);
 		numberOfPaths = 1;
+		numberOfUnknowns = width*height - numberOfWalls - numberOfPaths;
 	}
 	
 	/**
@@ -63,9 +63,9 @@ public class CustomOccupancyMap
 	 */
 	public boolean hasMappedWholeMaze() {
 		if (numberOfUnknowns == 0)
-			return false;
-		else
 			return true;
+		else
+			return false;
 	}
 	
 	/**
@@ -86,10 +86,8 @@ public class CustomOccupancyMap
 	 * @param value
 	 * The new value assigned.
 	 */
-	public void updateMazeMap(int width, int length, int value) {
-		// if (value > 1 || value < -1)
-		//		illegal value - error message
-		mazeMap[width][length] = value;
+	public void updateMazeMap(int width, int height, int value) {
+		mazeMap[width][height] = value;
 	}
 	
 	/**
