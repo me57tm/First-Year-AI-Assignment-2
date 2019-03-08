@@ -1,7 +1,5 @@
 package mazeSolver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
@@ -20,9 +18,9 @@ public class PathFinder {
 	public int[][] getPathU(int[] start, int[] end) {
 		//Stack<GridSquare> ret = new Stack<GridSquare>();
 		PriorityQueue<GridSquare> queue = new PriorityQueue<GridSquare>();
-		ArrayList<int[]> discovered = new ArrayList<int[]>();
+		boolean[][] discovered = new boolean[19][13];
 		GridSquare currentSquare = new GridSquare(start,null,0,getHeuristic(start,end));
-		discovered.add(currentSquare.coords.clone());
+		discovered[currentSquare.coords[0]][currentSquare.coords[1]] = true;
 		
 		GridSquare newSquare;
 		int[] newCoords;
@@ -38,7 +36,7 @@ public class PathFinder {
 					newCoords[0]--;
 				if (i == 270)
 					newCoords[1]--;
-				if (!discovered.contains(newCoords)) {
+				if (!discovered[newCoords[0]][newCoords[1]]) {
 					newSquare = new GridSquare(
 							newCoords,
 							currentSquare,
@@ -46,7 +44,7 @@ public class PathFinder {
 							getHeuristic(newCoords,end));
 					System.out.println("Adding: "+newSquare);
 					queue.add(newSquare);
-					discovered.add(newCoords);
+					discovered[currentSquare.coords[0]][currentSquare.coords[1]] = true;
 				}
 			}
 			//if 
@@ -73,7 +71,7 @@ public class PathFinder {
 		int x = coords[0];
 		int y = coords[1];
 		if (map[x][y] == -1)
-			return 7500;
+			return 7500+x+y;
 
 		if (direction == 0 || direction == 270) {
 			if (x % 2 == 0)
@@ -93,7 +91,7 @@ public class PathFinder {
 		int x = coords[0];
 		int y = coords[1];
 		if (map[x][y] != 1)
-			return 7500;
+			return 7500+x+y;
 
 		if (direction == 0 || direction == 270) {
 			if (x % 2 == 0)

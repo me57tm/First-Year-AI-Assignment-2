@@ -46,24 +46,36 @@ public class Display {
 	 * Default parameter
 	 */
 	public static void main(String[] args) {
-		Display window = new Display(true);
+		Display window = new Display(false);
 		int[][] map = new int[19][13];
-		for (int i = 0; i < 19; i++) {
-			for (int j = 0; j < 13; j++) {
-				if (i == 0 || j == 0 || i == 18 || j == 12) {
-					map[i][j] = -1;
-				}
-				else {
-					map[i][j] = 0;
-				}
-			}
-		}
+		map = new int[][] {
+			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+			{-1, 0, 0, 0,-1, 0, 0, 0, 0, 0, 0, 0,-1},
+			{-1, 0,-1, 0,-1,-1,-1,-1,-1,-1,-1, 0,-1},
+			{-1, 0,-1, 0,-1, 0, 0, 0, 0, 0, 0, 0,-1},
+			{-1, 0,-1, 0,-1, 0,-1,-1,-1,-1,-1,-1,-1},
+			{-1, 0,-1, 0,-1, 0, 0, 0, 0, 0, 0, 0,-1},
+			{-1, 0,-1, 0,-1, 0,-1,-1,-1,-1,-1, 0,-1},
+			{-1, 0,-1, 0, 0, 0,-1, 0, 0, 0,-1, 0,-1},
+			{-1, 0,-1, 0, 0, 0,-1, 0, 0, 0,-1, 0,-1},
+			{-1, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1, 0,-1},
+			{-1, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1, 0,-1},
+			{-1, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1, 0,-1},
+			{-1,-1,-1,-1,-1,-1,-1, 0, 0, 0,-1, 0,-1},
+			{-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1},
+			{-1, 0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+			{-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1},
+			{-1, 0,-1,-1,-1,-1,-1, 0, 0, 0, 0, 0,-1},
+			{-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1},
+			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+		};
 		PathFinder p = new PathFinder(map);
 		window.update(map);
-		int[][] path = p.getPathU(new int[] {11,9},new int[] {1,1});
+		int[][] path = p.getPathU(new int[] {17,11},new int[] {1,1});
 		for (int[] square: path) {
-			window.setColour(square,Color.BLUE);
+			window.setColour(square,Color.pink);
 		}
+		boolean[] dave = new boolean[4];
 	}
 	
 	/**
@@ -232,7 +244,7 @@ public class Display {
 					}
 					// Create a button
 					else {
-						btnTemp = new JButton("("+String.valueOf(j/2)+","+String.valueOf(i/2)+")");
+						btnTemp = new JButton("("+String.valueOf(j/2+1)+","+String.valueOf(i/2+1)+")");
 						btnTemp.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) { //The code executed when this button is pressed
 								if (activeButtons)
