@@ -1,10 +1,9 @@
 package mazeSolver;
 
-import java.util.*;
 
 /**
  * Mostly uses Coordinator methods to implement all typical actions the robot takes while mapping and solving the maze.
- * @author jonasschafer
+ * @author jakepierrepont
  *
  */
 public class Action {
@@ -15,81 +14,30 @@ public class Action {
 	
 	public static void lookForWalls(int robotOrientation) {
 		int[] robotPosition = Coordinator.map.getRobotPosition();
-		Boolean left = false;
-		int[] leftPosition = new int[2];
-		Boolean front = false;
-		int[] frontPosition = new int[2];
-		Boolean right = false;
-		int[] rightPosition = new int[2];
+		int[] leftPosition = robotPosition;
+		int[] frontPosition = robotPosition;
+		int[] rightPosition = robotPosition;
 		if (robotOrientation == 0) {
-			if (Coordinator.map.getMazeMap()[robotPosition[0]-1][robotPosition[1]] == 0) {
-				left = true;
-				leftPosition[0] = robotPosition[0]-1;
-				leftPosition[1] = robotPosition[1];
-			}
-			if (Coordinator.map.getMazeMap()[robotPosition[0]][robotPosition[1]+1] == 0) {
-				front = true;
-				frontPosition[0] = robotPosition[0];
-				frontPosition[1] = robotPosition[1]+1;
-			}
-			if (Coordinator.map.getMazeMap()[robotPosition[0]+1][robotPosition[1]] == 0) {
-				right = true;
-				rightPosition[0] = robotPosition[0]+1;
-				rightPosition[1] = robotPosition[1];
-			}
+			leftPosition[0]--;
+			frontPosition[1]++;
+			rightPosition[0]++;
 		}
 		if (robotOrientation == 90) {
-			if (Coordinator.map.getMazeMap()[robotPosition[0]][robotPosition[1]+1] == 0) {
-				left = true;
-				leftPosition[0] = robotPosition[0];
-				leftPosition[1] = robotPosition[1]+1;
-			}
-			if (Coordinator.map.getMazeMap()[robotPosition[0]+1][robotPosition[1]] == 0) {
-				front = true;
-				frontPosition[0] = robotPosition[0]+1;
-				frontPosition[1] = robotPosition[1];
-			}
-			if (Coordinator.map.getMazeMap()[robotPosition[0]][robotPosition[1]-1] == 0) {
-				right = true;
-				rightPosition[0] = robotPosition[0];
-				rightPosition[1] = robotPosition[1]-1;
-			}
+			leftPosition[1]++;
+			frontPosition[0]++;
+			rightPosition[1]--1;
 		}
 		if (robotOrientation == 180) {
-			if (Coordinator.map.getMazeMap()[robotPosition[0]+1][robotPosition[1]] == 0) {
-				left = true;
-				leftPosition[0] = robotPosition[0]+1;
-				leftPosition[1] = robotPosition[1];
-			}
-			if (Coordinator.map.getMazeMap()[robotPosition[0]][robotPosition[1]-1] == 0) {
-				front = true;
-				frontPosition[0] = robotPosition[0];
-				frontPosition[1] = robotPosition[1]-1;
-			}
-			if (Coordinator.map.getMazeMap()[robotPosition[0]-1][robotPosition[1]] == 0) {
-				right = true;
-				rightPosition[0] = robotPosition[0]-1;
-				rightPosition[1] = robotPosition[1];
-			}
+			leftPosition[0]++;
+			frontPosition[1]--;
+			rightPosition[0]--;
 		}
 		if (robotOrientation == 270) {
-			if (Coordinator.map.getMazeMap()[robotPosition[0]][robotPosition[1]+1] == 0) {
-				left = true;
-				leftPosition[0] = robotPosition[0];
-				leftPosition[1] = robotPosition[1]+1;
-			}
-			if (Coordinator.map.getMazeMap()[robotPosition[0]-1][robotPosition[1]] == 0) {
-				front = true;
-				frontPosition[0] = robotPosition[0]-1;
-				frontPosition[1] = robotPosition[1];
-			}
-			if (Coordinator.map.getMazeMap()[robotPosition[0]][robotPosition[1]-1] == 0) {
-				right = true;
-				rightPosition[0] = robotPosition[0];
-				rightPosition[1] = robotPosition[1]-1;
-			}
+			leftPosition[1]--;
+			frontPosition[0]--;
+			rightPosition[1]++;
 		}
-		if (left == true) {
+		if (Coordinator.map.getMazeMap()[leftPosition[0]][leftPosition[1]] == 0) {
 			Coordinator.ROTATION_MOTOR.rotateTo(-90);
 			Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
 			if (Coordinator.IR[0] < 20) {
@@ -98,9 +46,8 @@ public class Action {
 				Coordinator.map.updateMazeMap(leftPosition[0], leftPosition[1], 1);
 			}
 			Coordinator.ROTATION_MOTOR.rotateTo(0);
-			
 		}
-		if (front == true) {
+		if (Coordinator.map.getMazeMap()[frontPosition[0]][frontPosition[1]] == 0) {
 			Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
 			if (Coordinator.IR[0] < 20) {
 				Coordinator.map.updateMazeMap(frontPosition[0], frontPosition[1], -1);
@@ -108,7 +55,7 @@ public class Action {
 				Coordinator.map.updateMazeMap(frontPosition[0], frontPosition[1], 1);
 			}
 		}
-		if (right == true) {
+		if (Coordinator.map.getMazeMap()[rightPosition[0]+1][rightPosition[1]] == 0) {
 			Coordinator.ROTATION_MOTOR.rotateTo(90);
 			Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
 			if (Coordinator.IR[0] < 20) {
@@ -123,7 +70,34 @@ public class Action {
 	/**
 	 * Move from one Path to the next Path
 	 */
-	public static void moveToNextSquare() {
+	public static void moveToNextSquare(int robotOrientation) {
+		int[] robotPosition = Coordinator.map.getRobotPosition();
+		int[] leftPosition = robotPosition;
+		int[] frontPosition = robotPosition;
+		int[] rightPosition = robotPosition;
+		if (robotOrientation == 0) {
+			leftPosition[0]--;
+			frontPosition[1]++;
+			rightPosition[0]++;
+		}
+		if (robotOrientation == 90) {
+			leftPosition[1]++;
+			frontPosition[0]++;
+			rightPosition[1]--1;
+		}
+		if (robotOrientation == 180) {
+			leftPosition[0]++;
+			frontPosition[1]--;
+			rightPosition[0]--;
+		}
+		if (robotOrientation == 270) {
+			leftPosition[1]--;
+			frontPosition[0]--;
+			rightPosition[1]++;
+		}
+		if (Coordinator.map.getMazeMap()[frontPosition[0]][frontPosition[1]] == 0) {
+			
+		}
 		
 	}
 	
