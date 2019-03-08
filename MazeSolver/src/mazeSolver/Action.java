@@ -55,7 +55,7 @@ public class Action {
 				Coordinator.map.updateMazeMap(frontPosition[0], frontPosition[1], 1);
 			}
 		}
-		if (Coordinator.map.getMazeMap()[rightPosition[0]+1][rightPosition[1]] == 0) {
+		if (Coordinator.map.getMazeMap()[rightPosition[0]][rightPosition[1]] == 0) {
 			Coordinator.ROTATION_MOTOR.rotateTo(90);
 			Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
 			if (Coordinator.IR[0] < 20) {
@@ -83,7 +83,7 @@ public class Action {
 		if (robotOrientation == 90) {
 			leftPosition[1]++;
 			frontPosition[0]++;
-			rightPosition[1]--1;
+			rightPosition[1]--;
 		}
 		if (robotOrientation == 180) {
 			leftPosition[0]++;
@@ -96,6 +96,8 @@ public class Action {
 			rightPosition[1]++;
 		}
 		if (Coordinator.map.getMazeMap()[frontPosition[0]][frontPosition[1]] == 0) {
+			//move forwards
+		} else if(Coordinator.map.getMazeMap()[rightPosition[0]][rightPosition[1]] == 0) {
 			
 		}
 		
