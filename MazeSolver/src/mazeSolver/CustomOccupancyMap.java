@@ -1,12 +1,19 @@
 package mazeSolver;
 
+import java.io.Serializable;
+
 /**
  * Custom Map Object to represent a to-be-explored Maze.
  * @author jonasschaefer
  *
  */
-public class CustomOccupancyMap
+public class CustomOccupancyMap implements Serializable 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1710743261578049661L;
+
 	/**
 	 * Representation of the maze: every entry has value -1 for an obstacle, 0 for unknown and 1 for a path surface.
 	 */
