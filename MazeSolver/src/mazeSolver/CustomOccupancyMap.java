@@ -13,6 +13,8 @@ public class CustomOccupancyMap implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = -1710743261578049661L;
+	
+	private int robotOrientation;
 
 	/**
 	 * Representation of the maze: every entry has value -1 for an obstacle, 0 for unknown and 1 for a path surface.
@@ -138,5 +140,19 @@ public class CustomOccupancyMap implements Serializable
 	 */
 	public int getMapLength() {
 		return mazeMap[0].length;
+	}
+	
+	public int[] getSquare(int direction) {
+		direction = direction + robotOrientation;
+		if (direction > 360) direction -= 360;
+		
+		if (robotOrientation == 0)
+			return new int[] {robotPosition[0], robotPosition[1] + 1};
+		if (robotOrientation == 90)
+			return new int[]  {robotPosition[0] + 1, robotPosition[1]};
+		if (robotOrientation == 180)
+			return new int[] {robotPosition[0], robotPosition[1] - 1};
+		else
+			return new int[] {robotPosition[0] - 1, robotPosition[1]};
 	}
 }

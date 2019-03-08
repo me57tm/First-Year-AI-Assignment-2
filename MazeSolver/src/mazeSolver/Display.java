@@ -1,26 +1,18 @@
 package mazeSolver;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
-import javax.swing.JTable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.awt.event.ActionEvent;
-import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.Dimension;
 import java.awt.Cursor;
 import javax.swing.JLabel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.SwingConstants;
 import java.awt.Point;
 
 /**
@@ -50,32 +42,31 @@ public class Display {
 		int[][] map = new int[19][13];
 		map = new int[][] {
 			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1, 0, 0, 0,-1, 0, 0, 0, 0, 0, 0, 0,-1},
-			{-1, 0,-1, 0,-1,-1,-1,-1,-1,-1,-1, 0,-1},
-			{-1, 0,-1, 0,-1, 0, 0, 0, 0, 0, 0, 0,-1},
-			{-1, 0,-1, 0,-1, 0,-1,-1,-1,-1,-1,-1,-1},
-			{-1, 0,-1, 0,-1, 0, 0, 0, 0, 0, 0, 0,-1},
-			{-1, 0,-1, 0,-1, 0,-1,-1,-1,-1,-1, 0,-1},
-			{-1, 0,-1, 0, 0, 0,-1, 0, 0, 0,-1, 0,-1},
-			{-1, 0,-1, 0, 0, 0,-1, 0, 0, 0,-1, 0,-1},
-			{-1, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1, 0,-1},
-			{-1, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1, 0,-1},
-			{-1, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1, 0,-1},
-			{-1,-1,-1,-1,-1,-1,-1, 0, 0, 0,-1, 0,-1},
-			{-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1},
-			{-1, 0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
-			{-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1},
-			{-1, 0,-1,-1,-1,-1,-1, 0, 0, 0, 0, 0,-1},
-			{-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1},
+			{-1, 1, 1, 1,-1, 1, 1, 1, 1, 1, 1, 1,-1},
+			{-1, 1,-1, 1,-1,-1,-1,-1,-1,-1,-1, 1,-1},
+			{-1, 1,-1, 1,-1, 1, 1, 1, 1, 1, 1, 1,-1},
+			{-1, 1,-1, 1,-1, 1,-1,-1,-1,-1,-1,-1,-1},
+			{-1, 1,-1, 1,-1, 1, 1, 1, 1, 1, 1, 1,-1},
+			{-1, 1,-1, 1,-1, 1,-1,-1,-1,-1,-1, 1,-1},
+			{-1, 1,-1, 1, 1, 1,-1, 1, 1, 1,-1, 1,-1},
+			{-1, 1,-1, 1, 1, 1,-1, 1, 1, 1,-1, 1,-1},
+			{-1, 1, 1, 1, 1, 1,-1, 1, 1, 1,-1, 1,-1},
+			{-1, 1, 1, 1, 1, 1,-1, 1, 1, 1,-1, 1,-1},
+			{-1, 1, 1, 1, 1, 1,-1, 1, 1, 1,-1, 1,-1},
+			{-1,-1, 0,-1,-1,-1,-1, 1, 1, 1,-1, 1,-1},
+			{-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1},
+			{-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+			{-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1},
+			{-1, 1,-1,-1,-1,-1,-1, 1, 1, 1,-1, 1,-1},
+			{-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1},
 			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
 		};
 		PathFinder p = new PathFinder(map);
 		window.update(map);
-		int[][] path = p.getPathU(new int[] {17,11},new int[] {1,1});
+		int[][] path = p.getPathK(new int[] {17,11},new int[] {1,1});
 		for (int[] square: path) {
 			window.setColour(square,Color.pink);
 		}
-		boolean[] dave = new boolean[4];
 	}
 	
 	/**
