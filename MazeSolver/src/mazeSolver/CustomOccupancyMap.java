@@ -53,10 +53,14 @@ public class CustomOccupancyMap implements Serializable
 		
 		// Set map to unknown
 		for (int i = 0; i < mazeMap.length; i++) 
-			for (int j = 0; j < mazeMap[0].length; j++)
-				mazeMap[i][j] = 0;
+			for (int j = 0; j < mazeMap[0].length; j++) {
+				if (i == 0 || j == 0 || i == 18 || j == 12)
+					mazeMap[i][j] = -1;
+				else
+					mazeMap[i][j] = 0;
+			}
 		
-		robotPosition = new int[] {0,0};
+		robotPosition = new int[] {1,1};
 		// Set origin to a Path
 		mazeMap[1][1] = 1;
 		
@@ -75,6 +79,10 @@ public class CustomOccupancyMap implements Serializable
 	 */
 	public boolean hasMappedWholeMaze() {
 		return numberOfUnknowns == 0;
+	}
+	
+	public int getCompletion() {
+		return numberOfWalls + numberOfPaths;
 	}
 	
 	/**

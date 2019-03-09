@@ -11,7 +11,6 @@ public class GridSquare implements Comparable<GridSquare>{
 		this.heuristic = heuristic;
 		this.parent = parent;
 	}
-	
 	public int getTotalCost() {
 		return cost+heuristic;
 	}

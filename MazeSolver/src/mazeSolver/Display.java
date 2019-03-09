@@ -30,8 +30,8 @@ public class Display {
 	private boolean activeButtons;
 
 	private JFrame frmEvMazeSolver;
+	private JProgressBar progressBar;
 	private JComponent[][] grid = new JComponent[GRID_HEIGHT][GRID_WIDTH];
-	//private JButton[][] cells = new JButton[6][9];
 
 	/**
 	 * Default main method
@@ -62,12 +62,10 @@ public class Display {
 			{-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1},
 			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
 		};
-		PathFinder p = new PathFinder(map);
-		window.update(map);
-		int[][] path = p.getPathK(new int[] {17,11},new int[] {1,1});
-		for (int[] square: path) {
-			window.setColour(square,Color.pink);
-		}
+		CustomOccupancyMap robotMap = new CustomOccupancyMap(19,13,0);
+		robotMap.updateRobotPosition();
+		robotMap.updateRobotPosition();
+		window.update(robotMap);
 	}
 	
 	/**
@@ -75,7 +73,7 @@ public class Display {
 	 * @param map 
 	 * A 2D array representation of the map status (see CustomOccupancyMap).
 	 */
-	public void update(int[][] map) {
+	public void updateMap(int[][] map) {
 		for(int i = 0; i < GRID_HEIGHT; i++) {
 			for(int j = 0; j < GRID_WIDTH; j++) {
 				grid[i][j].setBackground(getBGColour(map[j][i]));
@@ -84,14 +82,28 @@ public class Display {
 		}		
 	}
 	
+	/**
+	 * Set the Colour of a specific grid square.
+	 * @param xy 
+	 * Coordinates of the  grid square to be coloured in.
+	 * @param c
+	 * The new colour of the grid square.
+	 */
 	public void setColour(int[] xy,Color c) {
 		grid[xy[1]][xy[0]].setBackground(c);
 	}
 	
+	/**
+	 * Update the GUI to display the correct information about the robot.
+	 * @param data
+	 * The Robot's internal data to display.
+	 */
 	public void update(CustomOccupancyMap data) {
-		update(data.getMazeMap());
+		updateMap(data.getMazeMap());
 		int[] position = data.getRobotPosition();
-		grid[position[1]][position[0]].setBackground(Color.blue);
+		grid[position[1]][position[0]].setBackground(new Color(181, 70, 244));
+		grid[position[1]][position[0]].setForeground(Color.BLACK);
+		progressBar.setValue(data.getCompletion());
 	}
 	
 	
@@ -205,19 +217,19 @@ public class Display {
 		lblButtonsEnabled.setLocation(new Point(12, 13));
 		pnlMiscInfo.add(lblButtonsEnabled);
 		
-		JProgressBar progressBar = new JProgressBar();
+		progressBar = new JProgressBar();
+		progressBar.setValue(1);
+		progressBar.setMaximum(247);
+		progressBar.setStringPainted(true);
 		progressBar.setBounds(564, 23, 146, 14);
 		pnlMiscInfo.add(progressBar);
 		
 		JPanel pnlGridMap = new JPanel();
-		//pnlGridMap.setPreferredSize(new Dimension(720, 480));
 		pnlGridMap.setSize(new Dimension(740, 500));
 		frmEvMazeSolver.getContentPane().add(pnlGridMap, BorderLayout.CENTER);
 		GridBagLayout gbl_pnlGridMap = new GridBagLayout();
 		gbl_pnlGridMap.rowHeights = new int[] {20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20};
 		gbl_pnlGridMap.columnWidths = new int[] {20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20};
-		//gbl_panel.columnWeights = new double[]{};
-		//gbl_panel.rowWeights = new double[]{0.0};
 		pnlGridMap.setLayout(gbl_pnlGridMap);
 		
 		JLabel lblTemp;
@@ -231,7 +243,6 @@ public class Display {
 					if (j%2==0) { 
 						lblTemp = createWall(19,59);
 						gbc_lblTemp = new GridBagConstraints();
-						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
 						gbc_lblTemp.gridx = j;
 						gbc_lblTemp.gridy = 12-i;
 						pnlGridMap.add(lblTemp, gbc_lblTemp);
@@ -256,7 +267,6 @@ public class Display {
 						btnTemp.setForeground(getFGColour(0));
 						btnTemp.setOpaque(true);
 						gbc_btnTemp = new GridBagConstraints();
-						//gbc_btnTemp.insets = new Insets(0, 0, 5, 5);
 						gbc_btnTemp.gridx = j;
 						gbc_btnTemp.gridy = 12-i;
 						pnlGridMap.add(btnTemp, gbc_btnTemp);
@@ -271,7 +281,6 @@ public class Display {
 					if (j%2==0) {
 						lblTemp = createWall(19,19);
 						gbc_lblTemp = new GridBagConstraints();
-						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
 						gbc_lblTemp.gridx = j;
 						gbc_lblTemp.gridy = 12-i;
 						pnlGridMap.add(lblTemp, gbc_lblTemp);
@@ -281,7 +290,6 @@ public class Display {
 					else {
 						lblTemp = createWall(59,19);
 						gbc_lblTemp = new GridBagConstraints();
-						//gbc_lblTemp.insets = new Insets(0, 0, 0, 5);
 						gbc_lblTemp.gridx = j;
 						gbc_lblTemp.gridy = 12-i;
 						pnlGridMap.add(lblTemp, gbc_lblTemp);

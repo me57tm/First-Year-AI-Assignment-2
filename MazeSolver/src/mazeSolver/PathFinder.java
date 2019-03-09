@@ -14,9 +14,16 @@ public class PathFinder {
 		this.map = map;
 	}
 	
-	
+	/**
+	 * Find the shortest path between two squares, counting unknown tiles as driveable.
+	 * @param start 
+	 * The location of the robot.
+	 * @param end 
+	 * The destination to find the path to
+	 * @return
+	 * An array of coordinates of the squares that are needed to traverse to get from start to finish.
+	 */
 	public int[][] getPathU(int[] start, int[] end) {
-		//Stack<GridSquare> ret = new Stack<GridSquare>();
 		PriorityQueue<GridSquare> queue = new PriorityQueue<GridSquare>();
 		boolean[][] discovered = new boolean[19][13];
 		GridSquare currentSquare = new GridSquare(start,null,0,getHeuristic(start,end));
@@ -47,13 +54,10 @@ public class PathFinder {
 					discovered[currentSquare.coords[0]][currentSquare.coords[1]] = true;
 				}
 			}
-			//if 
-			//ret.push(currentSquare);
 			currentSquare = queue.poll();
 			System.out.println(queue);
 			System.out.println("Best Move:" + currentSquare);
 		}
-		//System.out.println(ret);
 		Stack<GridSquare> gridStack = new Stack<GridSquare>();
 		while (currentSquare.coords[0] != start[0] || currentSquare.coords[1] != start[1]) {
 			System.out.println(currentSquare);
@@ -66,7 +70,16 @@ public class PathFinder {
 		}
 		return out;
 	}
-
+	
+	/**
+	 * Find the shortest path between two squares, counting unknown tiles as walls.
+	 * @param start 
+	 * The location of the robot.
+	 * @param end 
+	 * The destination to find the path to
+	 * @return
+	 * An array of coordinates of the squares that are needed to traverse to get from start to finish.
+	 */
 	public int[][] getPathK(int[] start, int[] end) {
 		PriorityQueue<GridSquare> queue = new PriorityQueue<GridSquare>();
 		boolean[][] discovered = new boolean[19][13];
@@ -115,6 +128,15 @@ public class PathFinder {
 		return out;
 	}
 	
+	/**
+	 * Get the cost for the robot to travel across this tile treating unknowns as driveable.
+	 * @param coords
+	 * The coordinates of the tile.
+	 * @param direction
+	 * The direction the robot will cross this tile in
+	 * @return
+	 * Cost to cross this tile
+	 */
 	public int getCostUnknown(int[] coords,int direction) {
 		int x = coords[0];
 		int y = coords[1];
@@ -135,6 +157,15 @@ public class PathFinder {
 		}
 	}
 	
+	/**
+	 * Get the cost for the robot to travel across this tile treating unknowns as walls.
+	 * @param coords
+	 * The coordinates of the tile.
+	 * @param direction
+	 * The direction the robot will cross this tile in
+	 * @return
+	 * Cost to cross this tile
+	 */
 	public int getCostKnown(int[] coords,int direction) {
 		int x = coords[0];
 		int y = coords[1];
@@ -155,6 +186,15 @@ public class PathFinder {
 		}
 	}
 	
+	/**
+	 * Get the estimated cost of the journey from one tile to another.
+	 * @param start
+	 * Tile we are currently at.
+	 * @param end
+	 * Tile to get to.
+	 * @return
+	 * The cost.
+	 */
 	public int getHeuristic(int[] start, int[] end) {
 		return 50 * ( (Math.abs(start[0]-end[0])) + (Math.abs(start[1]-end[1])) );
 	}
