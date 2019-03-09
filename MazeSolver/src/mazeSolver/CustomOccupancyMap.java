@@ -48,7 +48,7 @@ public class CustomOccupancyMap implements Serializable
 	 * @param height
 	 * The total number of sections being either walls or paths.
 	 */
-	public CustomOccupancyMap(int width, int height) {
+	public CustomOccupancyMap(int width, int height,int orientation) {
 		mazeMap = new int[width][height];
 		
 		// Set map to unknown
@@ -60,10 +60,13 @@ public class CustomOccupancyMap implements Serializable
 		// Set origin to a Path
 		mazeMap[1][1] = 1;
 		
+		robotOrientation = orientation;
+		
 		numberOfWalls = 2*width + 2*(height-1);
 		numberOfPaths = 1;
 		numberOfUnknowns = width*height - numberOfWalls - numberOfPaths;
 	}
+	 
 	
 	/**
 	 * Returns whether or not the maze is fully mapped (only works if maze is fully accessible).
@@ -71,10 +74,7 @@ public class CustomOccupancyMap implements Serializable
 	 * Whether the maze is fully mapped or not (i.e. has unknown spots).
 	 */
 	public boolean hasMappedWholeMaze() {
-		if (numberOfUnknowns == 0)
-			return true;
-		else
-			return false;
+		return numberOfUnknowns == 0;
 	}
 	
 	/**
@@ -113,15 +113,40 @@ public class CustomOccupancyMap implements Serializable
 	 * @param orientation
 	 * The orientation the robot faces for the movement.
 	 */
-	public void updateRobotPosition(int orientation) {
-		if (orientation == 0)
+	public void updateRobotPosition() {
+		if (robotOrientation == 0)
 			robotPosition[1]++;
-		if (orientation == 90)
+		if (robotOrientation == 90)
 			robotPosition[0]++;
-		if (orientation == 180)
+		if (robotOrientation == 180)
 			robotPosition[1]--;
-		if (orientation == 270)
+		if (robotOrientation == 270)
 			robotPosition[0]--;
+	}
+	
+	/**
+	 * Updates orientation of robot relative to the Maze by the number of degrees the robot is instructed to turn.
+	 * @param degrees
+	 * Degrees of turning.
+	 */
+	public void updateOrientation(int degrees) {
+		// Check for invalid turns
+		if (degrees != 90 && degrees != -90);
+			
+		robotOrientation += degrees;
+		if (robotOrientation > 270)
+			robotOrientation -= 360;
+		if (robotOrientation < 0)
+			robotOrientation += 360;
+	}
+	
+	/**
+	 * Returns current orientation.
+	 * @return orientation
+	 * orientation
+	 */
+	public int getOrientation() {
+		return robotOrientation;
 	}
 	
 	/**
@@ -154,5 +179,21 @@ public class CustomOccupancyMap implements Serializable
 			return new int[] {robotPosition[0], robotPosition[1] - 1};
 		else
 			return new int[] {robotPosition[0] - 1, robotPosition[1]};
+	}
+	
+	public int getAngle(int[] coords) {
+		int[] diff = new int[] {coords[0] - robotPosition[0] , coords[1] - robotPosition[1]};
+		int direction = -1;
+		
+		if (diff[0] > 0)
+			direction =  90;
+		if (diff[0] < 0)
+			direction =  270;
+		if (diff[1] > 0)
+			direction =  0;
+		if (diff[1] < 0)
+			direction =  180;
+		if (direction > 360) direction -= 360;
+		return direction;
 	}
 }

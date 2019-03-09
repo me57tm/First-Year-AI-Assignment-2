@@ -135,7 +135,7 @@ public class Coordinator {
 	 * One step of mapping the maze.
 	 */
 	public static void mapMazeStep() {
-		Action.lookForWalls(robotOrientation);
+		Action.lookForWalls(map);
 		Action.moveToNextSquare(robotOrientation);
 	}
 	
@@ -146,26 +146,7 @@ public class Coordinator {
 	 */
 	public int getRobotOrientation() {
 		return robotOrientation;
-	}
-	
-	/**
-	 * Updates orientation of robot relative to the Maze by the number of degrees the robot is instructed to turn.
-	 * @param degrees
-	 * Degrees of turning.
-	 */
-	public void updateOrientation(int degrees) {
-		// Check for invalid turns
-		if (degrees != 90 && degrees != -90)
-			
-		robotOrientation += degrees;
-		if (robotOrientation > 270)
-			robotOrientation -= 360;
-		if (robotOrientation < 0)
-			robotOrientation += 360;
-	}
-	
-	
-	
+	}	
 	
 	/**
 	 * Sets values for all motors, sensors, controls and sets up a Bluetooth connection with the PC Client.
@@ -182,12 +163,12 @@ public class Coordinator {
 		buttons.waitForAnyPress();
 		// Robot looks along the width side
 		if (buttons.getButtons() == Keys.ID_DOWN) {
-			robotOrientation = 0;
+			map = new CustomOccupancyMap(19,13,0);
 			LCD.clear();
 		}
 		// Robot looks along the length side
 		if (buttons.getButtons() == Keys.ID_LEFT) {
-			robotOrientation = 90;
+			map = new CustomOccupancyMap(19,13,90);
 			LCD.clear();
 		}
 		
@@ -218,8 +199,6 @@ public class Coordinator {
 		IRSampler = IRSensor.getDistanceMode();
 		USSampler = USSensor.getDistanceMode();
 		ColourSampler = ColourSensor.getRGBMode();
-		
-		map = new CustomOccupancyMap(19,13);
 		
 		// Set up Bluetooth Connection
 		EV3Server.initializeBluetoothConnection();

@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.Cursor;
 import javax.swing.JLabel;
 import java.awt.Point;
+import javax.swing.JProgressBar;
 
 /**
  * GUI on the local machine displaying current progress of the robot in exploring the Maze.
@@ -23,8 +24,8 @@ import java.awt.Point;
 public class Display {
 	
 	
-	private final int GRID_WIDTH =  19;//Coordinator.map.getMapWidth();
-	private final int GRID_HEIGHT =  13;//Coordinator.map.getMapLength();
+	private final int GRID_WIDTH =  19;//Coordinator.map.getMapWidth()
+	private final int GRID_HEIGHT =  13;//Coordinator.map.getMapLength()
 	
 	private boolean activeButtons;
 
@@ -203,6 +204,10 @@ public class Display {
 		lblButtonsEnabled.setSize(102, 16);
 		lblButtonsEnabled.setLocation(new Point(12, 13));
 		pnlMiscInfo.add(lblButtonsEnabled);
+		
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setBounds(564, 23, 146, 14);
+		pnlMiscInfo.add(progressBar);
 		
 		JPanel pnlGridMap = new JPanel();
 		//pnlGridMap.setPreferredSize(new Dimension(720, 480));
