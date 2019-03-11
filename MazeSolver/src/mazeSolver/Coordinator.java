@@ -104,7 +104,7 @@ public class Coordinator {
 	/**
 	 * Distance to travel from one centre of the square to the next one.
 	 */
-	public static final int DISTANCE_SQUARETOSQUARE = PATH_WIDTH + WALL_WIDTH;
+	public static final int DISTANCE = PATH_WIDTH + WALL_WIDTH;
 	
 	/**
 	 * The maze representation out of the view of the robot. Will get updated throughout the program.
@@ -125,7 +125,7 @@ public class Coordinator {
 	 */
 	public static void main(String[] args) throws IOException {
 		setup();
-
+		mapMazeStep();
 		
 		// Last line of code
 		EV3Server.closeBluetoothConnection();
@@ -192,7 +192,7 @@ public class Coordinator {
 		USSensor = new EV3UltrasonicSensor(SensorPort.S4);
 		ColourSensor = new EV3ColorSensor(SensorPort.S2);
 		
-		IR = new float[1];
+		IR = new float[3];// TODO consider multiple measures
 		US = new float[1];
 		Colour = new float[3];
 		

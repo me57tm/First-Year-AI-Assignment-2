@@ -43,7 +43,7 @@ public class EV3Server {
 	 */
 	public static void updateClient() {
 		Coordinator.map.getMazeMap();
-		Coordinator.getOrienta
+		//Coordinator.getOrientation();
 		
 	}
 	

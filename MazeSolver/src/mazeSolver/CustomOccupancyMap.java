@@ -66,7 +66,7 @@ public class CustomOccupancyMap implements Serializable
 		
 		robotOrientation = orientation;
 		
-		numberOfWalls = 2*width + 2*(height-1);
+		numberOfWalls = 2*(width - 1) + 2*(height - 1);
 		numberOfPaths = 1;
 		numberOfUnknowns = width*height - numberOfWalls - numberOfPaths;
 	}
@@ -138,9 +138,6 @@ public class CustomOccupancyMap implements Serializable
 	 * Degrees of turning.
 	 */
 	public void updateOrientation(int degrees) {
-		// Check for invalid turns
-		if (degrees != 90 && degrees != -90);
-			
 		robotOrientation += degrees;
 		if (robotOrientation > 270)
 			robotOrientation -= 360;
@@ -175,9 +172,19 @@ public class CustomOccupancyMap implements Serializable
 		return mazeMap[0].length;
 	}
 	
+	/**
+	 * Function to return positions of a square adjacent to the robot
+	 * @param direction
+	 * to face to check for square (out of the view of the robot): 0 = front, 90/-270 = right, 180/-180 = behind, 270/-90 = left. Can take negatives too.
+	 * @return int[2] Square Coordinates
+	 */
 	public int[] getSquare(int direction) {
-		direction = direction + robotOrientation;
-		if (direction > 360) direction -= 360;
+		direction += robotOrientation;
+		
+		if (direction > 360) 
+			direction -= 360;
+		if (direction < 0)
+			direction += 360;
 		
 		if (robotOrientation == 0)
 			return new int[] {robotPosition[0], robotPosition[1] + 1};
@@ -185,10 +192,13 @@ public class CustomOccupancyMap implements Serializable
 			return new int[]  {robotPosition[0] + 1, robotPosition[1]};
 		if (robotOrientation == 180)
 			return new int[] {robotPosition[0], robotPosition[1] - 1};
-		else
+		if (robotOrientation == 270)
 			return new int[] {robotPosition[0] - 1, robotPosition[1]};
+		// Wrong input
+		return null;
 	}
 	
+	// TODO How does this work? What does it do? 
 	public int getAngle(int[] coords) {
 		int[] diff = new int[] {coords[0] - robotPosition[0] , coords[1] - robotPosition[1]};
 		int direction = -1;
@@ -201,7 +211,8 @@ public class CustomOccupancyMap implements Serializable
 			direction =  0;
 		if (diff[1] < 0)
 			direction =  180;
-		if (direction > 360) direction -= 360;
+		if (direction > 360) 
+			direction -= 360;
 		return direction;
 	}
 }

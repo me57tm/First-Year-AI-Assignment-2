@@ -123,7 +123,7 @@ public class Display {
 				return Color.WHITE;
 			
 			else return Color.ORANGE;
-		}
+	}
 	/**
 	 * Get the correct foreground colour for the grid square.
 	 * @param state 
