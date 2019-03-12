@@ -44,11 +44,12 @@ public class EV3Server {
 	 * @param orientation
 	 * The orientation the robot faces currently.
 	 */
+	/**
 	public static void updateClient() {
 		Coordinator.map.getMazeMap();
 		//Coordinator.getOrientation();
-		
 	}
+	*/
 	
 	
 	
@@ -61,9 +62,11 @@ public class EV3Server {
 		server = new ServerSocket(PORT);
 		client = server.accept();
 		LCD.drawString("Awaiting client...", 0, 0);
+		Delay.msDelay(500);
 		OutputStream out = client.getOutputStream();
 		LCD.clear();
 		LCD.drawString("CONNECTED", 0, 1);
+		Delay.msDelay(500);
 		DataOutputStream dOut = new DataOutputStream(out);
 		dOut.writeFloat(Coordinator.ev3Brick.getPower().getVoltage());
 		Delay.msDelay(500);
@@ -82,6 +85,13 @@ public class EV3Server {
 		dOut.writeUTF("Closing Server...");
 		dOut.flush();
 		server.close();
+	}
+	
+	public static void sendMap() throws IOException {
+		OutputStream out = client.getOutputStream();
+		ObjectOutputStream oOut = new ObjectOutputStream(out);
+		oOut.writeObject(Coordinator.map);
+		oOut.flush();
 	}
 	
 	// Send Map + Orientation + Voltage

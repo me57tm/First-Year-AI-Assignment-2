@@ -126,17 +126,20 @@ public class Coordinator {
 	public static void main(String[] args) throws IOException {
 		setup();
 		mapMazeStep();
-		
+		mapMazeStep();
 		// Last line of code
+		Delay.msDelay(1000);
 		EV3Server.closeBluetoothConnection();
 	}
 	
 	/**
 	 * One step of mapping the maze.
+	 * @throws IOException 
 	 */
-	public static void mapMazeStep() {
+	public static void mapMazeStep() throws IOException {
 		Action.lookForWalls(map);
 		Action.moveToNextSquare(map); //map
+		EV3Server.sendMap();
 	}
 	
 	/**

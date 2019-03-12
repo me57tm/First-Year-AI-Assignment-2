@@ -17,8 +17,7 @@ public class Action {
 	public static void lookForWalls(CustomOccupancyMap map) {
 		for (int i = -90; i < 180; i += 90) {
 			int[] tile = map.getSquare(i);
-			//map.getMazeMap()[tile[0]][tile[1]] == 0
-			if (true) {
+			if (map.getMazeMap()[tile[0]][tile[1]] == 0) {
 				Coordinator.ROTATION_MOTOR.rotateTo(i);
 				Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
 				// TODO Delay necessary?
@@ -45,13 +44,13 @@ public class Action {
 		
 		int[][] mazeMap = map.getMazeMap();
 		// TODO Can you give travel a final int?
-		if (mazeMap[frontPosition[0]][frontPosition[1]] == 0)
+		if (mazeMap[frontPosition[0]][frontPosition[1]] == 1)
 			Coordinator.pilot.travel(Coordinator.DISTANCE);
-		else if (mazeMap[rightPosition[0]][rightPosition[1]] == 0) {
+		else if (mazeMap[rightPosition[0]][rightPosition[1]] == 1) {
 			Coordinator.pilot.rotate(-90);
 			Coordinator.pilot.travel(Coordinator.DISTANCE);
 		}
-		else if (mazeMap[leftPosition[0]][leftPosition[1]] == 0) {
+		else if (mazeMap[leftPosition[0]][leftPosition[1]] == 1) {
 			Coordinator.pilot.rotate(90);
 			Coordinator.pilot.travel(Coordinator.DISTANCE);
 		}
