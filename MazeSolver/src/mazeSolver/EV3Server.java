@@ -3,6 +3,7 @@ package mazeSolver;
 import java.io.*;
 import java.net.*;
 
+import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 /**
@@ -58,13 +59,15 @@ public class EV3Server {
 	 */
 	public static void initializeBluetoothConnection() throws IOException {
 		server = new ServerSocket(PORT);
-		System.out.println("Awaiting client..");
 		client = server.accept();
-		System.out.println("CONNECTED");
+		LCD.drawString("Awaiting client...", 0, 0);
 		OutputStream out = client.getOutputStream();
+		LCD.clear();
+		LCD.drawString("CONNECTED", 0, 1);
 		DataOutputStream dOut = new DataOutputStream(out);
 		dOut.writeFloat(Coordinator.ev3Brick.getPower().getVoltage());
 		Delay.msDelay(500);
+		LCD.clear();
 		dOut.flush();
 	}
 	

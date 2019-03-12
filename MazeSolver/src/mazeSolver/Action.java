@@ -17,8 +17,8 @@ public class Action {
 	public static void lookForWalls(CustomOccupancyMap map) {
 		for (int i = -90; i < 180; i += 90) {
 			int[] tile = map.getSquare(i);
-			
-			if (map.getMazeMap()[tile[0]][tile[1]] == 0) {
+			//map.getMazeMap()[tile[0]][tile[1]] == 0
+			if (true) {
 				Coordinator.ROTATION_MOTOR.rotateTo(i);
 				Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
 				// TODO Delay necessary?
