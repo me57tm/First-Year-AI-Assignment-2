@@ -3,6 +3,8 @@ package mazeSolver;
 import java.io.*;
 import java.net.*;
 
+import lejos.utility.Delay;
+
 /**
  * Set up EV3 as a server to send data to the PCClient.
  * @author jonasschaefer
@@ -59,11 +61,11 @@ public class EV3Server {
 		System.out.println("Awaiting client..");
 		client = server.accept();
 		System.out.println("CONNECTED");
-		/*
 		OutputStream out = client.getOutputStream();
 		DataOutputStream dOut = new DataOutputStream(out);
+		dOut.writeFloat(Coordinator.ev3Brick.getPower().getVoltage());
+		Delay.msDelay(500);
 		dOut.flush();
-		*/
 	}
 	
 	/**

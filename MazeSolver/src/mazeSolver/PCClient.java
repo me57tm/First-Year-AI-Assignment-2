@@ -33,8 +33,8 @@ public class PCClient {
 		System.out.println("Connected");
 		InputStream in = sock.getInputStream();
 		DataInputStream dIn = new DataInputStream(in);
-		String str = dIn.readUTF();
-		System.out.println(str);
+		float battery = dIn.readFloat();
+		System.out.println(battery);
 		sock.close();
 		Display display = new Display();
 		

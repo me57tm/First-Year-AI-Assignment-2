@@ -136,7 +136,7 @@ public class Coordinator {
 	 */
 	public static void mapMazeStep() {
 		Action.lookForWalls(map);
-		Action.moveToNextSquare(robotOrientation);
+		Action.moveToNextSquare(map);
 	}
 	
 	/**
@@ -174,6 +174,7 @@ public class Coordinator {
 		
 		// Set up motors
 		LCD.drawString("Setting up motors...", 0, 0);
+		LCD.clear();
 		LEFT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.C);
 		RIGHT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.A);
 		ROTATION_MOTOR = new EV3MediumRegulatedMotor(MotorPort.D);
@@ -184,7 +185,6 @@ public class Coordinator {
 		pilot = new MovePilot(chassis);
 		pilot.setAngularSpeed(50);
 		pilot.setLinearSpeed(50);
-		LCD.clear();
 		
 		// Set up sensors
 		LCD.drawString("Setting up sensors...", 0, 0);
@@ -204,6 +204,7 @@ public class Coordinator {
 		EV3Server.initializeBluetoothConnection();
 		LCD.clear();
 		LCD.drawString("Setup complete!", 0, 0);
+		Delay.msDelay(500);
 		LCD.drawString("Wait 5 seconds", 0, 1);
 		Delay.msDelay(5000);
 		LCD.clear();
