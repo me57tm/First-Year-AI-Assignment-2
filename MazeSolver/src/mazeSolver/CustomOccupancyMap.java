@@ -192,7 +192,7 @@ public class CustomOccupancyMap implements Serializable
 			return new int[]  {robotPosition[0] + 1, robotPosition[1]};
 		if (robotOrientation == 180)
 			return new int[] {robotPosition[0], robotPosition[1] - 1};
-		if (robotOrientation == 270)
+		if (robotOrientation == 270 || robotOrientation == -90)
 			return new int[] {robotPosition[0] - 1, robotPosition[1]};
 		// Wrong input
 		return null;

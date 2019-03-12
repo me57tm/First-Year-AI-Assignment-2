@@ -136,7 +136,7 @@ public class Coordinator {
 	 */
 	public static void mapMazeStep() {
 		Action.lookForWalls(map);
-		Action.moveToNextSquare(robotOrientation); //map
+		Action.moveToNextSquare(map); //map
 	}
 	
 	/**

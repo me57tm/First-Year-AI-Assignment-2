@@ -15,7 +15,7 @@ public class Action {
 	 * before assuming 100% correct measurement
 	 */
 	public static void lookForWalls(CustomOccupancyMap map) {
-		for (int i = 0; i < 360; i += 90) {
+		for (int i = -90; i < 180; i += 90) {
 			int[] tile = map.getSquare(i);
 			
 			if (map.getMazeMap()[tile[0]][tile[1]] == 0) {
@@ -38,34 +38,12 @@ public class Action {
 	/**
 	 * Move from one Path to the next Path. Tries to drive front, then right, then left, then back
 	 */
-	public static void moveToNextSquare(int robotOrientation) {
-		int[] robotPosition = Coordinator.map.getRobotPosition();
-		// TODO Don't you point the head of the array to robotPosition with all 3 arrays instead of copying values? Alternative below
-		int[] leftPosition = robotPosition;
-		int[] frontPosition = robotPosition;
-		int[] rightPosition = robotPosition;
+	public static void moveToNextSquare(CustomOccupancyMap map) {
+		int[] leftPosition = map.getSquare(-90);
+		int[] frontPosition = map.getSquare(0);
+		int[] rightPosition = map.getSquare(90);
 		
-		if (robotOrientation == 0) {
-			leftPosition[0]--;
-			frontPosition[1]++;
-			rightPosition[0]++;
-		}
-		if (robotOrientation == 90) {
-			leftPosition[1]++;
-			frontPosition[0]++;
-			rightPosition[1]--;
-		}
-		if (robotOrientation == 180) {
-			leftPosition[0]++;
-			frontPosition[1]--;
-			rightPosition[0]--;
-		}
-		if (robotOrientation == 270) {
-			leftPosition[1]--;
-			frontPosition[0]--;
-			rightPosition[1]++;
-		}
-		int[][] mazeMap = Coordinator.map.getMazeMap();
+		int[][] mazeMap = map.getMazeMap();
 		// TODO Can you give travel a final int?
 		if (mazeMap[frontPosition[0]][frontPosition[1]] == 0)
 			Coordinator.pilot.travel(Coordinator.DISTANCE);
