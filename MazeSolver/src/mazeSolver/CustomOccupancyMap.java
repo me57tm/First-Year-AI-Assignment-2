@@ -77,18 +77,6 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Returns whether or not the maze is fully mapped (only works if maze is
-	 * fully accessible).
-	 * 
-	 * @return boolean Whether the maze is fully mapped or not (i.e. has unknown
-	 *         spots).
-	 */
-	public boolean hasMappedWholeMaze()
-	{
-		return numberOfUnknowns == 0;
-	}
-
-	/**
 	 * 
 	 * @return number of measured squares
 	 */
@@ -141,13 +129,13 @@ public class CustomOccupancyMap implements Serializable
 	public void updateRobotPosition()
 	{
 		if (robotOrientation == 0)
-			robotPosition[1]++;
+			robotPosition[1] += 2;
 		if (robotOrientation == 90)
-			robotPosition[0]++;
+			robotPosition[0] += 2;
 		if (robotOrientation == 180)
-			robotPosition[1]--;
+			robotPosition[1] -= 2;
 		if (robotOrientation == 270)
-			robotPosition[0]--;
+			robotPosition[0] -= 2;
 	}
 
 	/**
@@ -209,7 +197,7 @@ public class CustomOccupancyMap implements Serializable
 	{
 		direction += robotOrientation;
 
-		if (direction > 360)
+		if (direction >= 360)
 			direction -= 360;
 		if (direction < 0)
 			direction += 360;
@@ -227,21 +215,38 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	// TODO How does this work? What does it do? 
+	/**
+	 * It takes a set of coordinates
+	 * @param coords
+	 * coords to get to
+	 * @return
+	 * The angle the robot needs to turn (by?to?)
+	 */
 	public int getAngle(int[] coords)
 	{
 		int[] diff = new int[] { coords[0] - robotPosition[0], coords[1] - robotPosition[1] };
+		// Check for invalid passed squares
+		int sumOfDistances = 0;
+		for (int i = 0; i < 2; i++) 
+			sumOfDistances += diff[i];
+		
+		boolean validCoords = (sumOfDistances == 2 && (diff[0] == 0 || diff[1] == 0));
+		
 		int direction = -1;
-
-		if (diff[0] > 0)
-			direction = 90;
-		if (diff[0] < 0)
-			direction = 270;
-		if (diff[1] > 0)
-			direction = 0;
-		if (diff[1] < 0)
-			direction = 180;
-		if (direction > 360)
-			direction -= 360;
+		
+		if (validCoords)
+		{	
+			if (diff[0] > 0)
+				direction = 90;
+			if (diff[0] < 0)
+				direction = 270;
+			if (diff[1] > 0)
+				direction = 0;
+			if (diff[1] < 0)
+				direction = 180;
+			if (direction > 360)
+				direction -= 360;
+		}
 		return direction;
 	}
 }

@@ -102,6 +102,16 @@ public class Coordinator
 	 * throughout the program.
 	 */
 	public static CustomOccupancyMap      map;
+	
+	/**
+	 * TODO
+	 * 
+	 * - Setup on 90 orientation breaks sending and map updating?
+	 * - Go to unknown as next move if possible (go to unknown)
+	 * - Implement VisitStack
+	 * 
+	 * 
+	 */
 
 	/**
 	 * Main method the robot will execute.
@@ -115,7 +125,7 @@ public class Coordinator
 		throws IOException
 	{
 		setup();
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 6*9; i++)
 			mapMazeStep();
 		// Last line of code
 		Delay.msDelay(1000);

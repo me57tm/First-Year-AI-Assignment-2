@@ -44,14 +44,13 @@ public class PCClient
 		{
 			try
 			{
-				sock = new Socket(ip, EV3Server.PORT);
 				System.out.println("Sending update...");
 				InputStream in = sock.getInputStream();
 				ObjectInputStream oIn = new ObjectInputStream(in);
 				CustomOccupancyMap map;
 				map = (CustomOccupancyMap) oIn.readObject();
 				display.update(map);
-				oIn.close();
+				//oIn.close();
 				//in.close();
 			}
 			catch (ClassNotFoundException e)
@@ -78,7 +77,7 @@ public class PCClient
 		CustomOccupancyMap map;
 		map = (CustomOccupancyMap) oIn.readObject();
 		display.update(map);
-		oIn.close();
+		//oIn.close();
 		//in.close();
 	}
 }

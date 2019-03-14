@@ -24,7 +24,8 @@ public class Action
 	{
 		for (int i = -90; i < 180; i += 90)
 		{
-			if (Coordinator.map == null) {
+			if (Coordinator.map == null)
+			{
 				LCD.drawString("WTF2", 0, 0);
 				Delay.msDelay(5000);
 			}
@@ -57,22 +58,37 @@ public class Action
 		int[] frontPosition = map.getSquare(0);
 		int[] rightPosition = map.getSquare(90);
 
-		int[][] mazeMap = map.getMazeMap();
-		// TODO Can you give travel a final int?
+		int[][] mazeMap = map.getMazeMap(); 
+		
 		if (mazeMap[frontPosition[0]][frontPosition[1]] == 1)
+		{
 			Coordinator.pilot.travel(Coordinator.DISTANCE);
+			map.updateRobotPosition();
+		}
 		else if (mazeMap[rightPosition[0]][rightPosition[1]] == 1)
 		{
-			Coordinator.pilot.rotate(-90);
+			Coordinator.pilot.rotate(90);
+			map.updateOrientation(90);
 			Coordinator.pilot.travel(Coordinator.DISTANCE);
+			map.updateRobotPosition();
+			
 		}
 		else if (mazeMap[leftPosition[0]][leftPosition[1]] == 1)
 		{
-			Coordinator.pilot.rotate(90);
+			Coordinator.pilot.rotate(-90);
+			map.updateOrientation(-90);
 			Coordinator.pilot.travel(Coordinator.DISTANCE);
+			map.updateRobotPosition();
 		}
-		else
-			Coordinator.pilot.travel(Coordinator.DISTANCE * -1);
+		else 
+		{
+			Coordinator.pilot.rotate(180);
+			map.updateOrientation(180);
+			Coordinator.pilot.travel(Coordinator.DISTANCE);
+			map.updateRobotPosition();
+		}
+		int[] robotPosition = map.getRobotPosition();
+		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
 	}
 
 	// Others
