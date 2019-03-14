@@ -3,15 +3,8 @@ package mazeSolver;
 import java.io.*;
 import java.net.*;
 
-import lejos.utility.Delay;
-
 /**
  * The Client that receives information from the EV3 Server.
- *         Maximum LEGO EV3: Building Robots with Java Brains ISBN-13:
- *         9780986832291 Variant Press (C) 2014 Chapter 14 - Client-Server
- *         Robotics Robot: EV3 Brick Platform: LEGO EV3
- * @author Brian Bagnall
- * @version July 20, 2014
  */
 public class PCClient
 {
@@ -29,14 +22,15 @@ public class PCClient
 	 *            Default arguments.
 	 * @throws IOException
 	 *             Default exception.
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
 	 */
 	public static void main(String[] args)
-		throws IOException, ClassNotFoundException
+		throws IOException,
+			ClassNotFoundException
 	{
 		// Setup
 		setup(args);
-		
+
 		while (true)
 		{
 			try
@@ -60,7 +54,8 @@ public class PCClient
 	}
 
 	public static void setup(String[] args)
-		throws IOException, ClassNotFoundException
+		throws IOException,
+			ClassNotFoundException
 	{
 		display = new Display();
 		ip = "10.0.1.1"; // BT

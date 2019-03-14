@@ -44,28 +44,16 @@ public class CustomOccupancyMap implements Serializable
 	 */
 	private int[]             endOfMazePosition;
 
-	/**
-	 * Current number of walls.
-	 */
-	private int               numberOfWalls;
-
-	/**
-	 * Current number of unknowns.
-	 */
-	private int               numberOfUnknowns;
-
-	/**
-	 * Current number of paths.
-	 */
-	private int               numberOfPaths;
-
+	
+	
+	
 	/**
 	 * Creates arrayMap of size of parameters.
 	 * 
 	 * @param width
-	 *            The total number of sections being either walls or paths.
+	 *            The total number of sections being either walls or paths in width.
 	 * @param height
-	 *            The total number of sections being either walls or paths.
+	 *            The total number of sections being either walls or paths in height.
 	 */
 	public CustomOccupancyMap(int width, int height, int orientation)
 	{
@@ -85,24 +73,47 @@ public class CustomOccupancyMap implements Serializable
 
 		robotPosition = new int[] { 1, 1 };
 		robotOrientation = orientation;
-		numberOfWalls = 2 * (width - 1) + 2 * (height - 1);
-		numberOfPaths = 1;
-		numberOfUnknowns = width * height - numberOfWalls - numberOfPaths;
+		
 		visitStack = new Stack<>();
 		// Add origin to stack
 		visitStack.push(new int[] { 1, 1 });
 	}
-
+	
 	/**
-	 * Returns the number of explored squares to determine the progress of the
-	 * mapping process
+	 * Returns the direction to turn to get to the square with given coordinates
 	 * 
-	 * @return number of measured squares
+	 * @param coords
+	 *            coordinates to get direction to
+	 * @return angle to rotate by to move to this square
 	 */
-	public int getCompletion()
+	public int getAngle(int[] coords)
 	{
-		return numberOfWalls + numberOfPaths;
+		int[] diff = new int[] { coords[0] - robotPosition[0], coords[1] - robotPosition[1] };
+		// Check for invalid passed squares
+		int sumOfDistances = 0;
+		for (int i = 0; i < 2; i++)
+			sumOfDistances += diff[i];
+		// Valid if it is a square to move on and in a line for the robot
+		boolean valid = (sumOfDistances % 2 == 0 && (diff[0] == 0 || diff[1] == 0));
+
+		// Invalid
+		int direction = 0;
+
+		// End program if invalid
+		if (!valid)
+			System.exit(1);
+
+		if (diff[0] > 0)
+			direction = 90;
+		if (diff[0] < 0)
+			direction = -90;
+		if (diff[1] > 0)
+			direction = 0;
+		if (diff[1] < 0)
+			direction = 180;
+		return direction;
 	}
+
 
 	/**
 	 * Gets mazeMap array.
@@ -207,26 +218,6 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Getter to get the width of the mazeMap.
-	 * 
-	 * @return mazeMap.length - The width of the mazeMap.
-	 */
-	public int getMapWidth()
-	{
-		return mazeMap.length;
-	}
-
-	/**
-	 * Getter to get the length of the mazeMap.
-	 * 
-	 * @return mazeMap[0].length - The length of the mazeMap.
-	 */
-	public int getMapLength()
-	{
-		return mazeMap[0].length;
-	}
-
-	/**
 	 * Function to return positions of a square adjacent to the robot
 	 * 
 	 * @param direction
@@ -284,50 +275,94 @@ public class CustomOccupancyMap implements Serializable
 	 * 
 	 * @param square
 	 *            the square to test
-	 * @param map
-	 *            specific map used
 	 * @return
 	 */
-	public boolean isOuterWall(int[] square, CustomOccupancyMap map)
+	public boolean isOuterWall(int[] square)
 	{
-		if (square[0] == 0 || square[0] == map.getMazeMap().length || square[1] == 0 || square[1] == map.getMazeMap()[0].length)
+		if (square[0] == 0 || square[0] == getMazeMap().length || square[1] == 0 || square[1] == getMazeMap()[0].length)
 			return true;
 		else
 			return false;
 	}
+	
+	/**
+	 * 
+	 * @return number of Walls
+	 */
+	public int getNumberOfWalls()
+	{
+		int numberOfWalls = 0;
+		for (int i = 0; i < mazeMap.length; i++)
+			for (int j = 0; j < mazeMap[0].length; j++)
+			{
+				if (mazeMap[i][j] == -1)
+					numberOfWalls++;
+			}
+		return numberOfWalls;
+	}
+	
+	/**
+	 * 
+	 * @return number of Paths
+	 */
+	public int getNumberOfPaths()
+	{
+		int numberOfPaths = 0;
+		for (int i = 0; i < mazeMap.length; i++)
+			for (int j = 0; j < mazeMap[0].length; j++)
+			{
+				if (mazeMap[i][j] == 1)
+					numberOfPaths++;
+			}
+		return numberOfPaths;
+	}
+	
+	/**
+	 * 
+	 * @return number of Unknowns
+	 */
+	public int getNumberOfUnknowns()
+	{
+		int numberOfUnknowns = 0;
+		for (int i = 0; i < mazeMap.length; i++)
+			for (int j = 0; j < mazeMap[0].length; j++)
+			{
+				if (mazeMap[i][j] == 0)
+					numberOfUnknowns++;
+			}
+		return numberOfUnknowns;
+	}
 
 	/**
-	 * Returns the direction to turn to get to the square with given coordinates
+	 * Returns the number of explored squares to determine the progress of the
+	 * mapping process
 	 * 
-	 * @param coords
-	 *            coordinates to get direction to
-	 * @return angle to rotate by to move to this square
+	 * @return number of measured squares
 	 */
-	public int getAngle(int[] coords)
+	public int getCompletion()
 	{
-		int[] diff = new int[] { coords[0] - robotPosition[0], coords[1] - robotPosition[1] };
-		// Check for invalid passed squares
-		int sumOfDistances = 0;
-		for (int i = 0; i < 2; i++)
-			sumOfDistances += diff[i];
-		// Valid if it is a square to move on and in a line for the robot
-		boolean valid = (sumOfDistances % 2 == 0 && (diff[0] == 0 || diff[1] == 0));
-
-		// Invalid
-		int direction = 0;
-
-		// End program if invalid
-		if (!valid)
-			System.exit(1);
-
-		if (diff[0] > 0)
-			direction = 90;
-		if (diff[0] < 0)
-			direction = -90;
-		if (diff[1] > 0)
-			direction = 0;
-		if (diff[1] < 0)
-			direction = 180;
-		return direction;
+		return getNumberOfPaths() + getNumberOfWalls();
 	}
+	
+
+	/**
+	 * Getter to get the width of the mazeMap.
+	 * 
+	 * @return mazeMap.length - The width of the mazeMap.
+	 */
+	public int getMapWidth()
+	{
+		return mazeMap.length;
+	}
+
+	/**
+	 * Getter to get the length of the mazeMap.
+	 * 
+	 * @return mazeMap[0].length - The length of the mazeMap.
+	 */
+	public int getMapLength()
+	{
+		return mazeMap[0].length;
+	}
+	
 }

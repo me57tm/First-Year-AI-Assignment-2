@@ -1,10 +1,7 @@
 package mazeSolver;
 
-import lejos.utility.Delay;
-
 /**
- * Mostly uses Coordinator methods to implement all typical actions the robot
- * takes while mapping and solving the maze.
+ * Implement all actions the robot takes while mapping and solving the maze.
  */
 public class Action
 {
@@ -12,11 +9,10 @@ public class Action
 	/**
 	 * Measuring fields around the robot if they have not already been measured
 	 * before. Fetching each one sample. Avoids re-measuring already measured
-	 * squares as measurements are reliable
+	 * grids as measurements are reliable
 	 */
 	public static void lookForWalls(CustomOccupancyMap map)
 	{
-		// For
 		for (int i = -90; i < 180; i += 90)
 		{
 			int[] tile = map.getSquareInDirection(i);
@@ -25,7 +21,7 @@ public class Action
 				Coordinator.ROTATION_MOTOR.rotateTo(i);
 				Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
 				// TODO Delay necessary? Try to do without delay
-				Delay.msDelay(50);
+				// Delay.msDelay(50);
 
 				if (Coordinator.IR[0] < 25)
 					// Set to wall
@@ -39,8 +35,8 @@ public class Action
 	}
 
 	/**
-	 * Move from one Path to the next Path. Tries to drive front, then right,
-	 * then left, then back
+	 * Old movement, remove if new one is functional. Move from one Path to the next Path. Tries to drive front,
+	 * then right, then left, then back
 	 * 
 	 * @param map
 	 */
@@ -84,12 +80,13 @@ public class Action
 	}
 
 	/**
-	 * Intelligent version: Make next move in exploring the maze. Try to move to an unexplored
-	 * square, otherwise backtrack with help of the visitStack
+	 * Intelligent version: Make next move in exploring the maze. Try to move to
+	 * an unexplored path, otherwise backtrack to the previous grid with help of
+	 * the visitStack
 	 * 
 	 * @param map
 	 */
-	public static void makeNextMove(CustomOccupancyMap map)
+	public static void moveToNextPath(CustomOccupancyMap map)
 	{
 		int[][] mazeMap = map.getMazeMap();
 
@@ -103,7 +100,7 @@ public class Action
 		boolean goRight = false;
 
 		// If this is an outer wall (otherwise out of bounds with following getSquare-method)
-		if (!map.isOuterWall(left, map))
+		if (!map.isOuterWall(left))
 		{
 			// Get square after this one
 			int[] left2 = map.getSquareInDirection(left, -90);
@@ -111,21 +108,18 @@ public class Action
 			if (mazeMap[left2[0]][left2[1]] == 0)
 				goLeft = true;
 		}
-		if (!map.isOuterWall(front, map))
+		if (!map.isOuterWall(front))
 		{
 			int[] front2 = map.getSquareInDirection(front, 0);
 			if (mazeMap[front2[0]][front2[1]] == 0)
 				goFront = true;
 		}
-		if (!map.isOuterWall(right, map))
+		if (!map.isOuterWall(right))
 		{
 			int[] right2 = map.getSquareInDirection(left, 90);
 			if (mazeMap[right2[0]][right2[1]] == 0)
 				goRight = true;
 		}
-		
-		
-		
 
 		// Execute movements
 		if (goLeft)
