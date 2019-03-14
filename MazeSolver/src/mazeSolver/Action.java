@@ -1,5 +1,6 @@
 package mazeSolver;
 
+import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 /**
@@ -23,6 +24,10 @@ public class Action
 	{
 		for (int i = -90; i < 180; i += 90)
 		{
+			if (Coordinator.map == null) {
+				LCD.drawString("WTF2", 0, 0);
+				Delay.msDelay(5000);
+			}
 			int[] tile = map.getSquare(i);
 			if (map.getMazeMap()[tile[0]][tile[1]] == 0)
 			{

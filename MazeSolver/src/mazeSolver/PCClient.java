@@ -32,34 +32,41 @@ public class PCClient
 	 *            Default arguments.
 	 * @throws IOException
 	 *             Default exception.
+	 * @throws ClassNotFoundException 
 	 */
 	public static void main(String[] args)
-		throws IOException
+		throws IOException, ClassNotFoundException
 	{
 		// Setup
 		setup(args);
-
+		
 		while (true)
 		{
-			InputStream in = sock.getInputStream();
-			ObjectInputStream oIn = new ObjectInputStream(in);
-			CustomOccupancyMap map;
 			try
 			{
+				sock = new Socket(ip, EV3Server.PORT);
+				System.out.println("Sending update...");
+				InputStream in = sock.getInputStream();
+				ObjectInputStream oIn = new ObjectInputStream(in);
+				CustomOccupancyMap map;
 				map = (CustomOccupancyMap) oIn.readObject();
 				display.update(map);
+				oIn.close();
+				//in.close();
 			}
 			catch (ClassNotFoundException e)
 			{
 				e.printStackTrace();
 			}
-			oIn.close();
 		}
+		//sock.close();
+		//break;
 	}
 
 	public static void setup(String[] args)
-		throws IOException
+		throws IOException, ClassNotFoundException
 	{
+		display = new Display();
 		ip = "10.0.1.1"; // BT
 		System.out.println("Trying to connect...");
 		if (args.length > 0)
@@ -67,10 +74,11 @@ public class PCClient
 		sock = new Socket(ip, EV3Server.PORT);
 		System.out.println("CONNECTED");
 		InputStream in = sock.getInputStream();
-		DataInputStream dIn = new DataInputStream(in);
-		float batteryV = dIn.readFloat();
-		System.out.println(batteryV);
-		sock.close();
-		display = new Display();
+		ObjectInputStream oIn = new ObjectInputStream(in);
+		CustomOccupancyMap map;
+		map = (CustomOccupancyMap) oIn.readObject();
+		display.update(map);
+		oIn.close();
+		//in.close();
 	}
 }

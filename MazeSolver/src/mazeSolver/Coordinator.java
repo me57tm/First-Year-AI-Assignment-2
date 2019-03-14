@@ -54,14 +54,6 @@ public class Coordinator
 	public static SampleProvider          USSampler;
 	public static SampleProvider          ColourSampler;
 
-	/**
-	 * Orientation the robot is facing in degrees: 0 = Forward, 90 = Right, 180
-	 * = Backwards, 270 = Left.
-	 * 
-	 * Will be set in the beginning of the program.
-	 */
-	private static int                    robotOrientation;
-
 	/* 
 	 *   30(W)
 	 *   _____
@@ -144,16 +136,6 @@ public class Coordinator
 	}
 
 	/**
-	 * Returns current orientation.
-	 * 
-	 * @return orientation orientation
-	 */
-	public int getRobotOrientation()
-	{
-		return robotOrientation;
-	}
-
-	/**
 	 * Sets values for all motors, sensors, controls and sets up a Bluetooth
 	 * connection with the PC Client.
 	 * 
@@ -169,21 +151,21 @@ public class Coordinator
 		// Set up direction the robot is facing
 		LCD.drawString("Press Button for", 0, 0);
 		LCD.drawString("Direction-Setup", 0, 1);
-		buttons.waitForAnyPress();
-		// Robot looks along the width side
-		if (buttons.getButtons() == Keys.ID_DOWN)
-		{
-			map = new CustomOccupancyMap(19, 13, 0);
-			LCD.clear();
+		while (true) {
+			// Robot looks along the width side
+			if (buttons.getButtons() == Keys.ID_DOWN) {
+				map = new CustomOccupancyMap(19, 13, 0);
+				break;
+			}
+			// Robot looks along the length side
+			if (buttons.getButtons() == Keys.ID_LEFT) {
+				map = new CustomOccupancyMap(19, 13, 90);
+				break;
+			}
 		}
-		// Robot looks along the length side
-		if (buttons.getButtons() == Keys.ID_LEFT)
-		{
-			map = new CustomOccupancyMap(19, 13, 90);
-			LCD.clear();
-		}
-
-		// Set up motors
+		LCD.clear();
+		
+		// Set up motor
 		LCD.drawString("Setting up motors...", 0, 0);
 		LCD.clear();
 		LEFT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.C);

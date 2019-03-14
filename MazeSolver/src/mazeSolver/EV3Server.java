@@ -55,11 +55,11 @@ public class EV3Server
 		LCD.clear();
 		LCD.drawString("CONNECTED", 0, 1);
 		Delay.msDelay(500);
-		DataOutputStream dOut = new DataOutputStream(out);
-		dOut.writeFloat(Coordinator.ev3Brick.getPower().getVoltage());
+		ObjectOutputStream oOut = new ObjectOutputStream(out);
+		oOut.writeObject(Coordinator.map);
 		LCD.clear();
-		//dOut.flush();
-		dOut.close();
+		oOut.flush();
+		//oOut.close();
 	}
 
 	/**
@@ -74,7 +74,8 @@ public class EV3Server
 		OutputStream out = client.getOutputStream();
 		DataOutputStream dOut = new DataOutputStream(out);
 		dOut.writeUTF("Closing Server...");
-		dOut.flush();
+		dOut.close();
+		out.close();
 		server.close();
 	}
 
@@ -84,7 +85,7 @@ public class EV3Server
 		OutputStream out = client.getOutputStream();
 		ObjectOutputStream oOut = new ObjectOutputStream(out);
 		oOut.writeObject(Coordinator.map);
-		oOut.close();
+		oOut.flush();
 	}
 
 	// Send Map + Orientation + Voltage
