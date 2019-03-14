@@ -136,7 +136,7 @@ public class Coordinator
 	 * Sets values for all motors, sensors, controls and sets up a Bluetooth connection with the Client.
 	 * 
 	 * @throws IOException
-	 *             Default exception.
+	 *             Default exception
 	 */
 	public static void setup()
 		throws IOException

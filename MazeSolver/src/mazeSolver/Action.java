@@ -85,10 +85,10 @@ public class Action
 	}
 	
 	/**
-	 * Move to next square, try to move to square
+	 * Make next move in exploring the maze
 	 * @param map
 	 */
-	public static void findNextMove(CustomOccupancyMap map)
+	public static void makeNextMove(CustomOccupancyMap map)
 	{
 		
 	}
