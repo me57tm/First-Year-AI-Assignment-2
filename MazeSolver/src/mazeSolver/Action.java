@@ -1,6 +1,5 @@
 package mazeSolver;
 
-import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 /**
@@ -14,49 +13,43 @@ public class Action
 {
 
 	/**
-	 * Measuring all 4 fields around the robot if they have not already been
-	 * measured before. Fetching each one sample. Consider the following:
-	 * Increment and decrement for wall/path and if value >2 or <2 stop
-	 * re-measuring to allow for one more sample taking before assuming 100%
-	 * correct measurement
+	 * Measuring fields around the robot if they have not already been measured before. 
+	 * Fetching each one sample. Avoids re-measuring already measured squares as measurements are reliable
 	 */
 	public static void lookForWalls(CustomOccupancyMap map)
 	{
+		// For
 		for (int i = -90; i < 180; i += 90)
 		{
-			if (Coordinator.map == null)
-			{
-				LCD.drawString("WTF2", 0, 0);
-				Delay.msDelay(5000);
-			}
-			int[] tile = map.getSquare(i);
+			int[] tile = map.getSquareInDirection(i);
 			if (map.getMazeMap()[tile[0]][tile[1]] == 0)
 			{
 				Coordinator.ROTATION_MOTOR.rotateTo(i);
 				Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
-				// TODO Delay necessary?
+				// TODO Delay necessary? Try to do without delay
 				Delay.msDelay(50);
 
 				if (Coordinator.IR[0] < 25)
+					// Set to wall
 					map.updateMazeMap(tile[0], tile[1], -1);
 				else
+					// Set to path
 					map.updateMazeMap(tile[0], tile[1], 1);
-				//Coordinator.ROTATION_MOTOR.rotateTo(0);
 			}
 		}
-		// Reset by looking forward
 		Coordinator.ROTATION_MOTOR.rotateTo(0);
 	}
 
 	/**
 	 * Move from one Path to the next Path. Tries to drive front, then right,
 	 * then left, then back
+	 * @param map
 	 */
-	public static void moveToNextSquare(CustomOccupancyMap map)
+	public static void moveToNextSquareDumb(CustomOccupancyMap map)
 	{
-		int[] leftPosition = map.getSquare(-90);
-		int[] frontPosition = map.getSquare(0);
-		int[] rightPosition = map.getSquare(90);
+		int[] leftPosition = map.getSquareInDirection(-90);
+		int[] frontPosition = map.getSquareInDirection(0);
+		int[] rightPosition = map.getSquareInDirection(90);
 
 		int[][] mazeMap = map.getMazeMap(); 
 		
@@ -89,6 +82,15 @@ public class Action
 		}
 		int[] robotPosition = map.getRobotPosition();
 		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
+	}
+	
+	/**
+	 * Move to next square, try to move to square
+	 * @param map
+	 */
+	public static void findNextMove(CustomOccupancyMap map)
+	{
+		
 	}
 
 	// Others

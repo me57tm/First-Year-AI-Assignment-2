@@ -1,7 +1,6 @@
 package mazeSolver;
 
 import java.io.IOException;
-
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Keys;
 import lejos.hardware.ev3.EV3;
@@ -55,6 +54,8 @@ public class Coordinator
 	public static SampleProvider          ColourSampler;
 
 	/* 
+	 * Path-Square
+	 * 
 	 *   30(W)
 	 *   _____
 	 *  |     |
@@ -63,17 +64,8 @@ public class Coordinator
 	 *    
 	 */
 
-	/**
-	 * Width of one Path square.
-	 */
-	public static final int               PATH_WIDTH  = 30;
-
-	/**
-	 * Length of one Path square.
-	 */
-	public static final int               PATH_LENGTH = 30;
-
 	/*
+	 * Wall-Element
 	 *   10(W)
 	 *    __
 	 *   |  |
@@ -83,32 +75,26 @@ public class Coordinator
 	 */
 
 	/**
-	 * Width of a Wall element.
+	 * Distance to travel from one centre of a square to the next one.
 	 */
-	public static final int               WALL_WIDTH  = 10;
+	public static final int               DISTANCE = 40;
 
 	/**
-	 * Length of a Wall element.
-	 */
-	public static final int               WALL_LENGTH = 30;
-
-	/**
-	 * Distance to travel from one centre of the square to the next one.
-	 */
-	public static final int               DISTANCE    = PATH_WIDTH + WALL_WIDTH;
-
-	/**
-	 * The maze representation out of the view of the robot. Will get updated
-	 * throughout the program.
+	 * The maze representation and information.
 	 */
 	public static CustomOccupancyMap      map;
-	
-	/**
-	 * TODO
+
+	/*
+	 * TODO:
 	 * 
-	 * - Setup on 90 orientation breaks sending and map updating?
-	 * - Go to unknown as next move if possible (go to unknown)
+	 * - Setup on 90 orientation breaks sending and map updating? 
+	 * - Go to unknown as next move if possible (go to unknown) 
 	 * - Implement VisitStack
+	 * - Comment delay of measuring if possible
+	 * 
+	 * 
+	 * 
+	 * 
 	 * 
 	 * 
 	 */
@@ -125,15 +111,16 @@ public class Coordinator
 		throws IOException
 	{
 		setup();
-		for (int i = 0; i < 6*9; i++)
+		while (map.getEndOfMazePosition() == null)
 			mapMazeStep();
+		// Find shortest path back
+
 		// Last line of code
-		Delay.msDelay(1000);
 		EV3Server.closeBluetoothConnection();
 	}
 
 	/**
-	 * One step of mapping the maze.
+	 * Main method of mapping the maze - performs one step of mapping the maze.
 	 * 
 	 * @throws IOException
 	 */
@@ -141,13 +128,12 @@ public class Coordinator
 		throws IOException
 	{
 		Action.lookForWalls(map);
-		Action.moveToNextSquare(map); //map
+		Action.moveToNextSquareDumb(map); //map
 		EV3Server.sendMap();
 	}
-
+	
 	/**
-	 * Sets values for all motors, sensors, controls and sets up a Bluetooth
-	 * connection with the PC Client.
+	 * Sets values for all motors, sensors, controls and sets up a Bluetooth connection with the Client.
 	 * 
 	 * @throws IOException
 	 *             Default exception.
@@ -161,27 +147,35 @@ public class Coordinator
 		// Set up direction the robot is facing
 		LCD.drawString("Press Button for", 0, 0);
 		LCD.drawString("Direction-Setup", 0, 1);
-		while (true) {
-			// Robot looks along the width side
-			if (buttons.getButtons() == Keys.ID_DOWN) {
+		LCD.drawString("Hold button", 0, 3);
+		LCD.drawString("until new text", 0, 4);
+		LCD.drawString("appears...", 0, 5);
+		while (true)
+		{
+			// Robot faces along the shorter side
+			if (buttons.getButtons() == Keys.ID_DOWN)
+			{
 				map = new CustomOccupancyMap(19, 13, 0);
 				break;
 			}
-			// Robot looks along the length side
-			if (buttons.getButtons() == Keys.ID_LEFT) {
+			// Robot faces along the longer side
+			if (buttons.getButtons() == Keys.ID_LEFT)
+			{
 				map = new CustomOccupancyMap(19, 13, 90);
 				break;
 			}
 		}
+
 		LCD.clear();
-		
-		// Set up motor
-		LCD.drawString("Setting up motors...", 0, 0);
-		LCD.clear();
+		LCD.drawString("Setting up", 0, 0);
+		LCD.drawString("Motors", 0, 1);
 		LEFT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.C);
 		RIGHT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.A);
 		ROTATION_MOTOR = new EV3MediumRegulatedMotor(MotorPort.D);
 
+		LCD.clear();
+		LCD.drawString("Setting up", 0, 0);
+		LCD.drawString("Wheels,Chassis", 0, 1);
 		wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR, 5.5).offset(-5.15); //-5.2
 		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(5.15); //5.2
 		chassis = new WheeledChassis(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL);
@@ -189,13 +183,13 @@ public class Coordinator
 		pilot.setAngularSpeed(50);
 		pilot.setLinearSpeed(35);
 
-		// Set up sensors
+		LCD.clear();
 		LCD.drawString("Setting up sensors...", 0, 0);
 		IRSensor = new EV3IRSensor(SensorPort.S1);
 		USSensor = new EV3UltrasonicSensor(SensorPort.S4);
 		ColourSensor = new EV3ColorSensor(SensorPort.S2);
 
-		IR = new float[3];// TODO consider multiple measures
+		IR = new float[3]; // TODO consider multiple measures
 		US = new float[1];
 		Colour = new float[3];
 
@@ -205,19 +199,22 @@ public class Coordinator
 
 		// Set up Bluetooth Connection
 		EV3Server.initializeBluetoothConnection();
+
+		// Mapping start warning
 		LCD.clear();
 		LCD.drawString("Setup complete!", 0, 0);
 		Delay.msDelay(500);
-		LCD.clear();
-		LCD.drawString("5", 0,1);
+		LCD.drawString("Begin Mapping in", 0, 1);
 		Delay.msDelay(1000);
-		LCD.drawString("4", 0, 1);
+		LCD.drawString("5", 7, 4);
 		Delay.msDelay(1000);
-		LCD.drawString("3", 0, 1);
+		LCD.drawString("4", 7, 4);
 		Delay.msDelay(1000);
-		LCD.drawString("2", 0, 1);
+		LCD.drawString("3", 7, 4);
 		Delay.msDelay(1000);
-		LCD.drawString("1", 0, 1);
+		LCD.drawString("2", 7, 4);
+		Delay.msDelay(1000);
+		LCD.drawString("1", 7, 4);
 		Delay.msDelay(1000);
 		LCD.clear();
 	}

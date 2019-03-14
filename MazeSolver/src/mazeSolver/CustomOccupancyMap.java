@@ -11,11 +11,9 @@ import java.io.Serializable;
 public class CustomOccupancyMap implements Serializable
 {
 	/**
-	 * 
+	 * To be able to send and receive Objects via Bluetooth
 	 */
 	private static final long serialVersionUID = -1710743261578049661L;
-
-	private int               robotOrientation;
 
 	/**
 	 * Representation of the maze: every entry has value -1 for an obstacle, 0
@@ -24,10 +22,21 @@ public class CustomOccupancyMap implements Serializable
 	private int[][]           mazeMap;
 
 	/**
+	 * Orientation the robot is facing (0 = front, 90 = right, 180 = back, 270 =
+	 * left) - when bottom-left is seen as start
+	 */
+	private int               robotOrientation;
+
+	/**
 	 * Current position of the robot in the arrayMap (array of length 2 with
 	 * value 0 = width and value 1 = height).
 	 */
 	private int[]             robotPosition;
+
+	/**
+	 * The end of the maze
+	 */
+	private int[]             endOfMazePosition;
 
 	/**
 	 * Current number of walls.
@@ -77,6 +86,8 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
+	 * Returns the number of explored squares to determine the progress of the
+	 * mapping process
 	 * 
 	 * @return number of measured squares
 	 */
@@ -88,7 +99,7 @@ public class CustomOccupancyMap implements Serializable
 	/**
 	 * Gets mazeMap array.
 	 * 
-	 * @return mazeMap mazeMap.
+	 * @return mazeMap.
 	 */
 	public int[][] getMazeMap()
 	{
@@ -139,6 +150,39 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
+	 * Getter for the endOfMazePosition
+	 * 
+	 * @return endOfMazePosition
+	 */
+	public int[] getEndOfMazePosition()
+	{
+		if (endOfMazePosition == null)
+			return null;
+		return endOfMazePosition;
+	}
+
+	/**
+	 * Setter for the endOfMazePosition
+	 * 
+	 * @param endOfMazePosition
+	 *            Position of the maze end in the 2D array
+	 */
+	public void setEndOfMazePosition(int[] endOfMazePosition)
+	{
+		this.endOfMazePosition = endOfMazePosition;
+	}
+
+	/**
+	 * Returns current orientation.
+	 * 
+	 * @return orientation
+	 */
+	public int getRobotOrientation()
+	{
+		return robotOrientation;
+	}
+
+	/**
 	 * Updates orientation of robot relative to the Maze by the number of
 	 * degrees the robot is instructed to turn.
 	 * 
@@ -155,19 +199,9 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Returns current orientation.
-	 * 
-	 * @return orientation orientation
-	 */
-	public int getOrientation()
-	{
-		return robotOrientation;
-	}
-
-	/**
 	 * Getter to get the width of the mazeMap.
 	 * 
-	 * @return mazeMap.length The width of the mazeMap.
+	 * @return mazeMap.length - The width of the mazeMap.
 	 */
 	public int getMapWidth()
 	{
@@ -177,7 +211,7 @@ public class CustomOccupancyMap implements Serializable
 	/**
 	 * Getter to get the length of the mazeMap.
 	 * 
-	 * @return mazeMap[0].length The length of the mazeMap.
+	 * @return mazeMap[0].length - The length of the mazeMap.
 	 */
 	public int getMapLength()
 	{
@@ -191,9 +225,9 @@ public class CustomOccupancyMap implements Serializable
 	 *            to face to check for square (out of the view of the robot): 0
 	 *            = front, 90/-270 = right, 180/-180 = behind, 270/-90 = left.
 	 *            Can take negatives too.
-	 * @return int[2] Square Coordinates
+	 * @return Square Coordinates as int[2]
 	 */
-	public int[] getSquare(int direction)
+	public int[] getSquareInDirection(int direction)
 	{
 		direction += robotOrientation;
 
@@ -217,25 +251,25 @@ public class CustomOccupancyMap implements Serializable
 	// TODO How does this work? What does it do? 
 	/**
 	 * It takes a set of coordinates
+	 * 
 	 * @param coords
-	 * coords to get to
-	 * @return
-	 * The angle the robot needs to turn (by?to?)
+	 *            coordinates to get direction to
+	 * @return direction to turn to, to move to this square
 	 */
 	public int getAngle(int[] coords)
 	{
 		int[] diff = new int[] { coords[0] - robotPosition[0], coords[1] - robotPosition[1] };
 		// Check for invalid passed squares
 		int sumOfDistances = 0;
-		for (int i = 0; i < 2; i++) 
+		for (int i = 0; i < 2; i++)
 			sumOfDistances += diff[i];
-		
+
 		boolean validCoords = (sumOfDistances == 2 && (diff[0] == 0 || diff[1] == 0));
-		
+
 		int direction = -1;
-		
+
 		if (validCoords)
-		{	
+		{
 			if (diff[0] > 0)
 				direction = 90;
 			if (diff[0] < 0)
