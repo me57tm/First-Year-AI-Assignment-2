@@ -2,8 +2,6 @@ package mazeSolver;
 
 /**
  * ?
- * @author jonathancaines
- *
  */
 public class GridSquare implements Comparable<GridSquare> {
 	

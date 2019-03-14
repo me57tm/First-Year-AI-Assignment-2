@@ -5,8 +5,6 @@ import java.util.Stack;
 
 /**
  * ?
- * @author jonathancaines
- *
  */
 public class PathFinder {
 	

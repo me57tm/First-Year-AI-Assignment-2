@@ -21,9 +21,6 @@ import lejos.utility.Delay;
 
 /**
  * Main class to map the maze.
- * 
- * @author jonasschaefer
- *
  */
 public class Coordinator
 {
@@ -128,7 +125,8 @@ public class Coordinator
 		throws IOException
 	{
 		Action.lookForWalls(map);
-		Action.moveToNextSquareDumb(map); //map
+		//Action.moveToNextSquareDumb(map); //map
+		Action.makeNextMove(map);
 		EV3Server.sendMap();
 	}
 	

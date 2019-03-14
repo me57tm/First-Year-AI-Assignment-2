@@ -1,12 +1,10 @@
 package mazeSolver;
 
 import java.io.Serializable;
+import java.util.Stack;
 
 /**
  * Custom Map Object to represent a to-be-explored Maze.
- * 
- * @author jonasschaefer
- *
  */
 public class CustomOccupancyMap implements Serializable
 {
@@ -16,8 +14,16 @@ public class CustomOccupancyMap implements Serializable
 	private static final long serialVersionUID = -1710743261578049661L;
 
 	/**
-	 * Representation of the maze: every entry has value -1 for an obstacle, 0
-	 * for unknown and 1 for a path surface.
+	 * Stack that pushes the square that the robot is on every time the robot
+	 * moves to the next square. Use pop to get the square that the robot came
+	 * from
+	 */
+	public Stack<int[]>       visitStack;
+
+	/**
+	 * Representation of the maze: every entry represents a
+	 * "square"/"tile"/"place"/... in the maze that has a value -1 for an
+	 * obstacle, 0 for unknown and 1 for a path.
 	 */
 	private int[][]           mazeMap;
 
@@ -74,15 +80,17 @@ public class CustomOccupancyMap implements Serializable
 				else
 					mazeMap[i][j] = 0;
 			}
-		robotPosition = new int[] { 1, 1 };
-		// Set origin to a Path
+		// Origin is a path
 		mazeMap[1][1] = 1;
 
+		robotPosition = new int[] { 1, 1 };
 		robotOrientation = orientation;
-
 		numberOfWalls = 2 * (width - 1) + 2 * (height - 1);
 		numberOfPaths = 1;
 		numberOfUnknowns = width * height - numberOfWalls - numberOfPaths;
+		visitStack = new Stack<>();
+		// Add origin to stack
+		visitStack.push(new int[] { 1, 1 });
 	}
 
 	/**
@@ -248,13 +256,52 @@ public class CustomOccupancyMap implements Serializable
 		return null;
 	}
 
-	// TODO How does this work? What does it do? 
 	/**
-	 * It takes a set of coordinates
+	 * Returns neighbour in defined direction of a given square
+	 * 
+	 * @param square
+	 *            given square
+	 * @param direction
+	 *            direction to look to from given square
+	 * @return square in direction from the given square
+	 */
+	public int[] getSquareInDirection(int[] square, int direction)
+	{
+		if (direction == 0)
+			return new int[] { square[0], square[1] + 1 };
+		if (direction == 90)
+			return new int[] { square[0] + 1, square[1] };
+		if (direction == 180)
+			return new int[] { square[0], square[1] - 1 };
+		if (direction == 270 || direction == -90)
+			return new int[] { square[0] - 1, square[1] };
+		//Wrong input
+		return null;
+	}
+
+	/**
+	 * Returns true if a square is a outer wall
+	 * 
+	 * @param square
+	 *            the square to test
+	 * @param map
+	 *            specific map used
+	 * @return
+	 */
+	public boolean isOuterWall(int[] square, CustomOccupancyMap map)
+	{
+		if (square[0] == 0 || square[0] == map.getMazeMap().length || square[1] == 0 || square[1] == map.getMazeMap()[0].length)
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * Returns the direction to turn to get to the square with given coordinates
 	 * 
 	 * @param coords
 	 *            coordinates to get direction to
-	 * @return direction to turn to, to move to this square
+	 * @return angle to rotate by to move to this square
 	 */
 	public int getAngle(int[] coords)
 	{
@@ -263,24 +310,24 @@ public class CustomOccupancyMap implements Serializable
 		int sumOfDistances = 0;
 		for (int i = 0; i < 2; i++)
 			sumOfDistances += diff[i];
+		// Valid if it is a square to move on and in a line for the robot
+		boolean valid = (sumOfDistances % 2 == 0 && (diff[0] == 0 || diff[1] == 0));
 
-		boolean validCoords = (sumOfDistances == 2 && (diff[0] == 0 || diff[1] == 0));
+		// Invalid
+		int direction = 0;
 
-		int direction = -1;
+		// End program if invalid
+		if (!valid)
+			System.exit(1);
 
-		if (validCoords)
-		{
-			if (diff[0] > 0)
-				direction = 90;
-			if (diff[0] < 0)
-				direction = 270;
-			if (diff[1] > 0)
-				direction = 0;
-			if (diff[1] < 0)
-				direction = 180;
-			if (direction > 360)
-				direction -= 360;
-		}
+		if (diff[0] > 0)
+			direction = 90;
+		if (diff[0] < 0)
+			direction = -90;
+		if (diff[1] > 0)
+			direction = 0;
+		if (diff[1] < 0)
+			direction = 180;
 		return direction;
 	}
 }

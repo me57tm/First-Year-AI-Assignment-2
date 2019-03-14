@@ -18,8 +18,6 @@ import javax.swing.JProgressBar;
 
 /**
  * GUI on the local machine displaying current progress of the robot in exploring the Maze.
- * @author jonathancaines
- *
  */
 public class Display {
 	

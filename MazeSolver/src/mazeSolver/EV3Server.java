@@ -8,9 +8,6 @@ import lejos.utility.Delay;
 
 /**
  * Set up EV3 as a server to send data to the PCClient.
- * 
- * @author jonasschaefer
- * 
  *         Maximum LEGO EV3: Building Robots with Java Brains ISBN-13:
  *         9780986832291
  * 
