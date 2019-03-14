@@ -182,12 +182,12 @@ public class Coordinator
 		RIGHT_MOTOR = new EV3LargeRegulatedMotor(MotorPort.A);
 		ROTATION_MOTOR = new EV3MediumRegulatedMotor(MotorPort.D);
 
-		wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR, 5.5).offset(-5.2);
-		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(5.2);
+		wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR, 5.5).offset(-5.15); //-5.2
+		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(5.15); //5.2
 		chassis = new WheeledChassis(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(chassis);
 		pilot.setAngularSpeed(50);
-		pilot.setLinearSpeed(50);
+		pilot.setLinearSpeed(35);
 
 		// Set up sensors
 		LCD.drawString("Setting up sensors...", 0, 0);
@@ -208,8 +208,17 @@ public class Coordinator
 		LCD.clear();
 		LCD.drawString("Setup complete!", 0, 0);
 		Delay.msDelay(500);
-		LCD.drawString("Wait 5 seconds", 0, 1);
-		Delay.msDelay(5000);
+		LCD.clear();
+		LCD.drawString("5", 0,1);
+		Delay.msDelay(1000);
+		LCD.drawString("4", 0, 1);
+		Delay.msDelay(1000);
+		LCD.drawString("3", 0, 1);
+		Delay.msDelay(1000);
+		LCD.drawString("2", 0, 1);
+		Delay.msDelay(1000);
+		LCD.drawString("1", 0, 1);
+		Delay.msDelay(1000);
 		LCD.clear();
 	}
 }
