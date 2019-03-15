@@ -134,7 +134,7 @@ public class Action
 			return false;
 
 		int[] backtrackSquare = stack.pop();
-		int angle = map.getAngle(backtrackSquare);
+		int angle = map.turnToSquare(backtrackSquare);
 		Coordinator.pilot.rotate(angle);
 		map.updateRobotOrientation(angle);
 		Coordinator.pilot.travel(Coordinator.DISTANCE);

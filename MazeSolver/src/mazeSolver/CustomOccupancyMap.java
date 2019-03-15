@@ -3,6 +3,8 @@ package mazeSolver;
 import java.io.Serializable;
 import java.util.Stack;
 
+import lejos.hardware.lcd.LCD;
+
 /**
  * Custom Map Object to represent a to-be-explored Maze.
  */
@@ -77,14 +79,13 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Returns the direction to turn to to get to the square with given
-	 * coordinates
+	 * Returns angle to turn to the square
 	 * 
 	 * @param square
-	 *            coordinates to get direction to
-	 * @return angle to rotate by to move to this square
+	 *            coordinates to turn to
+	 * @return angle
 	 */
-	public int getAngle(int[] square)
+	public int turnToSquare(int[] square)
 	{
 		int[] diff = new int[] { square[0] - robotPosition[0], square[1] - robotPosition[1] };
 		// Check for invalid passed squares
@@ -92,34 +93,55 @@ public class CustomOccupancyMap implements Serializable
 		for (int i = 0; i < 2; i++)
 			sumOfDistances += diff[i];
 		// Valid if it is a square to move on and in a line for the robot
-		boolean valid = (sumOfDistances % 2 == 0 && (diff[0] == 0 || diff[1] == 0));
-
-		// Invalid
-		int direction = 0;
+		boolean invalid = !(sumOfDistances % 2 == 0 && (diff[0] == 0 || diff[1] == 0));
 
 		// End program if invalid
-		if (!valid)
+		if (invalid)
 			System.exit(1);
-
-		//top
-		if (diff[0] > 0)
-			for (int i = -180; i + robotOrientation != 0; i += 90)
-				direction = i;
-		//bottom
-		else if (diff[0] < 0)
-			for (int i = -180; i + robotOrientation != 180; i += 90)
-				direction = i;
-		//right
-		else if (diff[1] > 0)
-			for (int i = -180; i + robotOrientation != 90; i += 90)
-				direction = i;
-		//left
-		else if (diff[1] < 0)
-			for (int i = -180; i + robotOrientation != 270; i += 90)
-				direction = i;
 		
-		return direction;
+		//if in direction 90
+		if (diff[0] > 0)
+		{
+			int turnby = -180;
+			while ((robotOrientation + turnby) % 360 != 90)
+				turnby += 90;
+			return turnby;
+		}
+		//if in direction 0
+		if (diff[1] > 0)
+		{
+			int turnby = -180;
+			while ((robotOrientation + turnby) % 360 != 0)
+				turnby += 90;
+			return turnby;
+		}
+			
+		//if in direction 270
+		if (diff[0] < 0)
+		{
+			int turnby = -180;
+			while ((robotOrientation + turnby) % 360 != 270)
+				turnby += 90;
+			return turnby;
+		}
+		
+		//if in direction 180
+		if (diff[1] < 0)
+		{
+			int turnby = -180;
+			while ((robotOrientation + turnby) % 360 != 180)
+				turnby += 90;
+			return turnby;
+		}
+		
+		// Illegal state
+		LCD.clear();
+		LCD.drawString("Illegal state", 0, 0);
+		Coordinator.buttons.waitForAnyPress();
+		LCD.clear();
+		return 0;
 	}
+	
 
 	/**
 	 * Gets mazeMap array.
