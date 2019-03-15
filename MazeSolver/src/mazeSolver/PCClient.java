@@ -41,6 +41,13 @@ public class PCClient
 				ObjectInputStream oIn = new ObjectInputStream(in);
 				map = (CustomOccupancyMap) oIn.readObject();
 				display.update(map);
+				for (int i = 0; !map.visitStack.isEmpty(); i++)
+				{
+					System.out.println("Stack" + i + "=" + map.visitStack.peek()[0]);
+					System.out.println("Stack " + i + "=" + map.visitStack.pop()[1]);
+				}
+				System.out.println("RobotPosition = " + String.valueOf(map.getRobotPosition()[0]) + String.valueOf(map.getRobotPosition()[1]));
+				System.out.println("Robot Orientation = " + map.getRobotOrientation());
 			}
 			catch (ClassNotFoundException e)
 			{

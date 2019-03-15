@@ -106,6 +106,7 @@ public class Action
 		}
 		LCD.clear();
 		LCD.drawString("Tries to backtrack", 0, 0);
+		LCD.drawString(String.valueOf(map.visitStack.size()), 0, 1);
 		Coordinator.buttons.waitForAnyPress();
 		LCD.clear();
 		// Otherwise backtrack to the previous square
@@ -154,7 +155,7 @@ public class Action
 		Coordinator.pilot.rotate(direction);
 		map.updateRobotOrientation(direction);
 		
-		map.visitStack.push(map.getRobotPosition());
+		map.visitStack.push(map.getRobotPosition().clone());
 		
 		float[] RGB = new float[3];
 		

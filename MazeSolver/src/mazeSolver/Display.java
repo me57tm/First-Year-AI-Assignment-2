@@ -105,16 +105,16 @@ public class Display {
 	 */
 	public void update(CustomOccupancyMap data) {
 		updateMap(data.getMazeMap());
-		int[] position = data.getRobotPosition();
-		grid[position[1]][position[0]].setBackground(new Color(181, 70, 244));
-		grid[position[1]][position[0]].setForeground(Color.BLACK);
 		progressBar.setValue(data.getCompletion());
-		/*int[] path;
+		int[] path;
 		while (!data.visitStack.isEmpty())
 		{
 			path = data.visitStack.pop();
-			grid[path[1]][path[0]].setBackground(Color.RED);
-		}*/
+			setColour(path, Color.CYAN);
+		}
+		int[] position = data.getRobotPosition();
+		grid[position[1]][position[0]].setBackground(new Color(181, 70, 244));
+		grid[position[1]][position[0]].setForeground(Color.BLACK);
 	}
 	
 	

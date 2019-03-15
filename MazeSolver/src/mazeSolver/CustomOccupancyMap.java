@@ -88,13 +88,17 @@ public class CustomOccupancyMap implements Serializable
 	 */
 	public int turnToSquare(int[] square)
 	{
+		LCD.clear();
+		LCD.drawString(String.valueOf(square[0] + " " + String.valueOf(square[1])), 0, 2);
+		Coordinator.buttons.waitForAnyPress();
+		LCD.clear();
 		int[] diff = new int[] { square[0] - robotPosition[0], square[1] - robotPosition[1] };
 		// Check for invalid passed squares
 		int sumOfDistances = 0;
 		for (int i = 0; i < 2; i++)
 			sumOfDistances += diff[i];
 		// Valid if it is a square to move on and in a line for the robot
-		boolean invalid = !((sumOfDistances % 2 == 0 && (diff[0] == 0 || diff[1] == 0)) || Arrays.equals(square, robotPosition));
+		boolean invalid = !((sumOfDistances % 2 == 0 && (diff[0] == 0 || diff[1] == 0))) || Arrays.equals(square, robotPosition);
 
 		// End program if invalid
 		if (invalid)
