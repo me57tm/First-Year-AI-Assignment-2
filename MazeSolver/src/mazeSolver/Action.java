@@ -128,7 +128,7 @@ public class Action
 	 */
 	public static void moveCarefully(CustomOccupancyMap map, int direction)
 	{
-		recalibrateOrientation();
+		//recalibrateOrientation();
 		
 		Coordinator.pilot.rotate(direction, true);
 		
@@ -187,6 +187,9 @@ public class Action
 		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
 	}
 	
+	/**
+	 * Detects significant offset of the robot and performs a appropiate correction turn
+	 */
 	public static void recalibrateOrientation()
 	{
 		// Measure current orientation
