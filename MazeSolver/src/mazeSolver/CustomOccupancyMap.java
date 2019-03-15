@@ -1,6 +1,7 @@
 package mazeSolver;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Stack;
 
 import lejos.hardware.lcd.LCD;
@@ -93,7 +94,7 @@ public class CustomOccupancyMap implements Serializable
 		for (int i = 0; i < 2; i++)
 			sumOfDistances += diff[i];
 		// Valid if it is a square to move on and in a line for the robot
-		boolean invalid = !(sumOfDistances % 2 == 0 && (diff[0] == 0 || diff[1] == 0));
+		boolean invalid = !((sumOfDistances % 2 == 0 && (diff[0] == 0 || diff[1] == 0)) || Arrays.equals(square, robotPosition));
 
 		// End program if invalid
 		if (invalid)
