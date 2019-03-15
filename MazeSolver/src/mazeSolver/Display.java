@@ -22,8 +22,8 @@ import javax.swing.JProgressBar;
 public class Display {
 	
 	
-	private final int GRID_WIDTH =  19;//Coordinator.map.getMapWidth()
-	private final int GRID_HEIGHT =  13;//Coordinator.map.getMapLength()
+	private final static int GRID_WIDTH = Coordinator.MAP_WIDTH;
+	private final static int GRID_HEIGHT = Coordinator.MAP_HEIGHT;
 	
 	private boolean activeButtons;
 
@@ -38,7 +38,7 @@ public class Display {
 	 */
 	public static void main(String[] args) {
 		Display window = new Display(false);
-		int[][] map = new int[19][13];
+		int[][] map = new int[GRID_WIDTH][GRID_HEIGHT];
 		map = new int[][] {
 			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
 			{-1, 1, 1, 1,-1, 1, 1, 1, 1, 1, 1, 1,-1},
@@ -60,7 +60,7 @@ public class Display {
 			{-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1},
 			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
 		};
-		CustomOccupancyMap robotMap = new CustomOccupancyMap(19,13,0);
+		CustomOccupancyMap robotMap = new CustomOccupancyMap(GRID_WIDTH,GRID_HEIGHT,0);
 		robotMap.updateRobotPosition();
 		robotMap.updateRobotPosition();
 		window.update(robotMap);

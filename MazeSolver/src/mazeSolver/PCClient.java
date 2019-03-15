@@ -41,8 +41,6 @@ public class PCClient
 				CustomOccupancyMap map;
 				map = (CustomOccupancyMap) oIn.readObject();
 				display.update(map);
-				//oIn.close();
-				//in.close();
 			}
 			catch (ClassNotFoundException e)
 			{
@@ -69,7 +67,5 @@ public class PCClient
 		CustomOccupancyMap map;
 		map = (CustomOccupancyMap) oIn.readObject();
 		display.update(map);
-		//oIn.close();
-		//in.close();
 	}
 }

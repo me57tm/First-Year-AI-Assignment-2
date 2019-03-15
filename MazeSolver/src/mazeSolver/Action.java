@@ -1,5 +1,7 @@
 package mazeSolver;
 
+import lejos.utility.Delay;
+
 /**
  * Implement all actions the robot takes while mapping and solving the maze.
  */
@@ -21,7 +23,7 @@ public class Action
 				Coordinator.ROTATION_MOTOR.rotateTo(i);
 				Coordinator.IRSampler.fetchSample(Coordinator.IR, 0);
 				// TODO Delay necessary? Try to do without delay
-				// Delay.msDelay(50);
+				Delay.msDelay(50);
 
 				if (Coordinator.IR[0] < 25)
 					// Set to wall
