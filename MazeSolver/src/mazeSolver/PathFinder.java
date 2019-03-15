@@ -18,6 +18,72 @@ public class PathFinder {
 		this.map = map;
 	}
 	
+	public Stack<int[]> getPath(int[] start, int[] end, boolean unknown) {
+		PriorityQueue<GridSquare> queue = new PriorityQueue<GridSquare>();
+		boolean[][] discovered = new boolean[19][13];
+		GridSquare currentSquare = new GridSquare(start,null,0,getHeuristic(start,end));
+		discovered[currentSquare.coords[0]][currentSquare.coords[1]] = true;
+		GridSquare newSquare;
+		int[] newCoords;
+		int[] newerCoords;
+		int cuCost = 0;
+		while (currentSquare.coords[0] != end[0] || currentSquare.coords[1] != end[1]) {
+			System.out.println(currentSquare.coords[0]+ " " + currentSquare.coords[1]);
+			for (int i = 0; i < 360; i += 90) {
+				newCoords = currentSquare.coords.clone();
+				newCoords = coordUpdater(i,newCoords);
+				newerCoords = coordUpdater(i,newCoords.clone());
+				if (unknown) {
+					cuCost = currentSquare.cost + getCostUnknown(newCoords,i); 
+				}
+				else {
+					cuCost = currentSquare.cost + getCostKnown(newCoords,i);
+				}
+				
+				if (!discovered[newCoords[0]][newCoords[1]]) {
+					newSquare = new GridSquare(
+							newerCoords,
+							currentSquare,
+							cuCost,
+							getHeuristic(newerCoords,end));
+					System.out.println("Adding: " + newSquare);
+					queue.add(newSquare);
+					discovered[newCoords[0]][newCoords[1]] = true;
+					discovered[currentSquare.coords[0]][currentSquare.coords[1]] = true;
+				}
+			}
+			currentSquare = queue.poll();
+			System.out.println(queue);
+			System.out.println("Best Move:" + currentSquare);
+		}
+		Stack<int[]> gridStack = new Stack<int[]>();
+		while (currentSquare.coords[0] != start[0] || currentSquare.coords[1] != start[1]) {
+			System.out.println(currentSquare);
+			gridStack.push(currentSquare.coords);
+			currentSquare = currentSquare.parent;
+		}
+		return gridStack;
+	}
+	
+	public Stack<int[]> getPath(int[] start,int[] end)
+	{
+		return getPath(start,end,false);
+	}
+	
+	
+	private int[] coordUpdater(int i,int[] c) {
+		if (i == 0)
+			c[0]++;
+		if (i == 90)
+			c[1]++;
+		if (i == 180)
+			c[0]--;
+		if (i == 270)
+			c[1]--;
+		return c;
+	}
+	
+	
 	/**
 	 * Find the shortest path between two squares, counting unknown tiles as driveable.
 	 * @param start 
@@ -174,6 +240,7 @@ public class PathFinder {
 	public int getCostKnown(int[] coords,int direction) {
 		int x = coords[0];
 		int y = coords[1];
+
 		if (map[x][y] != 1)
 			return 7500+x+y;
 

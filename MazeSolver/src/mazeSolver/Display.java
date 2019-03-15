@@ -8,6 +8,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.nio.channels.SelectableChannel;
+import java.util.Stack;
 import java.awt.event.ActionEvent;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -61,10 +62,15 @@ public class Display {
 			{-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1},
 			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
 		};
-		CustomOccupancyMap robotMap = new CustomOccupancyMap(GRID_WIDTH,GRID_HEIGHT,0);
-		robotMap.updateRobotPosition();
-		robotMap.updateRobotPosition();
-		window.update(robotMap);
+		window.updateMap(map);
+		PathFinder pf = new PathFinder(map);
+		Stack<int[]> s = pf.getPath(new int[]{9,9},new int[] {1,1});
+		int[] path;
+		while (!s.isEmpty())
+		{
+			path = s.pop();
+			window.setColour(path, Color.CYAN);
+		}
 	}
 	
 	/**
