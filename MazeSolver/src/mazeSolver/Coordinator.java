@@ -48,13 +48,14 @@ public class Coordinator extends Setup
 		throws IOException
 	{
 		setup();
-		while (map.getEndTilePosition() == null)
+		//while (map.getEndTilePosition() == null)
+		while (true)
 			mapMazeStep();
 		
 		// Find shortest path back
 
 		// Last line of code
-		EV3Server.closeBluetoothConnection();
+		//EV3Server.closeBluetoothConnection();
 	}
 
 	/**

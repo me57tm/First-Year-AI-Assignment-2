@@ -161,6 +161,7 @@ public class Action
 				// Turn back
 				Coordinator.pilot.rotate(direction * -1);
 				map.updateRobotOrientation(direction * -1);
+				System.exit(1);
 				return;
 			}
 			if (detectedColour == "RED")
@@ -174,6 +175,7 @@ public class Action
 				map.visitStack.push(map.getRobotPosition());
 				int[] robotPosition = map.getRobotPosition();
 				map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
+				System.exit(1);
 				return;
 			}
 		}

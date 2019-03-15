@@ -8,3 +8,5 @@ bin
 #Javadoc:
 doc
 javadoc
+#Apple Specific
+*.DS_STORE
