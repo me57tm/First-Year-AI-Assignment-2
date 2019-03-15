@@ -80,13 +80,13 @@ public class CustomOccupancyMap implements Serializable
 	 * Returns the direction to turn to to get to the square with given
 	 * coordinates
 	 * 
-	 * @param coords
+	 * @param square
 	 *            coordinates to get direction to
 	 * @return angle to rotate by to move to this square
 	 */
-	public int getAngle(int[] coords)
+	public int getAngle(int[] square)
 	{
-		int[] diff = new int[] { coords[0] - robotPosition[0], coords[1] - robotPosition[1] };
+		int[] diff = new int[] { square[0] - robotPosition[0], square[1] - robotPosition[1] };
 		// Check for invalid passed squares
 		int sumOfDistances = 0;
 		for (int i = 0; i < 2; i++)
@@ -101,14 +101,23 @@ public class CustomOccupancyMap implements Serializable
 		if (!valid)
 			System.exit(1);
 
+		//top
 		if (diff[0] > 0)
-			direction = 90;
-		if (diff[0] < 0)
-			direction = -90;
-		if (diff[1] > 0)
-			direction = 0;
-		if (diff[1] < 0)
-			direction = 180;
+			for (int i = -180; i + robotOrientation != 0; i += 90)
+				direction = i;
+		//bottom
+		else if (diff[0] < 0)
+			for (int i = -180; i + robotOrientation != 180; i += 90)
+				direction = i;
+		//right
+		else if (diff[1] > 0)
+			for (int i = -180; i + robotOrientation != 90; i += 90)
+				direction = i;
+		//left
+		else if (diff[1] < 0)
+			for (int i = -180; i + robotOrientation != 270; i += 90)
+				direction = i;
+		
 		return direction;
 	}
 

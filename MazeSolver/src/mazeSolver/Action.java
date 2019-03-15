@@ -163,10 +163,6 @@ public class Action
 		
 		while (Coordinator.pilot.isMoving())
 		{
-			LCD.clear();
-			LCD.drawString("isMoving()", 0, 0);
-			Coordinator.buttons.waitForAnyPress();
-			LCD.clear();
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
 			Delay.msDelay(30);
 
