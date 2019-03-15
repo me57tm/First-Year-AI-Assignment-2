@@ -128,8 +128,9 @@ public class Action
 	 */
 	public static void moveCarefully(CustomOccupancyMap map, int direction)
 	{
-		Coordinator.pilot.rotate(direction);
-		map.updateRobotOrientation(direction);
+		recalibrateOrientation();
+		
+		Coordinator.pilot.rotate(direction, true);
 		
 		float[] RGB = new float[3];
 		
@@ -184,6 +185,23 @@ public class Action
 		map.updateRobotPosition();
 		int[] robotPosition = map.getRobotPosition();
 		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
+	}
+	
+	public static void recalibrateOrientation()
+	{
+		// Measure current orientation
+		float[] Gyro = new float[1];
+		Coordinator.GyroSampler.fetchSample(Gyro, 0);
+		Delay.msDelay(30);
+		
+		int robotOrientation = Coordinator.map.getRobotOrientation();
+		int offsetInDegrees = (int) (Math.abs(robotOrientation) - Math.abs(Gyro[0])); // TODO Care, cast float to int
+		
+		// If significant offset in degrees
+		if (offsetInDegrees > Coordinator.RECALIBRATION_THRESHHOLD && robotOrientation > Gyro[0])
+			Coordinator.pilot.rotate(offsetInDegrees);
+		if (offsetInDegrees < Coordinator.RECALIBRATION_THRESHHOLD && robotOrientation < Gyro[0])
+			Coordinator.pilot.rotate(-1 * offsetInDegrees);
 	}
 
 	/**

@@ -11,6 +11,7 @@ import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3IRSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
@@ -42,25 +43,32 @@ public class Setup
 	public static EV3IRSensor             IRSensor;
 	public static EV3UltrasonicSensor     USSensor;
 	public static EV3ColorSensor          ColourSensor;
+	public static EV3GyroSensor           GyroSensor;
 
 	public static SampleProvider          IRSampler;
 	public static SampleProvider          USSampler;
 	public static SampleProvider          ColourSampler;
+	public static SampleProvider          GyroSampler;
 
 	/**
 	 * Distance to travel from one centre of a path grid to the centre of the
 	 * next path grid.
 	 */
-	public static final int               DISTANCE   = 40;
+	public static final int               DISTANCE                 = 40;
 
 	/**
 	 * Long front side of the maze
 	 */
-	public static final int               MAP_WIDTH  = 19;
+	public static final int               MAP_WIDTH                = 19;
 	/**
 	 * Height seen as bird's eye perspective on the maze
 	 */
-	public static final int               MAP_HEIGHT = 13;
+	public static final int               MAP_HEIGHT               = 13;
+
+	/**
+	 * Offset necessary to perform a correction in orientation of the robot
+	 */
+	public static final int               RECALIBRATION_THRESHHOLD = 3;
 
 	/* 
 	 * 						VISUALISATION OF GRID OBJECTS
@@ -151,10 +159,15 @@ public class Setup
 		IRSensor = new EV3IRSensor(SensorPort.S1);
 		USSensor = new EV3UltrasonicSensor(SensorPort.S4);
 		ColourSensor = new EV3ColorSensor(SensorPort.S2);
+		GyroSensor = new EV3GyroSensor(SensorPort.S3);
 
 		IRSampler = IRSensor.getDistanceMode();
 		USSampler = USSensor.getDistanceMode();
 		ColourSampler = ColourSensor.getRGBMode();
+		GyroSampler = GyroSensor.getAngleMode();
+
+		//Calibrate GyroSensor
+		GyroSensor.reset();
 
 		// Set up Bluetooth Connection
 		EV3Server.initializeBluetoothConnection();
