@@ -68,6 +68,7 @@ public class Coordinator extends Setup
 	{
 		Action.scanSurrounding(map);
 		Action.makeMoveStep(map);
+		//Action.moveToNextSquareDumb(map);
 		EV3Server.sendMap();
 	}
 }

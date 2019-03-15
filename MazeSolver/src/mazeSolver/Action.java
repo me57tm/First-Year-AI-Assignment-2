@@ -2,6 +2,7 @@ package mazeSolver;
 
 import java.util.Stack;
 
+import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 /**
@@ -67,16 +68,24 @@ public class Action
 			if (mazeMap[front2[0]][front2[1]] == 0)
 			{
 				// move forwards
+				LCD.clear();
+				LCD.drawString("Move forwards", 0, 0);
+				Coordinator.buttons.waitForAnyPress();
+				LCD.clear();
 				moveCarefully(map, 0);
 				return;
 			}
 		}
 		if (mazeMap[right[0]][right[1]] != -1)
 		{
-			int[] right2 = map.getSquareInDirection(left, 90);
+			int[] right2 = map.getSquareInDirection(right, 90);
 			if (mazeMap[right2[0]][right2[1]] == 0)
 			{
 				// move right
+				LCD.clear();
+				LCD.drawString("Move right", 0, 0);
+				Coordinator.buttons.waitForAnyPress();
+				LCD.clear();
 				moveCarefully(map, 90);
 				return;
 			}
@@ -87,16 +96,28 @@ public class Action
 			if (mazeMap[left2[0]][left2[1]] == 0)
 			{
 				// Move left
+				LCD.clear();
+				LCD.drawString("Move left", 0, 0);
+				Coordinator.buttons.waitForAnyPress();
+				LCD.clear();
 				moveCarefully(map, -90);
 				return;
 			}
 		}
-		
+		LCD.clear();
+		LCD.drawString("Tries to backtrack", 0, 0);
+		Coordinator.buttons.waitForAnyPress();
+		LCD.clear();
 		// Otherwise backtrack to the previous square
 		boolean backtrack = performBacktrack(map, map.visitStack);
 		// Invalid maze
 		if (!backtrack)
-			System.exit(1);
+		{
+			LCD.clear();
+			LCD.drawString("Backtrack stack empty", 0, 0);
+			Coordinator.buttons.waitForAnyPress();
+			LCD.clear();
+		}
 	}
 	
 
@@ -130,7 +151,10 @@ public class Action
 	{
 		//recalibrateOrientation();
 		
-		Coordinator.pilot.rotate(direction, true);
+		Coordinator.pilot.rotate(direction);
+		map.updateRobotOrientation(direction);
+		
+		map.visitStack.push(map.getRobotPosition());
 		
 		float[] RGB = new float[3];
 		
@@ -139,6 +163,10 @@ public class Action
 		
 		while (Coordinator.pilot.isMoving())
 		{
+			LCD.clear();
+			LCD.drawString("isMoving()", 0, 0);
+			Coordinator.buttons.waitForAnyPress();
+			LCD.clear();
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
 			Delay.msDelay(30);
 
@@ -147,6 +175,13 @@ public class Action
 			if (detectedColour == "GREEN")
 			{
 				Coordinator.pilot.stop();
+				
+				LCD.clear();
+				LCD.drawString("Detected green", 0, 0);
+				Coordinator.buttons.waitForAnyPress();
+				LCD.clear();
+				
+				map.visitStack.pop();
 				// Travel back
 				Coordinator.pilot.travel(-1 * (Coordinator.DISTANCE - 18));
 				int[] front = map.getSquareInDirection(map.getRobotPosition(), 0);
@@ -162,26 +197,25 @@ public class Action
 				// Turn back
 				Coordinator.pilot.rotate(direction * -1);
 				map.updateRobotOrientation(direction * -1);
-				System.exit(1);
 				return;
 			}
 			if (detectedColour == "RED")
 			{
 				Coordinator.pilot.stop();
-				map.visitStack.push(map.getRobotPosition());
+				LCD.clear();
+				LCD.drawString("Detected green", 0, 0);
+				Coordinator.buttons.waitForAnyPress();
+				LCD.clear();
 				// Travel to the middle of the tile
 				Coordinator.pilot.travel(18);
 				map.updateRobotPosition();
 				map.setEndTilePosition(map.getRobotPosition());
-				map.visitStack.push(map.getRobotPosition());
 				int[] robotPosition = map.getRobotPosition();
 				map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
-				System.exit(1);
 				return;
 			}
 		}
 		// If no special colours
-		map.visitStack.push(map.getRobotPosition());
 		map.updateRobotPosition();
 		int[] robotPosition = map.getRobotPosition();
 		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
@@ -228,7 +262,7 @@ public class Action
 	 * 
 	 * @param map
 	 */
-	/*public static void moveToNextSquareDumb(CustomOccupancyMap map)
+	public static void moveToNextSquareDumb(CustomOccupancyMap map)
 	{
 		int[][] mazeMap = map.getMazeMap();
 	
@@ -244,7 +278,7 @@ public class Action
 		else if (mazeMap[rightPosition[0]][rightPosition[1]] == 1)
 		{
 			Coordinator.pilot.rotate(90);
-			map.updateOrientation(90);
+			map.updateRobotOrientation(90);
 			Coordinator.pilot.travel(Coordinator.DISTANCE);
 			map.updateRobotPosition();
 	
@@ -252,19 +286,19 @@ public class Action
 		else if (mazeMap[leftPosition[0]][leftPosition[1]] == 1)
 		{
 			Coordinator.pilot.rotate(-90);
-			map.updateOrientation(-90);
+			map.updateRobotOrientation(-90);
 			Coordinator.pilot.travel(Coordinator.DISTANCE);
 			map.updateRobotPosition();
 		}
 		else
 		{
 			Coordinator.pilot.rotate(180);
-			map.updateOrientation(180);
+			map.updateRobotOrientation(180);
 			Coordinator.pilot.travel(Coordinator.DISTANCE);
 			map.updateRobotPosition();
 		}
 		int[] robotPosition = map.getRobotPosition();
 		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
 	}
-	*/
+	
 }

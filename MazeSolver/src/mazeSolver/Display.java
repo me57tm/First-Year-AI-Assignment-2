@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
+import java.nio.channels.SelectableChannel;
 import java.awt.event.ActionEvent;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -102,6 +103,12 @@ public class Display {
 		grid[position[1]][position[0]].setBackground(new Color(181, 70, 244));
 		grid[position[1]][position[0]].setForeground(Color.BLACK);
 		progressBar.setValue(data.getCompletion());
+		/*int[] path;
+		while (!data.visitStack.isEmpty())
+		{
+			path = data.visitStack.pop();
+			grid[path[1]][path[0]].setBackground(Color.RED);
+		}*/
 	}
 	
 	

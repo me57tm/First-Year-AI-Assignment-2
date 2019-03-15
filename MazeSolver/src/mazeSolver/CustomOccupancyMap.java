@@ -73,11 +73,12 @@ public class CustomOccupancyMap implements Serializable
 		robotPosition = new int[] { 1, 1 };
 		robotOrientation = orientation;
 
-		visitStack = new Stack<>();
+		visitStack = new Stack<int[]>();
 	}
 
 	/**
-	 * Returns the direction to turn to get to the square with given coordinates
+	 * Returns the direction to turn to to get to the square with given
+	 * coordinates
 	 * 
 	 * @param coords
 	 *            coordinates to get direction to

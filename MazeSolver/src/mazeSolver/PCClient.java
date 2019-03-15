@@ -30,15 +30,15 @@ public class PCClient
 	{
 		// Setup
 		setup(args);
-
+		
 		while (true)
 		{
 			try
 			{
 				System.out.println("Sending update...");
+				CustomOccupancyMap map;
 				InputStream in = sock.getInputStream();
 				ObjectInputStream oIn = new ObjectInputStream(in);
-				CustomOccupancyMap map;
 				map = (CustomOccupancyMap) oIn.readObject();
 				display.update(map);
 			}
