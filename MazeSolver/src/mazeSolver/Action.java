@@ -166,6 +166,7 @@ public class Action
 			if (detectedColour == "RED")
 			{
 				Coordinator.pilot.stop();
+				map.visitStack.push(map.getRobotPosition());
 				// Travel to the middle of the tile
 				Coordinator.pilot.travel(18);
 				map.updateRobotPosition();
@@ -177,8 +178,8 @@ public class Action
 			}
 		}
 		// If no special colours
-		map.updateRobotPosition();
 		map.visitStack.push(map.getRobotPosition());
+		map.updateRobotPosition();
 		int[] robotPosition = map.getRobotPosition();
 		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
 	}

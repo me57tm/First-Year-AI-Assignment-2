@@ -74,8 +74,6 @@ public class CustomOccupancyMap implements Serializable
 		robotOrientation = orientation;
 
 		visitStack = new Stack<>();
-		// Add origin to stack
-		visitStack.push(new int[] { 1, 1 });
 	}
 
 	/**
