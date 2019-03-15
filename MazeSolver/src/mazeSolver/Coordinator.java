@@ -48,8 +48,9 @@ public class Coordinator extends Setup
 		throws IOException
 	{
 		setup();
-		while (map.getEndOfMazePosition() == null)
+		while (map.getEndTilePosition() == null)
 			mapMazeStep();
+		
 		// Find shortest path back
 
 		// Last line of code
@@ -64,9 +65,8 @@ public class Coordinator extends Setup
 	public static void mapMazeStep()
 		throws IOException
 	{
-		Action.lookForWalls(map);
-		//Action.moveToNextSquareDumb(map); //map
-		Action.moveToNextPath(map);
+		Action.scanSurrounding(map);
+		Action.makeMoveStep(map);
 		EV3Server.sendMap();
 	}
 }

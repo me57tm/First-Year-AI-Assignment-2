@@ -43,10 +43,6 @@ public class Setup
 	public static EV3UltrasonicSensor     USSensor;
 	public static EV3ColorSensor          ColourSensor;
 
-	public static float[]                 IR;
-	public static float[]                 US;
-	public static float[]                 Colour;
-
 	public static SampleProvider          IRSampler;
 	public static SampleProvider          USSampler;
 	public static SampleProvider          ColourSampler;
@@ -155,10 +151,6 @@ public class Setup
 		IRSensor = new EV3IRSensor(SensorPort.S1);
 		USSensor = new EV3UltrasonicSensor(SensorPort.S4);
 		ColourSensor = new EV3ColorSensor(SensorPort.S2);
-
-		IR = new float[3]; // TODO consider multiple measures
-		US = new float[1];
-		Colour = new float[3];
 
 		IRSampler = IRSensor.getDistanceMode();
 		USSampler = USSensor.getDistanceMode();

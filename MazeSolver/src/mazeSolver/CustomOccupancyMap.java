@@ -23,7 +23,7 @@ public class CustomOccupancyMap implements Serializable
 	/**
 	 * Representation of the maze: every entry represents a
 	 * "square"/"tile"/"place"/... in the maze that has a value -1 for an
-	 * obstacle, 0 for unknown and 1 for a path.
+	 * obstacle, 0 for unknown and 1 for a pathable surface.
 	 */
 	private int[][]           mazeMap;
 
@@ -42,18 +42,17 @@ public class CustomOccupancyMap implements Serializable
 	/**
 	 * The end of the maze
 	 */
-	private int[]             endOfMazePosition;
+	private int[]             endTilePosition;
 
-	
-	
-	
 	/**
 	 * Creates arrayMap of size of parameters.
 	 * 
 	 * @param width
-	 *            The total number of sections being either walls or paths in width.
+	 *            The total number of sections being either walls or paths in
+	 *            width.
 	 * @param height
-	 *            The total number of sections being either walls or paths in height.
+	 *            The total number of sections being either walls or paths in
+	 *            height.
 	 */
 	public CustomOccupancyMap(int width, int height, int orientation)
 	{
@@ -73,12 +72,12 @@ public class CustomOccupancyMap implements Serializable
 
 		robotPosition = new int[] { 1, 1 };
 		robotOrientation = orientation;
-		
+
 		visitStack = new Stack<>();
 		// Add origin to stack
 		visitStack.push(new int[] { 1, 1 });
 	}
-	
+
 	/**
 	 * Returns the direction to turn to get to the square with given coordinates
 	 * 
@@ -114,7 +113,6 @@ public class CustomOccupancyMap implements Serializable
 		return direction;
 	}
 
-
 	/**
 	 * Gets mazeMap array.
 	 * 
@@ -126,14 +124,15 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Updates maze map at position [width][length] to the new value.
+	 * Updates the current tile to the new value.
 	 * 
 	 * @param width
-	 *            The width-position.
+	 *            The width-position of the tile.
 	 * @param length
-	 *            The length-position.
+	 *            The length-position of the tile.
 	 * @param value
-	 *            The new value assigned.
+	 *            The new value assigned, -1 for wall, 0 for unknown (should not
+	 *            be used) and 1 for path.
 	 */
 	public void updateMazeMap(int width, int height, int value)
 	{
@@ -169,26 +168,26 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Getter for the endOfMazePosition
+	 * Getter for the position of the end tile
 	 * 
-	 * @return endOfMazePosition
+	 * @return end tile position
 	 */
-	public int[] getEndOfMazePosition()
+	public int[] getEndTilePosition()
 	{
-		if (endOfMazePosition == null)
+		if (endTilePosition == null)
 			return null;
-		return endOfMazePosition;
+		return endTilePosition;
 	}
 
 	/**
-	 * Setter for the endOfMazePosition
+	 * Setter for the end tile
 	 * 
-	 * @param endOfMazePosition
+	 * @param endTilePosition
 	 *            Position of the maze end in the 2D array
 	 */
-	public void setEndOfMazePosition(int[] endOfMazePosition)
+	public void setEndTilePosition(int[] endOfMazePosition)
 	{
-		this.endOfMazePosition = endOfMazePosition;
+		this.endTilePosition = endOfMazePosition;
 	}
 
 	/**
@@ -208,10 +207,10 @@ public class CustomOccupancyMap implements Serializable
 	 * @param degrees
 	 *            Degrees of turning.
 	 */
-	public void updateOrientation(int degrees)
+	public void updateRobotOrientation(int degrees)
 	{
 		robotOrientation += degrees;
-		if (robotOrientation > 270)
+		if (robotOrientation >= 360)
 			robotOrientation -= 360;
 		if (robotOrientation < 0)
 			robotOrientation += 360;
@@ -284,7 +283,7 @@ public class CustomOccupancyMap implements Serializable
 		else
 			return false;
 	}
-	
+
 	/**
 	 * 
 	 * @return number of Walls
@@ -300,7 +299,7 @@ public class CustomOccupancyMap implements Serializable
 			}
 		return numberOfWalls;
 	}
-	
+
 	/**
 	 * 
 	 * @return number of Paths
@@ -316,7 +315,7 @@ public class CustomOccupancyMap implements Serializable
 			}
 		return numberOfPaths;
 	}
-	
+
 	/**
 	 * 
 	 * @return number of Unknowns
@@ -343,7 +342,6 @@ public class CustomOccupancyMap implements Serializable
 	{
 		return getNumberOfPaths() + getNumberOfWalls();
 	}
-	
 
 	/**
 	 * Getter to get the width of the mazeMap.
@@ -364,5 +362,5 @@ public class CustomOccupancyMap implements Serializable
 	{
 		return mazeMap[0].length;
 	}
-	
+
 }
