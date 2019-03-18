@@ -48,6 +48,7 @@ public class EV3Server
 		oOut.writeObject(Coordinator.map);
 		LCD.clear();
 		oOut.flush();
+		Delay.msDelay(100);
 	}
 
 	/**
@@ -68,6 +69,7 @@ public class EV3Server
 
 	/**
 	 * Sends map to the Client
+	 * 
 	 * @throws IOException
 	 */
 	public static void sendMap()
@@ -77,6 +79,7 @@ public class EV3Server
 		ObjectOutputStream oOut = new ObjectOutputStream(out);
 		oOut.writeObject(Coordinator.map);
 		oOut.flush();
+		Delay.msDelay(100);
 	}
 
 	// Send Map + Orientation + Voltage

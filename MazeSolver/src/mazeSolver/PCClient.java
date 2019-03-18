@@ -3,12 +3,13 @@ package mazeSolver;
 import java.io.*;
 import java.net.*;
 
+import lejos.utility.Delay;
+
 /**
  * The Client that receives information from the EV3 Server.
  */
 public class PCClient
 {
-
 	public static String  ip;
 
 	public static Socket  sock;
@@ -40,6 +41,7 @@ public class PCClient
 				InputStream in = sock.getInputStream();
 				ObjectInputStream oIn = new ObjectInputStream(in);
 				map = (CustomOccupancyMap) oIn.readObject();
+				Delay.msDelay(100);
 				display.update(map);
 				for (int i = 0; !map.visitStack.isEmpty(); i++)
 				{
