@@ -7,18 +7,33 @@ import java.io.IOException;
  */
 public class Coordinator extends Setup
 {
+	
+	
+	
+	
+	
+	
 
 	/*
 	 * TODO:
 	 * 
-	 * - Setup on 90 orientation breaks sending and map updating?????
-	 * - DONE Go to unknown as next move if possible (go to unknown) 
-	 * - DONE Implement VisitStack
-	 * - DONE Comment delay of measuring if possible, UNDO if it doesn't work
+	 * 
+	 * - Apply functional A* and integrate into a method from mapMazeStep(s) on
+	 * 
+	 * 
+	 * 
+	 * 
 	 * 
 	 * 
 	 */
-
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Main method the robot will execute.
 	 * 
@@ -32,7 +47,7 @@ public class Coordinator extends Setup
 	{
 		setup();
 		//while (map.getEndTilePosition() == null)
-		while (true)
+		while (map.getEndTilePosition() == null) // functional?
 			mapMazeStep();
 		
 		// Find shortest path back
@@ -51,6 +66,6 @@ public class Coordinator extends Setup
 	{
 		Action.scanSurrounding(map);
 		Action.makeMoveStep(map);
-		//EV3Server.sendMap();
+		EV3Server.sendMap();
 	}
 }

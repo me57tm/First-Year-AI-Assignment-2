@@ -68,10 +68,6 @@ public class Action
 			if (mazeMap[front2[0]][front2[1]] == 0)
 			{
 				// move forwards
-				/*LCD.clear();
-				LCD.drawString("Move forwards", 0, 0);
-				Coordinator.buttons.waitForAnyPress();
-				LCD.clear();*/
 				moveCarefully(map, 0);
 				return;
 			}
@@ -83,10 +79,6 @@ public class Action
 			if (mazeMap[right2[0]][right2[1]] == 0)
 			{
 				// move right
-				/*LCD.clear();
-				LCD.drawString("Move right", 0, 0);
-				Coordinator.buttons.waitForAnyPress();
-				LCD.clear();*/
 				moveCarefully(map, 90);
 				return;
 			}
@@ -98,19 +90,10 @@ public class Action
 			if (mazeMap[left2[0]][left2[1]] == 0)
 			{
 				// Move left
-				/*LCD.clear();
-				LCD.drawString("Move left", 0, 0);
-				Coordinator.buttons.waitForAnyPress();
-				LCD.clear();*/
 				moveCarefully(map, -90);
 				return;
 			}
 		}
-		/*LCD.clear();
-		LCD.drawString("Tries to backtrack", 0, 0);
-		LCD.drawString(String.valueOf(map.visitStack.size()), 0, 1);
-		Coordinator.buttons.waitForAnyPress();
-		LCD.clear();*/
 		// Otherwise backtrack to the previous square
 		boolean backtrack = performBacktrack(map, map.visitStack);
 		// Invalid maze
@@ -146,7 +129,7 @@ public class Action
 	}
 
 	/**
-	 * Moves and simultaneously checks for coloured tiles. Handles all situations of coloured tiles internally
+	 * Moves to the next tile and simultaneously checks for coloured tiles. Handles all situations of coloured tiles internally
 	 * @param map
 	 * @param direction
 	 */
@@ -173,16 +156,17 @@ public class Action
 			
 			if (detectedColour == "GREEN")
 			{
-				double returnDistance = (double) Coordinator.pilot.getMovement().getDistanceTraveled();
+				double drivenDistance = (double) Coordinator.pilot.getMovement().getDistanceTraveled();
 				Coordinator.pilot.stop(); //necessary?
-				Delay.msDelay(100);
+				Delay.msDelay(250);
+				
 				map.visitStack.pop();
 				
 				// Travel back
-				Coordinator.pilot.travel(-returnDistance);
+				Coordinator.pilot.travel(-drivenDistance);
 				int[] front = map.getSquareInDirection(0);
 				int[] greenTile = map.getSquareInDirection(front, 0);
-				// Set all surrounding the path to walls
+				// Set everything surrounding the green tile to walls
 				for (int i = 0; i < 360; i += 90)
 				{
 					int[] tile = map.getSquareInDirection(greenTile, i);
@@ -191,22 +175,21 @@ public class Action
 				map.updateMazeMap(greenTile[0], greenTile[1], -1);
 				
 				// Turn back
-				Coordinator.pilot.rotate(direction * -1);
-				map.updateRobotOrientation(direction * -1);
+				Coordinator.pilot.rotate(-direction);
+				map.updateRobotOrientation(-direction);
 				return;
 			}
 			
 			if (detectedColour == "RED")
 			{
-				double returnDistance = (double) Coordinator.pilot.getMovement().getDistanceTraveled();
+				double drivenDistance = (double) Coordinator.pilot.getMovement().getDistanceTraveled();
 				Coordinator.pilot.stop(); //necessary?
-				Delay.msDelay(100);
-				map.visitStack.pop();
+				Delay.msDelay(250);
 				// Travel to the middle of the tile
-				Coordinator.pilot.travel(Coordinator.DISTANCE - returnDistance);
+				Coordinator.pilot.travel(Coordinator.DISTANCE - drivenDistance);
 				map.updateRobotPosition();
-				map.setEndTilePosition(map.getRobotPosition());
-				int[] robotPosition = map.getRobotPosition();
+				map.setEndTilePosition(map.getRobotPosition().clone());
+				int[] robotPosition = map.getRobotPosition().clone();
 				map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
 				return;
 			}
@@ -218,7 +201,7 @@ public class Action
 	}
 	
 	/**
-	 * Detects significant offset of the robot and performs a appropiate correction turn
+	 * NOT functional, detects significant offset of the robot and performs a appropriate correction turn
 	 */
 	public static void recalibrateOrientation()
 	{
@@ -247,54 +230,9 @@ public class Action
 		float average = (RGB[0] + RGB[1] + RGB[2]) / 3.0f;
 		if (RGB[0] > 1.3 * average)
 			return "RED";
-		if (RGB[0] < 0.7 * average && RGB[1] > 1.1 * average && average > 0.2) // TODO average > 0.2 new
+		if (RGB[0] < 0.7 * average && RGB[1] > 1.1 * average && average > 0.2)
 			return "GREEN";
 		return "WHITE";
-	}
-
-	/**
-	 * Old movement, remove if new one is functional. Move from one Path to the
-	 * next Path. Tries to drive front, then right, then left, then back
-	 * 
-	 * @param map
-	 */
-	public static void moveToNextSquareDumb(CustomOccupancyMap map)
-	{
-		int[][] mazeMap = map.getMazeMap();
-	
-		int[] leftPosition = map.getSquareInDirection(-90);
-		int[] frontPosition = map.getSquareInDirection(0);
-		int[] rightPosition = map.getSquareInDirection(90);
-	
-		if (mazeMap[frontPosition[0]][frontPosition[1]] == 1)
-		{
-			Coordinator.pilot.travel(Coordinator.DISTANCE);
-			map.updateRobotPosition();
-		}
-		else if (mazeMap[rightPosition[0]][rightPosition[1]] == 1)
-		{
-			Coordinator.pilot.rotate(90);
-			map.updateRobotOrientation(90);
-			Coordinator.pilot.travel(Coordinator.DISTANCE);
-			map.updateRobotPosition();
-	
-		}
-		else if (mazeMap[leftPosition[0]][leftPosition[1]] == 1)
-		{
-			Coordinator.pilot.rotate(-90);
-			map.updateRobotOrientation(-90);
-			Coordinator.pilot.travel(Coordinator.DISTANCE);
-			map.updateRobotPosition();
-		}
-		else
-		{
-			Coordinator.pilot.rotate(180);
-			map.updateRobotOrientation(180);
-			Coordinator.pilot.travel(Coordinator.DISTANCE);
-			map.updateRobotPosition();
-		}
-		int[] robotPosition = map.getRobotPosition();
-		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
 	}
 	
 }

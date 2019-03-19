@@ -70,6 +70,7 @@ public class CustomOccupancyMap implements Serializable
 				else
 					mazeMap[i][j] = 0;
 			}
+		
 		// Origin is a path
 		mazeMap[1][1] = 1;
 
@@ -104,19 +105,20 @@ public class CustomOccupancyMap implements Serializable
 		if (invalid)
 			System.exit(1);
 		
-		//if in direction 90
-		if (diff[0] > 0)
-		{
-			int turnby = -180;
-			while ((robotOrientation + turnby) % 360 != 90)
-				turnby += 90;
-			return turnby;
-		}
 		//if in direction 0
 		if (diff[1] > 0)
 		{
 			int turnby = -180;
 			while ((robotOrientation + turnby) % 360 != 0)
+				turnby += 90;
+			return turnby;
+		}
+		
+		//if in direction 90
+		if (diff[0] > 0)
+		{
+			int turnby = -180;
+			while ((robotOrientation + turnby) % 360 != 90)
 				turnby += 90;
 			return turnby;
 		}
