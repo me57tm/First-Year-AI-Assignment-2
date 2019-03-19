@@ -68,10 +68,10 @@ public class Action
 			if (mazeMap[front2[0]][front2[1]] == 0)
 			{
 				// move forwards
-				LCD.clear();
+				/*LCD.clear();
 				LCD.drawString("Move forwards", 0, 0);
 				Coordinator.buttons.waitForAnyPress();
-				LCD.clear();
+				LCD.clear();*/
 				moveCarefully(map, 0);
 				return;
 			}
@@ -79,13 +79,14 @@ public class Action
 		if (mazeMap[right[0]][right[1]] != -1)
 		{
 			int[] right2 = map.getSquareInDirection(right, 90);
+			
 			if (mazeMap[right2[0]][right2[1]] == 0)
 			{
 				// move right
-				LCD.clear();
+				/*LCD.clear();
 				LCD.drawString("Move right", 0, 0);
 				Coordinator.buttons.waitForAnyPress();
-				LCD.clear();
+				LCD.clear();*/
 				moveCarefully(map, 90);
 				return;
 			}
@@ -93,22 +94,23 @@ public class Action
 		if (mazeMap[left[0]][left[1]] != -1)
 		{
 			int[] left2 = map.getSquareInDirection(left, -90);
+			
 			if (mazeMap[left2[0]][left2[1]] == 0)
 			{
 				// Move left
-				LCD.clear();
+				/*LCD.clear();
 				LCD.drawString("Move left", 0, 0);
 				Coordinator.buttons.waitForAnyPress();
-				LCD.clear();
+				LCD.clear();*/
 				moveCarefully(map, -90);
 				return;
 			}
 		}
-		LCD.clear();
+		/*LCD.clear();
 		LCD.drawString("Tries to backtrack", 0, 0);
 		LCD.drawString(String.valueOf(map.visitStack.size()), 0, 1);
 		Coordinator.buttons.waitForAnyPress();
-		LCD.clear();
+		LCD.clear();*/
 		// Otherwise backtrack to the previous square
 		boolean backtrack = performBacktrack(map, map.visitStack);
 		// Invalid maze
@@ -164,6 +166,7 @@ public class Action
 		
 		while (Coordinator.pilot.isMoving())
 		{
+			/*
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
 			Delay.msDelay(30);
 
@@ -172,16 +175,16 @@ public class Action
 			if (detectedColour == "GREEN")
 			{
 				Coordinator.pilot.stop();
+				map.visitStack.pop();
 				
 				LCD.clear();
 				LCD.drawString("Detected green", 0, 0);
 				Coordinator.buttons.waitForAnyPress();
 				LCD.clear();
 				
-				map.visitStack.pop();
 				// Travel back
 				Coordinator.pilot.travel(-1 * (Coordinator.DISTANCE - 18));
-				int[] front = map.getSquareInDirection(map.getRobotPosition(), 0);
+				int[] front = map.getSquareInDirection(0);
 				int[] greenTile = map.getSquareInDirection(front, 0);
 				// Set all surrounding the path to walls
 				for (int i = 0; i < 360; i += 90)
@@ -211,6 +214,7 @@ public class Action
 				map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
 				return;
 			}
+			*/
 		}
 		// If no special colours
 		map.updateRobotPosition();

@@ -292,6 +292,13 @@ public class CustomOccupancyMap implements Serializable
 	 */
 	public int[] getSquareInDirection(int[] square, int direction)
 	{
+		direction += robotOrientation;
+
+		if (direction >= 360)
+			direction -= 360;
+		if (direction < 0)
+			direction += 360;
+		
 		if (direction == 0)
 			return new int[] { square[0], square[1] + 1 };
 		if (direction == 90)

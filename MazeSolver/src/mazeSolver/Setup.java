@@ -54,7 +54,7 @@ public class Setup
 	 * Distance to travel from one centre of a path grid to the centre of the
 	 * next path grid.
 	 */
-	public static final int               DISTANCE                 = 40;
+	public static final int               DISTANCE                 = 39;
 
 	/**
 	 * Long front side of the maze
@@ -147,8 +147,8 @@ public class Setup
 		LCD.clear();
 		LCD.drawString("Setting up", 0, 0);
 		LCD.drawString("Wheels,Chassis", 0, 1);
-		wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR, 5.5).offset(-5.15); //-5.2
-		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(5.15); //5.2
+		wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR, 5.5).offset(-4.9); //-5.2
+		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(4.6); //5.2
 		chassis = new WheeledChassis(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(chassis);
 		pilot.setAngularSpeed(50);

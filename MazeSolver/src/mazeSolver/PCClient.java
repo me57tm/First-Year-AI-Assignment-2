@@ -41,7 +41,6 @@ public class PCClient
 				InputStream in = sock.getInputStream();
 				ObjectInputStream oIn = new ObjectInputStream(in);
 				map = (CustomOccupancyMap) oIn.readObject();
-				Delay.msDelay(100);
 				display.update(map);
 				for (int i = 0; !map.visitStack.isEmpty(); i++)
 				{
