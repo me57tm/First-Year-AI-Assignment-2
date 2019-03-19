@@ -54,7 +54,7 @@ public class Setup
 	 * Distance to travel from one centre of a path grid to the centre of the
 	 * next path grid.
 	 */
-	public static final int               DISTANCE                 = 39;
+	public static final double               DISTANCE                 = 39.5;
 
 	/**
 	 * Long front side of the maze
@@ -170,7 +170,7 @@ public class Setup
 		GyroSensor.reset();
 
 		// Set up Bluetooth Connection
-		EV3Server.initializeBluetoothConnection();
+		//EV3Server.initializeBluetoothConnection();
 
 		// Mapping start warning
 		LCD.clear();
