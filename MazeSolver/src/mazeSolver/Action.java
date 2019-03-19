@@ -153,7 +153,6 @@ public class Action
 	public static void moveCarefully(CustomOccupancyMap map, int direction)
 	{
 		//recalibrateOrientation();
-		
 		Coordinator.pilot.rotate(direction);
 		map.updateRobotOrientation(direction);
 		
@@ -166,7 +165,7 @@ public class Action
 		
 		while (Coordinator.pilot.isMoving())
 		{
-			/*
+			
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
 			Delay.msDelay(30);
 
@@ -174,16 +173,13 @@ public class Action
 			
 			if (detectedColour == "GREEN")
 			{
-				Coordinator.pilot.stop();
+				double returnDistance = (double) Coordinator.pilot.getMovement().getDistanceTraveled();
+				Coordinator.pilot.stop(); //necessary?
+				Delay.msDelay(100);
 				map.visitStack.pop();
 				
-				LCD.clear();
-				LCD.drawString("Detected green", 0, 0);
-				Coordinator.buttons.waitForAnyPress();
-				LCD.clear();
-				
 				// Travel back
-				Coordinator.pilot.travel(-1 * (Coordinator.DISTANCE - 18));
+				Coordinator.pilot.travel(-returnDistance);
 				int[] front = map.getSquareInDirection(0);
 				int[] greenTile = map.getSquareInDirection(front, 0);
 				// Set all surrounding the path to walls
@@ -199,22 +195,21 @@ public class Action
 				map.updateRobotOrientation(direction * -1);
 				return;
 			}
+			
 			if (detectedColour == "RED")
 			{
-				Coordinator.pilot.stop();
-				LCD.clear();
-				LCD.drawString("Detected green", 0, 0);
-				Coordinator.buttons.waitForAnyPress();
-				LCD.clear();
+				double returnDistance = (double) Coordinator.pilot.getMovement().getDistanceTraveled();
+				Coordinator.pilot.stop(); //necessary?
+				Delay.msDelay(100);
+				map.visitStack.pop();
 				// Travel to the middle of the tile
-				Coordinator.pilot.travel(18);
+				Coordinator.pilot.travel(Coordinator.DISTANCE - returnDistance);
 				map.updateRobotPosition();
 				map.setEndTilePosition(map.getRobotPosition());
 				int[] robotPosition = map.getRobotPosition();
 				map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
 				return;
 			}
-			*/
 		}
 		// If no special colours
 		map.updateRobotPosition();
@@ -252,7 +247,7 @@ public class Action
 		float average = (RGB[0] + RGB[1] + RGB[2]) / 3.0f;
 		if (RGB[0] > 1.3 * average)
 			return "RED";
-		if (RGB[0] < 0.7 * average && average > 0.2) // TODO average > 0.2 new
+		if (RGB[0] < 0.7 * average && RGB[1] > 1.1 * average && average > 0.2) // TODO average > 0.2 new
 			return "GREEN";
 		return "WHITE";
 	}

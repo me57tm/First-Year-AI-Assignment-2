@@ -1,23 +1,6 @@
 package mazeSolver;
 
 import java.io.IOException;
-import lejos.hardware.BrickFinder;
-import lejos.hardware.Keys;
-import lejos.hardware.ev3.EV3;
-import lejos.hardware.lcd.LCD;
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.SensorPort;
-import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.EV3IRSensor;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.robotics.SampleProvider;
-import lejos.robotics.chassis.Chassis;
-import lejos.robotics.chassis.Wheel;
-import lejos.robotics.chassis.WheeledChassis;
-import lejos.robotics.navigation.*;
-import lejos.utility.Delay;
 
 /**
  * Main class to map the maze.
@@ -68,7 +51,6 @@ public class Coordinator extends Setup
 	{
 		Action.scanSurrounding(map);
 		Action.makeMoveStep(map);
-		//Action.moveToNextSquareDumb(map);
 		EV3Server.sendMap();
 	}
 }

@@ -3,8 +3,6 @@ package mazeSolver;
 import java.io.*;
 import java.net.*;
 
-import lejos.utility.Delay;
-
 /**
  * The Client that receives information from the EV3 Server.
  */
