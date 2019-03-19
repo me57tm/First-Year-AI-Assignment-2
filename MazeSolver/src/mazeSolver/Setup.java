@@ -141,8 +141,7 @@ public class Setup
 
 		// TODO NEW
 		map = new CustomOccupancyMap(MAP_WIDTH, MAP_HEIGHT, 90);
-		
-		
+
 		LCD.clear();
 		LCD.drawString("Setting up", 0, 0);
 		LCD.drawString("Motors", 0, 1);
@@ -177,7 +176,7 @@ public class Setup
 
 		// Set up Bluetooth Connection
 		EV3Server.initializeBluetoothConnection();
-		
+
 		// Mapping start warning
 		LCD.clear();
 		LCD.drawString("Setup complete!", 0, 0);

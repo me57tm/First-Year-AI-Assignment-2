@@ -70,7 +70,7 @@ public class CustomOccupancyMap implements Serializable
 				else
 					mazeMap[i][j] = 0;
 			}
-		
+
 		// Origin is a path
 		mazeMap[1][1] = 1;
 
@@ -81,13 +81,13 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Returns angle to turn to the square
+	 * Returns angle to turn to face the given square
 	 * 
 	 * @param square
 	 *            coordinates to turn to
 	 * @return angle
 	 */
-	public int turnToSquare(int[] square)
+	public int getAngleToSquare(int[] square)
 	{
 		LCD.clear();
 		LCD.drawString(String.valueOf(square[0] + " " + String.valueOf(square[1])), 0, 2);
@@ -104,7 +104,7 @@ public class CustomOccupancyMap implements Serializable
 		// End program if invalid
 		if (invalid)
 			System.exit(1);
-		
+
 		//if in direction 0
 		if (diff[1] > 0)
 		{
@@ -113,7 +113,7 @@ public class CustomOccupancyMap implements Serializable
 				turnby += 90;
 			return turnby;
 		}
-		
+
 		//if in direction 90
 		if (diff[0] > 0)
 		{
@@ -122,7 +122,7 @@ public class CustomOccupancyMap implements Serializable
 				turnby += 90;
 			return turnby;
 		}
-			
+
 		//if in direction 270
 		if (diff[0] < 0)
 		{
@@ -131,7 +131,7 @@ public class CustomOccupancyMap implements Serializable
 				turnby += 90;
 			return turnby;
 		}
-		
+
 		//if in direction 180
 		if (diff[1] < 0)
 		{
@@ -140,7 +140,7 @@ public class CustomOccupancyMap implements Serializable
 				turnby += 90;
 			return turnby;
 		}
-		
+
 		// Illegal state
 		LCD.clear();
 		LCD.drawString("Illegal state", 0, 0);
@@ -148,7 +148,6 @@ public class CustomOccupancyMap implements Serializable
 		LCD.clear();
 		return 0;
 	}
-	
 
 	/**
 	 * Gets mazeMap array.
@@ -300,7 +299,7 @@ public class CustomOccupancyMap implements Serializable
 			direction -= 360;
 		if (direction < 0)
 			direction += 360;
-		
+
 		if (direction == 0)
 			return new int[] { square[0], square[1] + 1 };
 		if (direction == 90)

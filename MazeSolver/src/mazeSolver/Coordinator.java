@@ -1,39 +1,14 @@
 package mazeSolver;
 
 import java.io.IOException;
+import java.util.Stack;
 
 /**
- * Main class to map the maze.
+ * Main class.
  */
 public class Coordinator extends Setup
 {
-	
-	
-	
-	
-	
-	
 
-	/*
-	 * TODO:
-	 * 
-	 * 
-	 * - Apply functional A* and integrate into a method from mapMazeStep(s) on
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * Main method the robot will execute.
 	 * 
@@ -45,27 +20,28 @@ public class Coordinator extends Setup
 	public static void main(String[] args)
 		throws IOException
 	{
+		// Sets up map, sensors, motors, Bluetooth, etc.
 		setup();
-		//while (map.getEndTilePosition() == null)
-		while (map.getEndTilePosition() == null) // functional?
-			mapMazeStep();
-		
-		// Find shortest path back
 
-		// Last line of code
-		//EV3Server.closeBluetoothConnection();
+		findEndOfMaze(map);
+		Action.shortestPathBack(map);
+
+		EV3Server.closeBluetoothConnection();
 	}
 
 	/**
-	 * Main method of mapping the maze - performs one step of mapping the maze.
+	 * Maps the maze until it finds the end of the maze
 	 * 
 	 * @throws IOException
 	 */
-	public static void mapMazeStep()
+	public static void findEndOfMaze(CustomOccupancyMap map)
 		throws IOException
 	{
-		Action.scanSurrounding(map);
-		Action.makeMoveStep(map);
-		EV3Server.sendMap();
+		while (map.getEndTilePosition() == null) // TODO untested
+		{
+			Action.scanSurrounding(map);
+			Action.makeMoveStep(map);
+			EV3Server.sendMap();
+		}
 	}
 }
