@@ -1,7 +1,6 @@
 package mazeSolver;
 
 import java.io.IOException;
-import java.util.Stack;
 
 /**
  * Main class.

@@ -63,7 +63,7 @@ public class PCClient
 			ClassNotFoundException
 	{
 		display = new Display();
-		ip = "10.0.1.1"; // BT
+		ip = "10.0.1.2"; // BT
 		System.out.println("Trying to connect...");
 		if (args.length > 0)
 			ip = args[0];

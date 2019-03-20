@@ -11,11 +11,6 @@ public class PathFinder
 
 	private int[][] map = new int[Coordinator.MAP_WIDTH][Coordinator.MAP_HEIGHT];
 
-	private PathFinder()
-	{
-
-	}
-
 	public PathFinder(int[][] map)
 	{
 		this.map = map;

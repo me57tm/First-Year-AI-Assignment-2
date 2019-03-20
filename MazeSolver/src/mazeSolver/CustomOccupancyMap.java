@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Stack;
 
-import lejos.hardware.lcd.LCD;
-
 /**
  * Custom Map Object to represent a to-be-explored Maze.
  */
@@ -89,10 +87,6 @@ public class CustomOccupancyMap implements Serializable
 	 */
 	public int getAngleToSquare(int[] square)
 	{
-		LCD.clear();
-		LCD.drawString(String.valueOf(square[0] + " " + String.valueOf(square[1])), 0, 2);
-		Coordinator.buttons.waitForAnyPress();
-		LCD.clear();
 		int[] diff = new int[] { square[0] - robotPosition[0], square[1] - robotPosition[1] };
 		// Check for invalid passed squares
 		int sumOfDistances = 0;
@@ -142,10 +136,7 @@ public class CustomOccupancyMap implements Serializable
 		}
 
 		// Illegal state
-		LCD.clear();
-		LCD.drawString("Illegal state", 0, 0);
-		Coordinator.buttons.waitForAnyPress();
-		LCD.clear();
+		System.exit(1);
 		return 0;
 	}
 
@@ -278,7 +269,8 @@ public class CustomOccupancyMap implements Serializable
 			return new int[] { robotPosition[0], robotPosition[1] - 1 };
 		if (direction == 270 || direction == -90)
 			return new int[] { robotPosition[0] - 1, robotPosition[1] };
-		// Wrong input
+		// Illegal input
+		System.exit(1);
 		return null;
 	}
 
@@ -308,7 +300,8 @@ public class CustomOccupancyMap implements Serializable
 			return new int[] { square[0], square[1] - 1 };
 		if (direction == 270 || direction == -90)
 			return new int[] { square[0] - 1, square[1] };
-		//Wrong input
+		// Illegal input
+		System.exit(1);
 		return null;
 	}
 

@@ -1,6 +1,5 @@
 package mazeSolver;
 
-import java.io.IOException;
 import java.util.Stack;
 
 import lejos.hardware.lcd.LCD;
@@ -126,7 +125,6 @@ public class Action
 
 		while (Coordinator.pilot.isMoving())
 		{
-
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
 			Delay.msDelay(30);
 
@@ -189,13 +187,14 @@ public class Action
 	public static void shortestPathBack(CustomOccupancyMap map)
 	{
 		PathFinder pathFinder = new PathFinder(map.getMazeMap());
+		
 		while (true)
 		{
+			Stack<int[]> pathWithoutUnknowns = new Stack<>();
 			Stack<int[]> pathWithUnknowns = new Stack<>();
 			pathWithUnknowns = pathFinder.getPath(map.getEndTilePosition(), new int[] { 1, 1 }, true);
-			Stack<int[]> pathWithoutUnknowns = new Stack<>();
 			pathWithoutUnknowns = pathFinder.getPath(map.getEndTilePosition(), new int[] { 1, 1 }, false);
-
+			
 			// if there exists a route without unknowns so with only observed paths, that is the shortest possible path
 			if (pathWithUnknowns.size() == pathWithoutUnknowns.size())
 			{
@@ -211,6 +210,7 @@ public class Action
 			}
 
 			// explore and stuff
+			
 		}
 	}
 
