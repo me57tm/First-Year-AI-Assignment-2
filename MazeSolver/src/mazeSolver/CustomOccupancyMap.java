@@ -153,17 +153,14 @@ public class CustomOccupancyMap implements Serializable
 	/**
 	 * Updates the current tile to the new value.
 	 * 
-	 * @param width
-	 *            The width-position of the tile.
-	 * @param length
-	 *            The length-position of the tile.
+	 * @param int[] tile to update
 	 * @param value
 	 *            The new value assigned, -1 for wall, 0 for unknown (should not
 	 *            be used) and 1 for path.
 	 */
-	public void updateMazeMap(int width, int height, int value)
+	public void updateMazeMap(int[] tile, int value)
 	{
-		mazeMap[width][height] = value;
+		mazeMap[tile[0]][tile[1]] = value;
 	}
 
 	/**

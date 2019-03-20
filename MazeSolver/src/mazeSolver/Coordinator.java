@@ -1,6 +1,7 @@
 package mazeSolver;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Main class.
@@ -24,11 +25,10 @@ public class Coordinator extends Setup
 
 		findEndOfMaze(map);
 		
-		//Scan once after red square
-		Action.scanSurrounding(map);
+		// TODO should never be at end tile before algorithm finished, I think?
+		while (!Arrays.equals(map.getRobotPosition(), new int[] {1,1}))
+			Action.shortestPathBack(map);
 		
-		Action.shortestPathBack(map);
-
 		EV3Server.closeBluetoothConnection();
 	}
 
@@ -46,7 +46,9 @@ public class Coordinator extends Setup
 			Action.makeMoveStep(map);
 			EV3Server.sendMap();
 		}
-		
-		map.visitStack.removeAllElements();
+		if (!map.visitStack.isEmpty())
+			map.visitStack.removeAllElements();
+		// Scan once after red square
+		Action.scanSurrounding(map);
 	}
 }

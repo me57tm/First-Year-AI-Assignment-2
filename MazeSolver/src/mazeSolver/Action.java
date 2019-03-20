@@ -32,10 +32,10 @@ public class Action
 
 				if (IR[0] < 25)
 					// Set to wall
-					map.updateMazeMap(tile[0], tile[1], -1);
+					map.updateMazeMap(tile, -1);
 				else
 					// Set to path
-					map.updateMazeMap(tile[0], tile[1], 1);
+					map.updateMazeMap(tile, 1);
 			}
 		}
 		Coordinator.ROTATION_MOTOR.rotateTo(0);
@@ -150,9 +150,9 @@ public class Action
 				for (int i = 0; i < 360; i += 90)
 				{
 					int[] tile = map.getSquareInDirection(greenTile, i);
-					map.updateMazeMap(tile[0], tile[1], -1);
+					map.updateMazeMap(tile, -1);
 				}
-				map.updateMazeMap(greenTile[0], greenTile[1], -1);
+				map.updateMazeMap(greenTile, -1);
 
 				// Turn back
 				Coordinator.pilot.rotate(-direction);
@@ -170,14 +170,14 @@ public class Action
 				map.updateRobotPosition();
 				map.setEndTilePosition(map.getRobotPosition().clone());
 				int[] robotPosition = map.getRobotPosition().clone();
-				map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
+				map.updateMazeMap(robotPosition, 1);
 				return;
 			}
 		}
 		// If no special colours
 		map.updateRobotPosition();
 		int[] robotPosition = map.getRobotPosition();
-		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
+		map.updateMazeMap(robotPosition, 1);
 	}
 
 	/**
@@ -193,79 +193,90 @@ public class Action
 		PathFinder pathFinder = new PathFinder(map.getMazeMap());
 		int[] startTile = new int[] {1,1};
 		
-		while (true)
+		Stack<int[]> pathWithoutUnknowns = new Stack<>();
+		Stack<int[]> pathWithUnknowns = new Stack<>();
+		pathWithUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, true);
+		pathWithoutUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, false);
+		
+		/*
+		 * Case 1: Robot found shortest path
+		 */
+		// if there exists a route without unknowns so with only observed paths, that is the shortest possible path
+		if (pathWithUnknowns.size() == pathWithoutUnknowns.size())
 		{
-			Stack<int[]> pathWithoutUnknowns = new Stack<>();
-			Stack<int[]> pathWithUnknowns = new Stack<>();
-			
-			pathWithUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, true);
-			pathWithoutUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, false);
-			
-			// if there exists a route without unknowns so with only observed paths, that is the shortest possible path
-			if (pathWithUnknowns.size() == pathWithoutUnknowns.size())
-			{
-				Stack<int[]> pathToEndTile = new Stack<>();
-				pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
-				// Go to end of maze
-				while (!pathToEndTile.isEmpty())
-					Action.moveToTileFromStack(map, pathToEndTile);
-				// Go from end back to the start
-				while (!pathWithoutUnknowns.isEmpty())
-					Action.moveToTileFromStack(map, pathWithoutUnknowns);
-				return;
-			}
-			
-			int[][] pathCopy = new int[pathWithUnknowns.size()][2];
-			pathWithUnknowns.toArray(pathCopy);
-			int oldStackSize = pathWithUnknowns.size();
-
-			if (Arrays.equals(map.getRobotPosition(), map.getEndTilePosition()))
-			{
-				moveCarefully(map, map.getAngleToSquare(pathWithUnknowns.peek()));
-				map.visitStack.removeAllElements();
-			}
-			
-			// Check if robot is on the path
-			for (int i = 0; i < pathCopy.length; i++)
-				// If it's on the path
-				if (Arrays.equals(map.getRobotPosition(), pathCopy[i]))
-				{
-					// Pop Stack to be able to follow it from now on
-					for (int j = 0; j < i + 1; j++)
-						pathWithUnknowns.pop();
-					break;
-				}
-			
-			// On the path
-			if (oldStackSize != pathWithUnknowns.size())
-			{
-				// Follow the path from now on
-				while (!pathWithUnknowns.isEmpty())
-				{
-					int[] path = pathWithUnknowns.peek();
-					if (map.getMazeMap()[path[0]][path[1]] != 0)
-						moveToTileFromStack(map, pathWithUnknowns);
-					else
-					{
-						scanSurrounding(map);
-						moveCarefully(map, map.getAngleToSquare(pathWithUnknowns.peek()));
-						map.visitStack.removeAllElements();
-						break;
-					}
-				}
-				continue;
-			}
-			
-			
-			// Otherwise
-			// Not on the path
-			
-			// Move back to endOfTile
 			Stack<int[]> pathToEndTile = new Stack<>();
 			pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
+			// Go to end of maze
 			while (!pathToEndTile.isEmpty())
-				moveToTileFromStack(map, pathToEndTile);
+				Action.moveToTileFromStack(map, pathToEndTile);
+			// Go from end of maze back to the start
+			while (!pathWithoutUnknowns.isEmpty())
+				Action.moveToTileFromStack(map, pathWithoutUnknowns);
+			return;
 		}
+		
+		// Store path with unknowns in array
+		int[][] pathCopy = new int[pathWithUnknowns.size()][2];
+		pathWithUnknowns.toArray(pathCopy);
+		// size of current path stack
+		int oldStackSize = pathWithUnknowns.size();
+		
+		
+		
+		/*
+		 * Case 2: Robot is at Red Tile
+		 */
+		if (Arrays.equals(map.getRobotPosition(), map.getEndTilePosition()))
+		{
+			moveCarefully(map, map.getAngleToSquare(pathWithUnknowns.peek()));
+			if (!map.visitStack.isEmpty())
+				map.visitStack.removeAllElements();
+		}
+		
+		// Check if robot is on the path
+		for (int i = 0; i < pathCopy.length; i++)
+			// If it's on the path
+			if (Arrays.equals(map.getRobotPosition(), pathCopy[i]))
+			{
+				// Pop Stack to be able to follow it from now on
+				for (int j = 0; j < i + 1; j++)
+					pathWithUnknowns.pop();
+				break;
+			}
+		
+		
+		
+		/*
+		 * Case 3: Robot is already on the path
+		 */
+		if (oldStackSize != pathWithUnknowns.size())
+		{
+			// Follow the path from now on
+			while (!pathWithUnknowns.isEmpty())
+			{
+				int[] path = pathWithUnknowns.peek();
+				if (map.getMazeMap()[path[0]][path[1]] != 0)
+					moveToTileFromStack(map, pathWithUnknowns);
+				else
+				{
+					scanSurrounding(map);
+					moveCarefully(map, map.getAngleToSquare(pathWithUnknowns.peek()));
+					if (!map.visitStack.isEmpty())
+						map.visitStack.removeAllElements();
+					return;
+				}
+			}
+		}
+		
+		
+		/*
+		 * Case 4: Robot is neither on the end tile nor on the existing path
+		 */
+		// Move back to endOfTile
+		Stack<int[]> pathToEndTile = new Stack<>();
+		pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
+		while (!pathToEndTile.isEmpty())
+			moveToTileFromStack(map, pathToEndTile);
 	}
 
 	/**
@@ -313,7 +324,7 @@ public class Action
 		Delay.msDelay(30);
 
 		int robotOrientation = Coordinator.map.getRobotOrientation();
-		int offsetInDegrees = (int) (Math.abs(robotOrientation) - Math.abs(Gyro[0])); // TODO Care, cast float to
+		int offsetInDegrees = (int) (Math.abs(robotOrientation) - Math.abs(Gyro[0])); // TODO  Care, cast float to
 
 		// If significant offset in degrees
 		if (offsetInDegrees > Coordinator.RECALIBRATION_THRESHHOLD && robotOrientation > Gyro[0])
