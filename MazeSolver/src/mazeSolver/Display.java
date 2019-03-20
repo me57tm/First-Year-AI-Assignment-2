@@ -27,7 +27,7 @@ public class Display {
 	private final static int GRID_WIDTH = Coordinator.MAP_WIDTH;
 	private final static int GRID_HEIGHT = Coordinator.MAP_HEIGHT;
 	
-	private boolean activeButtons;
+	//private boolean activeButtons;
 
 	private JFrame frmEvMazeSolver;
 	private JProgressBar progressBar;
@@ -39,7 +39,7 @@ public class Display {
 	 * Default parameter
 	 */
 	public static void main(String[] args) {
-		Display window = new Display(false);
+		Display window = new Display();
 		int[][] map = new int[GRID_WIDTH][GRID_HEIGHT];
 		map = new int[][] {
 			{-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
@@ -156,7 +156,7 @@ public class Display {
 	 * Create the application with buttons inactive.
 	 */
 	public Display() {
-		this.activeButtons = false;
+		//this.activeButtons = false;
 		initialize();
 		frmEvMazeSolver.setVisible(true);
 		grid[1][0].setBackground(Color.BLUE);
@@ -167,11 +167,11 @@ public class Display {
 	 * @param active 
 	 * Whether or not the buttons should be active.
 	 */
-	public Display(boolean active) {
+	/*public Display(boolean active) {
 		this.activeButtons = active;
 		initialize();
 		frmEvMazeSolver.setVisible(true);
-	}
+	}*/
 	
 	/**
 	 * Get the grid.
@@ -220,9 +220,9 @@ public class Display {
 		pnlMiscInfo.setLayout(null);
 		
 		JLabel lblButtonsEnabled = new JLabel("Buttons Disabled");
-		if (activeButtons)
+		/*if (activeButtons)
 			lblButtonsEnabled = new JLabel("Buttons Enabled.");
-		else
+		else*/
 			lblButtonsEnabled = new JLabel("Buttons Disabled.");
 		lblButtonsEnabled.setSize(102, 16);
 		lblButtonsEnabled.setLocation(new Point(12, 13));
@@ -265,12 +265,8 @@ public class Display {
 						btnTemp = new JButton("("+String.valueOf(j/2+1)+","+String.valueOf(i/2+1)+")");
 						btnTemp.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) { //The code executed when this button is pressed
-								if (activeButtons)
-								System.out.println(e.getActionCommand());
 							}
 						});
-						if (activeButtons)
-							btnTemp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));;
 						btnTemp.setPreferredSize(new Dimension(60, 60));
 						btnTemp.setMinimumSize(new Dimension(59, 59));
 						btnTemp.setMaximumSize(new Dimension(59, 59));
