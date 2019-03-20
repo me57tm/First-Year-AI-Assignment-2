@@ -32,6 +32,7 @@ public class Display {
 	private JFrame frmEvMazeSolver;
 	private JProgressBar progressBar;
 	private JComponent[][] grid = new JComponent[GRID_HEIGHT][GRID_WIDTH];
+	private JLabel lblConnected;
 
 	/**
 	 * Default main method
@@ -98,6 +99,10 @@ public class Display {
 		grid[xy[1]][xy[0]].setBackground(c);
 	}
 	
+	public void updateConnected() {
+		lblConnected = new JLabel("Connected");
+	}
+	
 	/**
 	 * Update the GUI to display the correct information about the robot.
 	 * @param data
@@ -106,16 +111,31 @@ public class Display {
 	public void update(CustomOccupancyMap data) {
 		updateMap(data.getMazeMap());
 		progressBar.setValue(data.getCompletion());
-		int[] path;
 		
-		while (!data.visitStack.isEmpty())
-		{
-			path = data.visitStack.pop();
-			setColour(path, Color.CYAN);
-		}
+		drawStack(data.visitStack,Color.CYAN);
+		
+		PathFinder pf = new PathFinder(data.getMazeMap());
+		int[] end =  data.getEndTilePosition();
 		int[] position = data.getRobotPosition();
+		
+		if (end != null) {
+			drawStack(pf.getPath(end, new int[] {1,1},false),Color.orange);
+			drawStack(pf.getPath(end, new int[] {1,1},true),Color.yellow);
+			grid[end[1]][end[0]].setBackground(Color.red);
+		}
+		
+		
 		grid[position[1]][position[0]].setBackground(new Color(181, 70, 244));
 		grid[position[1]][position[0]].setForeground(Color.BLACK);
+	}
+	
+	public void drawStack(Stack<int[]> stack, Color colour) {
+		int[] path;
+		while (!stack.isEmpty())
+		{
+			path = stack.pop();
+			setColour(path, colour);
+		}
 	}
 	
 	
@@ -220,14 +240,13 @@ public class Display {
 		frmEvMazeSolver.getContentPane().add(pnlMiscInfo, BorderLayout.NORTH);
 		pnlMiscInfo.setLayout(null);
 		
-		JLabel lblButtonsEnabled = new JLabel("Buttons Disabled");
 		/*if (activeButtons)
 			lblButtonsEnabled = new JLabel("Buttons Enabled.");
 		else*/
-			lblButtonsEnabled = new JLabel("Buttons Disabled.");
-		lblButtonsEnabled.setSize(102, 16);
-		lblButtonsEnabled.setLocation(new Point(12, 13));
-		pnlMiscInfo.add(lblButtonsEnabled);
+			lblConnected = new JLabel("Awaiting Connection");
+		lblConnected.setSize(158, 16);
+		lblConnected.setLocation(new Point(12, 13));
+		pnlMiscInfo.add(lblConnected);
 		
 		progressBar = new JProgressBar();
 		progressBar.setValue(1);
