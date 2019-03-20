@@ -31,9 +31,9 @@ public class TestColours
 			LCD.drawString("G: " + String.valueOf(colour[1]), 0, 1);
 			LCD.drawString("B: " + String.valueOf(colour[1]), 0, 2);
 			LCD.drawString("AVG: " + String.valueOf(average(colour)), 0, 4);
-			LCD.drawString("R in %: " + String.valueOf(percentageOf(colour[0], colour)), 0, 5);
-			LCD.drawString("G in %: " + String.valueOf(percentageOf(colour[1], colour)), 0, 6);
-			LCD.drawString("B in %: " + String.valueOf(percentageOf(colour[1], colour)), 0, 7);
+			LCD.drawString("R in %AVG: " + String.valueOf(percentageOf(colour[0], colour)), 0, 5);
+			LCD.drawString("G in %AVG: " + String.valueOf(percentageOf(colour[1], colour)), 0, 6);
+			LCD.drawString("B in %AVG: " + String.valueOf(percentageOf(colour[2], colour)), 0, 7);
 			Delay.msDelay(100);
 		}
 	}
@@ -44,6 +44,6 @@ public class TestColours
 	
 	public static float percentageOf(float specRGB, float[] rgb)
 	{
-		return 100*(specRGB / (rgb[0] + rgb[1] + rgb[2]));
+		return 100*(specRGB / average(rgb));
 	}
 }

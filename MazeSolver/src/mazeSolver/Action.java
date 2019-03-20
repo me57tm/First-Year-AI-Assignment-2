@@ -1,5 +1,6 @@
 package mazeSolver;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 import lejos.hardware.lcd.LCD;
@@ -123,6 +124,9 @@ public class Action
 		// True means it returns right away and allows for measurements while moving
 		Coordinator.pilot.travel(Coordinator.DISTANCE, true);
 
+		while (Coordinator.pilot.getMovement().getDistanceTraveled() < 0.25 * Coordinator.DISTANCE)
+			// do nothing
+			
 		while (Coordinator.pilot.isMoving())
 		{
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
@@ -187,13 +191,15 @@ public class Action
 	public static void shortestPathBack(CustomOccupancyMap map)
 	{
 		PathFinder pathFinder = new PathFinder(map.getMazeMap());
+		int[] startTile = new int[] {1,1};
 		
 		while (true)
 		{
 			Stack<int[]> pathWithoutUnknowns = new Stack<>();
 			Stack<int[]> pathWithUnknowns = new Stack<>();
-			pathWithUnknowns = pathFinder.getPath(map.getEndTilePosition(), new int[] { 1, 1 }, true);
-			pathWithoutUnknowns = pathFinder.getPath(map.getEndTilePosition(), new int[] { 1, 1 }, false);
+			
+			pathWithUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, true);
+			pathWithoutUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, false);
 			
 			// if there exists a route without unknowns so with only observed paths, that is the shortest possible path
 			if (pathWithUnknowns.size() == pathWithoutUnknowns.size())
@@ -208,8 +214,40 @@ public class Action
 					Action.moveToTileFromStack(map, pathWithoutUnknowns);
 				return;
 			}
+			
+			int[][] pathCopy = new int[pathWithUnknowns.size()][2];
+			pathWithUnknowns.toArray(pathCopy);
+			int oldStackSize = pathWithUnknowns.size();
 
-			// explore and stuff
+			// Check if robot is on the path
+			for (int i = 0; i < pathCopy.length; i++)
+				// If it's on the path
+				if (Arrays.equals(map.getRobotPosition(), pathCopy[i]))
+				{
+					// Pop Stack to be able to follow it from now on
+					for (int j = 0; j < i + 1; j++)
+						pathWithUnknowns.pop();
+					break;
+				}
+			
+			// On the path
+			if (oldStackSize != pathWithUnknowns.size())
+				// Follow the path from now on
+				while (!pathWithUnknowns.isEmpty())
+				{
+					scanSurrounding(map);
+					moveToTileFromStack(map, pathWithUnknowns);
+				}
+				
+			// Otherwise
+			// Not on the path
+			if (pathWithUnknowns.isEmpty())
+			{
+				// Move back to endOfTile
+				Stack<int[]> pathToEndTile = new Stack<>();
+				pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
+				// Go along the pathToEndTile, then follow pathWithUnknowns
+			}
 			
 		}
 	}
@@ -247,7 +285,7 @@ public class Action
 		Delay.msDelay(30);
 
 		int robotOrientation = Coordinator.map.getRobotOrientation();
-		int offsetInDegrees = (int) (Math.abs(robotOrientation) - Math.abs(Gyro[0])); // TODO Care, cast float to int
+		int offsetInDegrees = (int) (Math.abs(robotOrientation) - Math.abs(Gyro[0])); // TODO Care, cast float to
 
 		// If significant offset in degrees
 		if (offsetInDegrees > Coordinator.RECALIBRATION_THRESHHOLD && robotOrientation > Gyro[0])
@@ -265,10 +303,12 @@ public class Action
 	public static String determineColour(float[] RGB)
 	{
 		float average = (RGB[0] + RGB[1] + RGB[2]) / 3.0f;
-		if (RGB[0] > 1.3 * average)
+		if (RGB[0] > 2 * average)
 			return "RED";
-		if (RGB[0] < 0.7 * average && RGB[1] > 1.1 * average && average > 0.2)
+		if (RGB[1] > 1.3 * average)
 			return "GREEN";
+		
+		//Anything else is considered white
 		return "WHITE";
 	}
 

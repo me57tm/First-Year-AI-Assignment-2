@@ -23,6 +23,7 @@ public class Coordinator extends Setup
 		setup();
 
 		findEndOfMaze(map);
+		
 		Action.shortestPathBack(map);
 
 		EV3Server.closeBluetoothConnection();
@@ -42,5 +43,7 @@ public class Coordinator extends Setup
 			Action.makeMoveStep(map);
 			EV3Server.sendMap();
 		}
+		
+		map.visitStack.removeAllElements();
 	}
 }

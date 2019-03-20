@@ -68,7 +68,7 @@ public class PCClient
 		if (args.length > 0)
 			ip = args[0];
 		sock = new Socket(ip, EV3Server.PORT);
-		System.out.println("CONNECTED");
+		display.updateConnected();
 		InputStream in = sock.getInputStream();
 		ObjectInputStream oIn = new ObjectInputStream(in);
 		CustomOccupancyMap map;

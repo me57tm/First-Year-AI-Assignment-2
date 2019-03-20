@@ -176,6 +176,7 @@ public class Setup
 
 		// Set up Bluetooth Connection
 		EV3Server.initializeBluetoothConnection();
+		
 
 		// Mapping start warning
 		LCD.clear();
