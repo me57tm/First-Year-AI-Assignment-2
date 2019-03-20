@@ -114,18 +114,6 @@ public class Action
 	public static void moveCarefully(CustomOccupancyMap map, int direction)
 	{
 		//recalibrateOrientation();
-		if (direction == 180 || direction == -180)
-		{
-			Coordinator.pilot.rotate(direction/2);
-			map.updateRobotOrientation(direction/2);
-			Coordinator.pilot.rotate(direction/2);
-			map.updateRobotOrientation(direction/2);
-		}
-		else
-		{
-			Coordinator.pilot.rotate(direction);
-			map.updateRobotOrientation(direction);
-		}
 		
 		map.visitStack.push(map.getRobotPosition().clone());
 
@@ -133,10 +121,12 @@ public class Action
 
 		// True means it returns right away and allows for measurements while moving
 		Coordinator.pilot.travel(Coordinator.DISTANCE, true);
+		
 		/*
 		while (Coordinator.pilot.getMovement().getDistanceTraveled() < 0.25 * Coordinator.DISTANCE)
 			// do nothing
 		*/
+		
 		while (Coordinator.pilot.isMoving())
 		{
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
@@ -292,8 +282,20 @@ public class Action
 
 		int[] backtrackSquare = stack.pop();
 		int angle = map.getAngleToSquare(backtrackSquare);
-		Coordinator.pilot.rotate(angle);
-		map.updateRobotOrientation(angle);
+		
+		if (angle == 180 || angle == -180)
+		{
+			Coordinator.pilot.rotate(angle/2);
+			map.updateRobotOrientation(angle/2);
+			Coordinator.pilot.rotate(angle/2);
+			map.updateRobotOrientation(angle/2);
+		}
+		else
+		{
+			Coordinator.pilot.rotate(angle);
+			map.updateRobotOrientation(angle);
+		}
+		
 		Coordinator.pilot.travel(Coordinator.DISTANCE);
 		map.updateRobotPosition();
 		return true;
