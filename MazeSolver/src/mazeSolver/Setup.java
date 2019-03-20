@@ -54,7 +54,7 @@ public class Setup
 	 * Distance to travel from one centre of a path grid to the centre of the
 	 * next path grid.
 	 */
-	public static final double            DISTANCE                 = 39.5;
+	public static final double            DISTANCE                 = 39.65;
 
 	/**
 	 * Long front side of the maze
@@ -158,6 +158,7 @@ public class Setup
 		pilot = new MovePilot(chassis);
 		pilot.setAngularSpeed(50);
 		pilot.setLinearSpeed(35);
+		pilot.setLinearAcceleration(20);
 
 		LCD.clear();
 		LCD.drawString("Setting up sensors...", 0, 0);

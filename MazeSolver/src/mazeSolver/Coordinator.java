@@ -24,6 +24,9 @@ public class Coordinator extends Setup
 
 		findEndOfMaze(map);
 		
+		//Scan once after red square
+		Action.scanSurrounding(map);
+		
 		Action.shortestPathBack(map);
 
 		EV3Server.closeBluetoothConnection();

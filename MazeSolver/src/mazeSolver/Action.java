@@ -114,19 +114,29 @@ public class Action
 	public static void moveCarefully(CustomOccupancyMap map, int direction)
 	{
 		//recalibrateOrientation();
-		Coordinator.pilot.rotate(direction);
-		map.updateRobotOrientation(direction);
-
+		if (direction == 180 || direction == -180)
+		{
+			Coordinator.pilot.rotate(direction/2);
+			map.updateRobotOrientation(direction/2);
+			Coordinator.pilot.rotate(direction/2);
+			map.updateRobotOrientation(direction/2);
+		}
+		else
+		{
+			Coordinator.pilot.rotate(direction);
+			map.updateRobotOrientation(direction);
+		}
+		
 		map.visitStack.push(map.getRobotPosition().clone());
 
 		float[] RGB = new float[3];
 
 		// True means it returns right away and allows for measurements while moving
 		Coordinator.pilot.travel(Coordinator.DISTANCE, true);
-
+		/*
 		while (Coordinator.pilot.getMovement().getDistanceTraveled() < 0.25 * Coordinator.DISTANCE)
 			// do nothing
-			
+		*/
 		while (Coordinator.pilot.isMoving())
 		{
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
@@ -219,6 +229,12 @@ public class Action
 			pathWithUnknowns.toArray(pathCopy);
 			int oldStackSize = pathWithUnknowns.size();
 
+			if (Arrays.equals(map.getRobotPosition(), map.getEndTilePosition()))
+			{
+				moveCarefully(map, map.getAngleToSquare(pathWithUnknowns.peek()));
+				map.visitStack.removeAllElements();
+			}
+			
 			// Check if robot is on the path
 			for (int i = 0; i < pathCopy.length; i++)
 				// If it's on the path
@@ -232,23 +248,33 @@ public class Action
 			
 			// On the path
 			if (oldStackSize != pathWithUnknowns.size())
+			{
 				// Follow the path from now on
 				while (!pathWithUnknowns.isEmpty())
 				{
-					scanSurrounding(map);
-					moveToTileFromStack(map, pathWithUnknowns);
+					int[] path = pathWithUnknowns.peek();
+					if (map.getMazeMap()[path[0]][path[1]] != 0)
+						moveToTileFromStack(map, pathWithUnknowns);
+					else
+					{
+						scanSurrounding(map);
+						moveCarefully(map, map.getAngleToSquare(pathWithUnknowns.peek()));
+						map.visitStack.removeAllElements();
+						break;
+					}
 				}
-				
-			// Otherwise
-			// Not on the path
-			if (pathWithUnknowns.isEmpty())
-			{
-				// Move back to endOfTile
-				Stack<int[]> pathToEndTile = new Stack<>();
-				pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
-				// Go along the pathToEndTile, then follow pathWithUnknowns
+				continue;
 			}
 			
+			
+			// Otherwise
+			// Not on the path
+			
+			// Move back to endOfTile
+			Stack<int[]> pathToEndTile = new Stack<>();
+			pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
+			while (!pathToEndTile.isEmpty())
+				moveToTileFromStack(map, pathToEndTile);
 		}
 	}
 
@@ -305,7 +331,7 @@ public class Action
 		float average = (RGB[0] + RGB[1] + RGB[2]) / 3.0f;
 		if (RGB[0] > 2 * average)
 			return "RED";
-		if (RGB[1] > 1.3 * average)
+		if (RGB[1] > 1.3 * average && average > 0.05)
 			return "GREEN";
 		
 		//Anything else is considered white
