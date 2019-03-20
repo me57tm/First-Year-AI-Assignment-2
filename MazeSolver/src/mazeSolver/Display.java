@@ -107,6 +107,7 @@ public class Display {
 		updateMap(data.getMazeMap());
 		progressBar.setValue(data.getCompletion());
 		int[] path;
+		
 		while (!data.visitStack.isEmpty())
 		{
 			path = data.visitStack.pop();

@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Stack;
 
-import lejos.hardware.lcd.LCD;
-
 /**
  * Custom Map Object to represent a to-be-explored Maze.
  */
@@ -70,6 +68,7 @@ public class CustomOccupancyMap implements Serializable
 				else
 					mazeMap[i][j] = 0;
 			}
+
 		// Origin is a path
 		mazeMap[1][1] = 1;
 
@@ -80,18 +79,14 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Returns angle to turn to the square
+	 * Returns angle to turn to face the given square
 	 * 
 	 * @param square
 	 *            coordinates to turn to
 	 * @return angle
 	 */
-	public int turnToSquare(int[] square)
+	public int getAngleToSquare(int[] square)
 	{
-		LCD.clear();
-		LCD.drawString(String.valueOf(square[0] + " " + String.valueOf(square[1])), 0, 2);
-		Coordinator.buttons.waitForAnyPress();
-		LCD.clear();
 		int[] diff = new int[] { square[0] - robotPosition[0], square[1] - robotPosition[1] };
 		// Check for invalid passed squares
 		int sumOfDistances = 0;
@@ -103,15 +98,7 @@ public class CustomOccupancyMap implements Serializable
 		// End program if invalid
 		if (invalid)
 			System.exit(1);
-		
-		//if in direction 90
-		if (diff[0] > 0)
-		{
-			int turnby = -180;
-			while ((robotOrientation + turnby) % 360 != 90)
-				turnby += 90;
-			return turnby;
-		}
+
 		//if in direction 0
 		if (diff[1] > 0)
 		{
@@ -120,7 +107,16 @@ public class CustomOccupancyMap implements Serializable
 				turnby += 90;
 			return turnby;
 		}
-			
+
+		//if in direction 90
+		if (diff[0] > 0)
+		{
+			int turnby = -180;
+			while ((robotOrientation + turnby) % 360 != 90)
+				turnby += 90;
+			return turnby;
+		}
+
 		//if in direction 270
 		if (diff[0] < 0)
 		{
@@ -129,7 +125,7 @@ public class CustomOccupancyMap implements Serializable
 				turnby += 90;
 			return turnby;
 		}
-		
+
 		//if in direction 180
 		if (diff[1] < 0)
 		{
@@ -138,15 +134,11 @@ public class CustomOccupancyMap implements Serializable
 				turnby += 90;
 			return turnby;
 		}
-		
+
 		// Illegal state
-		LCD.clear();
-		LCD.drawString("Illegal state", 0, 0);
-		Coordinator.buttons.waitForAnyPress();
-		LCD.clear();
+		System.exit(1);
 		return 0;
 	}
-	
 
 	/**
 	 * Gets mazeMap array.
@@ -277,7 +269,8 @@ public class CustomOccupancyMap implements Serializable
 			return new int[] { robotPosition[0], robotPosition[1] - 1 };
 		if (direction == 270 || direction == -90)
 			return new int[] { robotPosition[0] - 1, robotPosition[1] };
-		// Wrong input
+		// Illegal input
+		System.exit(1);
 		return null;
 	}
 
@@ -292,6 +285,13 @@ public class CustomOccupancyMap implements Serializable
 	 */
 	public int[] getSquareInDirection(int[] square, int direction)
 	{
+		direction += robotOrientation;
+
+		if (direction >= 360)
+			direction -= 360;
+		if (direction < 0)
+			direction += 360;
+
 		if (direction == 0)
 			return new int[] { square[0], square[1] + 1 };
 		if (direction == 90)
@@ -300,7 +300,8 @@ public class CustomOccupancyMap implements Serializable
 			return new int[] { square[0], square[1] - 1 };
 		if (direction == 270 || direction == -90)
 			return new int[] { square[0] - 1, square[1] };
-		//Wrong input
+		// Illegal input
+		System.exit(1);
 		return null;
 	}
 

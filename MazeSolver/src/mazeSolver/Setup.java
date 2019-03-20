@@ -54,7 +54,7 @@ public class Setup
 	 * Distance to travel from one centre of a path grid to the centre of the
 	 * next path grid.
 	 */
-	public static final int               DISTANCE                 = 40;
+	public static final double            DISTANCE                 = 39.5;
 
 	/**
 	 * Long front side of the maze
@@ -120,7 +120,8 @@ public class Setup
 		LCD.drawString("until new text", 0, 4);
 		LCD.drawString("appears...", 0, 5);
 
-		// Initiate the map object
+		// TODO OLD Initiate the map object, waits until button has been pressed and detected
+		/*
 		while (true)
 		{
 			// Robot faces along the shorter side
@@ -136,6 +137,10 @@ public class Setup
 				break;
 			}
 		}
+		*/
+
+		// TODO NEW
+		map = new CustomOccupancyMap(MAP_WIDTH, MAP_HEIGHT, 90);
 
 		LCD.clear();
 		LCD.drawString("Setting up", 0, 0);
@@ -147,8 +152,8 @@ public class Setup
 		LCD.clear();
 		LCD.drawString("Setting up", 0, 0);
 		LCD.drawString("Wheels,Chassis", 0, 1);
-		wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR, 5.5).offset(-5.15); //-5.2
-		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(5.15); //5.2
+		wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR, 5.5).offset(-4.9); //TODO OLD -5.2
+		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(4.6); //TODO OLD 5.2
 		chassis = new WheeledChassis(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(chassis);
 		pilot.setAngularSpeed(50);
@@ -178,15 +183,11 @@ public class Setup
 		Delay.msDelay(500);
 		LCD.drawString("Begin Mapping in", 0, 1);
 		Delay.msDelay(1000);
-		LCD.drawString("5", 7, 4);
+		LCD.drawString("3", 8, 4);
 		Delay.msDelay(1000);
-		LCD.drawString("4", 7, 4);
+		LCD.drawString("2", 8, 4);
 		Delay.msDelay(1000);
-		LCD.drawString("3", 7, 4);
-		Delay.msDelay(1000);
-		LCD.drawString("2", 7, 4);
-		Delay.msDelay(1000);
-		LCD.drawString("1", 7, 4);
+		LCD.drawString("1", 8, 4);
 		Delay.msDelay(1000);
 		LCD.clear();
 	}
