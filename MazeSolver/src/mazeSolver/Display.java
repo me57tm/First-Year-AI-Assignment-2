@@ -100,7 +100,7 @@ public class Display {
 	}
 	
 	public void updateConnected() {
-		lblConnected = new JLabel("Connected");
+		lblConnected.setText("Connected");
 	}
 	
 	/**
@@ -119,8 +119,8 @@ public class Display {
 		int[] position = data.getRobotPosition();
 		
 		if (end != null) {
-			drawStack(pf.getPath(end, new int[] {1,1},false),Color.orange);
-			drawStack(pf.getPath(end, new int[] {1,1},true),Color.yellow);
+			drawStack(pf.getPath(end, new int[] {1,1},true),Color.orange);
+			drawStack(pf.getPath(end, new int[] {1,1},false),Color.yellow);
 			grid[end[1]][end[0]].setBackground(Color.red);
 		}
 		

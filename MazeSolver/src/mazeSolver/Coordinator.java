@@ -29,6 +29,11 @@ public class Coordinator extends Setup
 		while (!Arrays.equals(map.getRobotPosition(), new int[] {1,1}))
 			Action.shortestPathBack(map);
 		
+<<<<<<< HEAD
+=======
+		moveBack(map);
+
+>>>>>>> 02cc9e0a9d857ffabe78319f14fbaf13c0ec3033
 		EV3Server.closeBluetoothConnection();
 	}
 
@@ -44,11 +49,22 @@ public class Coordinator extends Setup
 		{
 			Action.scanSurrounding(map);
 			Action.makeMoveStep(map);
+			Action.checkForRed(map);
 			EV3Server.sendMap();
 		}
 		if (!map.visitStack.isEmpty())
 			map.visitStack.removeAllElements();
 		// Scan once after red square
 		Action.scanSurrounding(map);
+	}
+
+	public static void moveBack(CustomOccupancyMap map) 
+			throws IOException
+	{
+		while (!Arrays.equals(map.getRobotPosition(),new int[] {1,1})) {
+			Action.shortestPathBack(map);
+			EV3Server.sendMap();
+		}
+	
 	}
 }

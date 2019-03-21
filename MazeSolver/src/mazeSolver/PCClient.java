@@ -64,10 +64,17 @@ public class PCClient
 	{
 		display = new Display();
 		ip = "10.0.1.2"; // BT
-		System.out.println("Trying to connect...");
 		if (args.length > 0)
 			ip = args[0];
-		sock = new Socket(ip, EV3Server.PORT);
+		while (true) {
+			try {
+				sock = new Socket(ip, EV3Server.PORT);
+				break;
+			}
+			catch(Exception e) {
+				System.out.println("Trying to connect...");
+			}
+		}
 		display.updateConnected();
 		InputStream in = sock.getInputStream();
 		ObjectInputStream oIn = new ObjectInputStream(in);
