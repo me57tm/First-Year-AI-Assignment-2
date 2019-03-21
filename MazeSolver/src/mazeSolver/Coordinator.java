@@ -1,6 +1,7 @@
 package mazeSolver;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Main class.
@@ -27,7 +28,7 @@ public class Coordinator extends Setup
 		//Scan once after red square
 		Action.scanSurrounding(map);
 		
-		Action.shortestPathBack(map);
+		moveBack(map);
 
 		EV3Server.closeBluetoothConnection();
 	}
@@ -44,9 +45,20 @@ public class Coordinator extends Setup
 		{
 			Action.scanSurrounding(map);
 			Action.makeMoveStep(map);
+			Action.checkForRed(map);
 			EV3Server.sendMap();
 		}
 		
 		map.visitStack.removeAllElements();
+	}
+
+	public static void moveBack(CustomOccupancyMap map) 
+			throws IOException
+	{
+		while (!Arrays.equals(map.getRobotPosition(),new int[] {1,1})) {
+			Action.shortestPathBack(map);
+			EV3Server.sendMap();
+		}
+	
 	}
 }

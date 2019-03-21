@@ -1,5 +1,6 @@
 package mazeSolver;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -119,6 +120,8 @@ public class Action
 
 		float[] RGB = new float[3];
 
+		Coordinator.pilot.rotate(direction);
+		map.updateRobotOrientation(direction);
 		// True means it returns right away and allows for measurements while moving
 		Coordinator.pilot.travel(Coordinator.DISTANCE, true);
 		
@@ -159,20 +162,6 @@ public class Action
 				map.updateRobotOrientation(-direction);
 				return;
 			}
-
-			if (detectedColour == "RED")
-			{
-				double drivenDistance = (double) Coordinator.pilot.getMovement().getDistanceTraveled();
-				Coordinator.pilot.stop(); //necessary?
-				Delay.msDelay(250);
-				// Travel to the middle of the tile
-				Coordinator.pilot.travel(Coordinator.DISTANCE - drivenDistance);
-				map.updateRobotPosition();
-				map.setEndTilePosition(map.getRobotPosition().clone());
-				int[] robotPosition = map.getRobotPosition().clone();
-				map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
-				return;
-			}
 		}
 		// If no special colours
 		map.updateRobotPosition();
@@ -180,6 +169,20 @@ public class Action
 		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
 	}
 
+	
+	public static void checkForRed(CustomOccupancyMap map) {
+		float[] RGB = new float[3];
+		Coordinator.ColourSampler.fetchSample(RGB, 0);
+		String detectedColour = determineColour(RGB);
+		if (detectedColour == "RED")
+		{
+			int[] robotPosition = map.getRobotPosition().clone();
+			map.setEndTilePosition(robotPosition);
+			map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
+		}
+	}
+	
+	
 	/**
 	 * Calculates possible shortest paths based on the known and unknown state
 	 * of the map until the shortest path is found (explored as path). Then it
@@ -189,12 +192,11 @@ public class Action
 	 * @param map
 	 */
 	public static void shortestPathBack(CustomOccupancyMap map)
+	throws IOException
 	{
 		PathFinder pathFinder = new PathFinder(map.getMazeMap());
 		int[] startTile = new int[] {1,1};
 		
-		while (true)
-		{
 			Stack<int[]> pathWithoutUnknowns = new Stack<>();
 			Stack<int[]> pathWithUnknowns = new Stack<>();
 			
@@ -208,10 +210,24 @@ public class Action
 				pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
 				// Go to end of maze
 				while (!pathToEndTile.isEmpty())
+				{
+					if (map.getMazeMap()[pathToEndTile.peek()[0]][pathToEndTile.peek()[1]] == 0) {
+						moveCarefully(map,map.getAngleToSquare(pathToEndTile.peek()));
+						break;
+					}
 					Action.moveToTileFromStack(map, pathToEndTile);
+					EV3Server.sendMap();
+				}
 				// Go from end back to the start
-				while (!pathWithoutUnknowns.isEmpty())
+				while (!pathWithoutUnknowns.isEmpty()) 
+				{
+					if (map.getMazeMap()[pathToEndTile.peek()[0]][pathToEndTile.peek()[1]] == 0) {
+						moveCarefully(map,map.getAngleToSquare(pathToEndTile.peek()));
+						break;
+					}
 					Action.moveToTileFromStack(map, pathWithoutUnknowns);
+					EV3Server.sendMap();
+				}
 				return;
 			}
 			
@@ -252,8 +268,9 @@ public class Action
 						map.visitStack.removeAllElements();
 						break;
 					}
+					EV3Server.sendMap();
 				}
-				continue;
+				return;
 			}
 			
 			
@@ -265,7 +282,6 @@ public class Action
 			pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
 			while (!pathToEndTile.isEmpty())
 				moveToTileFromStack(map, pathToEndTile);
-		}
 	}
 
 	/**
