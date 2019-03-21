@@ -22,7 +22,7 @@ public class Coordinator extends Setup
 	{
 		// Sets up map, sensors, motors, Bluetooth, etc.
 		setup();
-
+		Action.scanSurrounding(map);//TODO new
 		findEndOfMaze(map);
 		
 		//Scan once after red square
@@ -43,7 +43,7 @@ public class Coordinator extends Setup
 	{
 		while (map.getEndTilePosition() == null) // TODO untested
 		{
-			Action.scanSurrounding(map);
+			//Action.scanSurrounding(map);
 			Action.makeMoveStep(map);
 			Action.checkForRed(map);
 		}
@@ -58,6 +58,5 @@ public class Coordinator extends Setup
 			Action.shortestPathBack(map);
 			EV3Server.sendMap();
 		}
-	
 	}
 }

@@ -73,7 +73,7 @@ public class Action
 			if (mazeMap[front2[0]][front2[1]] == 0)
 			{
 				// move forwards
-				moveCarefully(map, 0);
+				moveCarefullyAndMeasure(map, 0);
 				return;
 			}
 		}
@@ -82,7 +82,7 @@ public class Action
 			int[] right2 = map.getSquareInDirection(right, 90);
 			if (mazeMap[right2[0]][right2[1]] == 0)
 			{
-				moveCarefully(map, 90);
+				moveCarefullyAndMeasure(map, 90);
 				return;
 			}
 		}
@@ -91,7 +91,7 @@ public class Action
 			int[] left2 = map.getSquareInDirection(left, -90);
 			if (mazeMap[left2[0]][left2[1]] == 0)
 			{
-				moveCarefully(map, -90);
+				moveCarefullyAndMeasure(map, -90);
 				return;
 			}
 		}
@@ -102,7 +102,7 @@ public class Action
 		if (!backtrack)
 		{
 			LCD.clear();
-			LCD.drawString("Detected green???", 0, 0);
+			LCD.drawString("Detected green smh", 0, 0);
 			Coordinator.buttons.waitForAnyPress();
 			LCD.clear();
 		}
@@ -130,16 +130,16 @@ public class Action
 		// True means it returns right away and allows for measurements while moving
 		Coordinator.pilot.travel(Coordinator.DISTANCE, true);
 		
-		/*
-		while (Coordinator.pilot.getMovement().getDistanceTraveled() < 0.25 * Coordinator.DISTANCE)
-			// do nothing
-		*/
-		
 		while (Coordinator.pilot.isMoving())
 		{
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
 			Delay.msDelay(30);
-
+			
+			LCD.clear();
+			
+			while (Coordinator.pilot.getMovement().getDistanceTraveled() < 10.0)
+				scanSurrounding(map);
+			
 			String detectedColour = determineColour(RGB);
 
 			if (detectedColour == "GREEN")
@@ -245,9 +245,12 @@ public class Action
 			if (Arrays.equals(map.getRobotPosition(), map.getEndTilePosition()))
 			{
 				Action.scanSurrounding(map);
-				moveCarefully(map, map.getAngleToSquare(pathWithUnknowns.peek()));
+				moveCarefullyAndMeasure(map, map.getAngleToSquare(pathWithUnknowns.peek()));
 				map.visitStack.removeAllElements();
+				return;
 			}
+			
+			
 			int counter = 0;
 			// Check if robot is on the path
 			for (int i = pathCopy.length - 1; i >= 0; i--)
@@ -282,7 +285,7 @@ public class Action
 					else
 					{
 						scanSurrounding(map);
-						moveCarefully(map, map.getAngleToSquare(pathWithUnknowns.peek()));
+						moveCarefullyAndMeasure(map, map.getAngleToSquare(pathWithUnknowns.peek()));
 						map.visitStack.removeAllElements();
 						break;
 					}
@@ -409,5 +412,68 @@ public class Action
 		//Anything else is considered white
 		return "WHITE";
 	}
+	
+	/**
+	 * Moves to the next tile and simultaneously checks for coloured tiles.
+	 * Handles all situations of coloured tiles internally
+	 * 
+	 * @param map
+	 * @param direction
+	 * @throws IOException 
+	 */
+	public static void moveCarefullyAndMeasure(CustomOccupancyMap map, int direction) throws IOException
+	{
+		//recalibrateOrientation();
+		
+		map.visitStack.push(map.getRobotPosition().clone());
 
+		float[] RGB = new float[3];
+
+		Coordinator.pilot.rotate(direction);
+		map.updateRobotOrientation(direction);
+		// True means it returns right away and allows for measurements while moving
+		Coordinator.pilot.travel(Coordinator.DISTANCE, true);
+		
+		while (Coordinator.pilot.getMovement().getDistanceTraveled() < Coordinator.DETECT_COLOUR_WHILE_MOVING_THRESHOLD)
+		{
+			Coordinator.ColourSampler.fetchSample(RGB, 0);
+			Delay.msDelay(30);
+			
+			String detectedColour = determineColour(RGB);
+
+			if (detectedColour == "GREEN")
+			{
+				double drivenDistance = (double) Coordinator.pilot.getMovement().getDistanceTraveled();
+				Coordinator.pilot.stop(); //necessary?
+				Delay.msDelay(250);
+
+				map.visitStack.pop();
+
+				// Travel back
+				Coordinator.pilot.travel(-(drivenDistance + 3.5));
+				int[] front = map.getSquareInDirection(0);
+				int[] greenTile = map.getSquareInDirection(front, 0);
+				// Set everything surrounding the green tile to walls
+				for (int i = 0; i < 360; i += 90)
+				{
+					int[] tile = map.getSquareInDirection(greenTile, i);
+					map.updateMazeMap(tile[0], tile[1], -1);
+				}
+				map.updateMazeMap(greenTile[0], greenTile[1], -1);
+
+				// Turn back
+				Coordinator.pilot.rotate(-direction);
+				map.updateRobotOrientation(-direction);
+				EV3Server.sendMap();
+				return;
+			}
+		}
+		// If no special colours
+		map.updateRobotPosition();
+		int[] robotPosition = map.getRobotPosition();
+		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
+			
+		scanSurrounding(map);
+		EV3Server.sendMap();
+	}
 }

@@ -70,6 +70,11 @@ public class Setup
 	 */
 	public static final int               RECALIBRATION_THRESHHOLD = 3;
 
+	/**
+	 * Manipulate to change time point when scanning colours is ignored and scanning walls begins in careful movement method
+	 */
+	public static final double            DETECT_COLOUR_WHILE_MOVING_THRESHOLD   = 0.66 * Coordinator.DISTANCE;
+
 	/* 
 	 * 						VISUALISATION OF GRID OBJECTS
 	 * 
@@ -156,9 +161,9 @@ public class Setup
 		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(4.6); //TODO OLD 5.2
 		chassis = new WheeledChassis(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(chassis);
-		pilot.setAngularSpeed(50);
-		pilot.setLinearSpeed(100);//40
-		pilot.setLinearAcceleration(100);//30
+		pilot.setAngularSpeed(50);//50
+		pilot.setLinearSpeed(50);//40
+		pilot.setLinearAcceleration(30);//30
 		ROTATION_MOTOR.setAcceleration(10000);
 
 		LCD.clear();
@@ -178,7 +183,6 @@ public class Setup
 
 		// Set up Bluetooth Connection
 		EV3Server.initializeBluetoothConnection();
-		
 
 		// Mapping start warning
 		LCD.clear();
