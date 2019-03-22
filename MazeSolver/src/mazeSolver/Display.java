@@ -92,8 +92,8 @@ public class Display
 
 		if (end != null)
 		{
-			drawStack(pf.getPath(end, new int[] { 1, 1 }, true), Color.orange);
-			drawStack(pf.getPath(end, new int[] { 1, 1 }, false), Color.yellow);
+			drawStack(pf.getPath(end, new int[] { 1, 1 }, true), Color.yellow);
+			drawStack(pf.getPath(end, new int[] { 1, 1 }, false), Color.green);
 			grid[end[1]][end[0]].setBackground(Color.red);
 		}
 
@@ -238,7 +238,7 @@ public class Display
 
 		progressBar = new JProgressBar();
 		progressBar.setValue(1);
-		progressBar.setMaximum(247);
+		progressBar.setMaximum(247 - 70 - 18 - 12);
 		progressBar.setStringPainted(true);
 		progressBar.setBounds(564, 23, 146, 14);
 		pnlMiscInfo.add(progressBar);

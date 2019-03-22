@@ -376,7 +376,7 @@ public class CustomOccupancyMap implements Serializable
 	 */
 	public int getCompletion()
 	{
-		return getNumberOfPaths() + getNumberOfWalls();
+		return getNumberOfPaths() + getNumberOfWalls() - 34 - 26;
 	}
 
 	/**

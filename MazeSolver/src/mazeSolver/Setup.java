@@ -138,8 +138,8 @@ public class Setup
 		LCD.clear();
 		LCD.drawString("Setting up", 0, 0);
 		LCD.drawString("Wheels,Chassis", 0, 1);
-		wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR, 5.5).offset(-4.9); //TODO OLD -5.2
-		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(4.6); //TODO OLD 5.2
+		wheel1 = WheeledChassis.modelWheel(LEFT_MOTOR, 5.5).offset(-4.9);
+		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(4.9); //4.6
 		chassis = new WheeledChassis(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(chassis);
 		pilot.setAngularSpeed(50);//50
@@ -150,17 +150,10 @@ public class Setup
 		LCD.clear();
 		LCD.drawString("Setting up sensors...", 0, 0);
 		IRSensor = new EV3IRSensor(SensorPort.S1);
-		USSensor = new EV3UltrasonicSensor(SensorPort.S4);
 		ColourSensor = new EV3ColorSensor(SensorPort.S2);
-		GyroSensor = new EV3GyroSensor(SensorPort.S3);
 
 		IRSampler = IRSensor.getDistanceMode();
-		USSampler = USSensor.getDistanceMode();
 		ColourSampler = ColourSensor.getRGBMode();
-		GyroSampler = GyroSensor.getAngleMode();
-
-		//Calibrate GyroSensor
-		GyroSensor.reset();
 
 		// Set up Bluetooth Connection
 		EV3Server.initializeBluetoothConnection();

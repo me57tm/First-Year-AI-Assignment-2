@@ -49,7 +49,7 @@ public class PathFinder
 				if (unknown)
 					cuCost = currentSquare.cost + getCostUnknown(newCoords, i);
 				else
-					cuCost = currentSquare.cost + getCostKnown(newCoords, i);
+					cuCost = currentSquare.cost + getCostKnown(newCoords, newerCoords, i);
 
 				if (!discovered[newCoords[0]][newCoords[1]])
 				{
@@ -132,24 +132,33 @@ public class PathFinder
 	 *            The direction the robot will cross this tile in
 	 * @return Cost to cross this tile
 	 */
-	public int getCostKnown(int[] coords, int direction)
+	public int getCostKnown(int[] coordsWall, int[] coordsTile, int direction)
 	{
-		int x = coords[0];
-		int y = coords[1];
-
-		if (map[x][y] != 1)
-			return 7500 + x + y;
-
+		int x1 = coordsWall[0];
+		int y1 = coordsWall[1];
+		
+		int x2 = coordsTile[0];
+		int y2 = coordsTile[1];
+		
+		try
+		{
+		if (map[x1][y1] != 1 || map[x2][y2] != 1)
+			return 7500 + x1 + y1;
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			return 8000 + x1 + y1;
+		}
 		if (direction == 0 || direction == 270)
 		{
-			if (x % 2 == 0)
+			if (x1 % 2 == 0)
 				return 10;
 			else
 				return 30;
 		}
 		else
 		{
-			if (y % 2 == 0)
+			if (y1 % 2 == 0)
 				return 10;
 			else
 				return 30;
