@@ -4,7 +4,7 @@ import java.util.PriorityQueue;
 import java.util.Stack;
 
 /**
- * ?
+ * Calculates A* path
  */
 public class PathFinder
 {
@@ -54,21 +54,17 @@ public class PathFinder
 				if (!discovered[newCoords[0]][newCoords[1]])
 				{
 					newSquare = new GridSquare(newerCoords, currentSquare, cuCost, getHeuristic(newerCoords, end));
-					//System.out.println("Adding: " + newSquare);
 					queue.add(newSquare);
 					discovered[newCoords[0]][newCoords[1]] = true;
 					discovered[currentSquare.coords[0]][currentSquare.coords[1]] = true;
 				}
 			}
 			currentSquare = queue.poll();
-			//System.out.println(queue);
-			//System.out.println("Best Move:" + currentSquare);
 		}
 
 		Stack<int[]> gridStack = new Stack<int[]>();
 		while (currentSquare.coords[0] != start[0] || currentSquare.coords[1] != start[1])
 		{
-			//System.out.println(currentSquare);
 			gridStack.push(currentSquare.coords);
 			currentSquare = currentSquare.parent;
 		}

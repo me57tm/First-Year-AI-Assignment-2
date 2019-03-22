@@ -17,9 +17,11 @@ public class Action
 	 * Measuring fields around the robot if they have not already been measured
 	 * before. Fetching each one sample. Avoids re-measuring already measured
 	 * grids as measurements are reliable
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
-	public static void scanSurrounding(CustomOccupancyMap map) throws IOException
+	public static void scanSurrounding(CustomOccupancyMap map)
+		throws IOException
 	{
 		for (int i = -90; i < 180; i += 90)
 		{
@@ -50,9 +52,10 @@ public class Action
 	 * move forward > move right > move left > backtrack
 	 * 
 	 * @param map
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public static void makeMoveStep(CustomOccupancyMap map) throws IOException
+	public static void makeMoveStep(CustomOccupancyMap map)
+		throws IOException
 	{
 		int[][] mazeMap = map.getMazeMap();
 
@@ -110,74 +113,14 @@ public class Action
 	}
 
 	/**
-	 * Moves to the next tile and simultaneously checks for coloured tiles.
-	 * Handles all situations of coloured tiles internally
+	 * Checks for red
 	 * 
 	 * @param map
-	 * @param direction
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public static void moveCarefully(CustomOccupancyMap map, int direction) throws IOException
+	public static void checkForRed(CustomOccupancyMap map)
+		throws IOException
 	{
-		//recalibrateOrientation();
-		
-		map.visitStack.push(map.getRobotPosition().clone());
-
-		float[] RGB = new float[3];
-
-		Coordinator.pilot.rotate(direction);
-		map.updateRobotOrientation(direction);
-		// True means it returns right away and allows for measurements while moving
-		Coordinator.pilot.travel(Coordinator.DISTANCE, true);
-		
-		while (Coordinator.pilot.isMoving())
-		{
-			Coordinator.ColourSampler.fetchSample(RGB, 0);
-			Delay.msDelay(30);
-			
-			LCD.clear();
-			
-			while (Coordinator.pilot.getMovement().getDistanceTraveled() < 10.0)
-				scanSurrounding(map);
-			
-			String detectedColour = determineColour(RGB);
-
-			if (detectedColour == "GREEN")
-			{
-				double drivenDistance = (double) Coordinator.pilot.getMovement().getDistanceTraveled();
-				Coordinator.pilot.stop(); //necessary?
-				Delay.msDelay(250);
-
-				map.visitStack.pop();
-
-				// Travel back
-				Coordinator.pilot.travel(-drivenDistance);
-				int[] front = map.getSquareInDirection(0);
-				int[] greenTile = map.getSquareInDirection(front, 0);
-				// Set everything surrounding the green tile to walls
-				for (int i = 0; i < 360; i += 90)
-				{
-					int[] tile = map.getSquareInDirection(greenTile, i);
-					map.updateMazeMap(tile[0], tile[1], -1);
-				}
-				map.updateMazeMap(greenTile[0], greenTile[1], -1);
-
-				// Turn back
-				Coordinator.pilot.rotate(-direction);
-				map.updateRobotOrientation(-direction);
-				EV3Server.sendMap();
-				return;
-			}
-		}
-		// If no special colours
-		map.updateRobotPosition();
-		int[] robotPosition = map.getRobotPosition();
-		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
-		EV3Server.sendMap();
-	}
-
-	
-	public static void checkForRed(CustomOccupancyMap map) throws IOException {
 		float[] RGB = new float[3];
 		Coordinator.ColourSampler.fetchSample(RGB, 0);
 		String detectedColour = determineColour(RGB);
@@ -189,126 +132,6 @@ public class Action
 		}
 		EV3Server.sendMap();
 	}
-	
-	
-	/**
-	 * Calculates possible shortest paths based on the known and unknown state
-	 * of the map until the shortest path is found (explored as path). Then it
-	 * travels back to the end of the maze and follows the shortest path back to
-	 * the start of the maze.
-	 * 
-	 * @param map
-	 */
-	public static void shortestPathBack(CustomOccupancyMap map)
-	throws IOException
-	{
-		PathFinder pathFinder = new PathFinder(map.getMazeMap());
-		int[] startTile = new int[] {1,1};
-		
-			scanSurrounding(map);
-			
-			Stack<int[]> pathWithoutUnknowns = new Stack<>();
-			Stack<int[]> pathWithUnknowns = new Stack<>();
-			
-			pathWithUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, true);
-			pathWithoutUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, false);
-			
-			// if there exists a route without unknowns so with only observed paths, that is the shortest possible path
-			if (pathWithUnknowns.size() == pathWithoutUnknowns.size())
-			{
-				
-				Stack<int[]> pathToEndTile = new Stack<>();
-				pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
-				// Go to end of maze
-				while (!pathToEndTile.isEmpty())
-				{
-					boolean usual = Action.moveToTileFromStack(map, pathToEndTile);
-					EV3Server.sendMap();
-					if (!usual)
-						return;
-				}
-				// Go from end back to the start
-				while (!pathWithoutUnknowns.isEmpty()) 
-				{
-					boolean usual = Action.moveToTileFromStack(map, pathWithoutUnknowns);
-					EV3Server.sendMap();
-					if (!usual)
-						return;
-				}
-				return;
-			}
-			
-			int[][] pathCopy = new int[pathWithUnknowns.size()][2];
-			pathWithUnknowns.toArray(pathCopy);
-			int oldStackSize = pathWithUnknowns.size();
-
-			if (Arrays.equals(map.getRobotPosition(), map.getEndTilePosition()))
-			{
-				Action.scanSurrounding(map);
-				moveCarefullyAndMeasure(map, map.getAngleToSquare(pathWithUnknowns.peek()));
-				map.visitStack.removeAllElements();
-				return;
-			}
-			
-			
-			int counter = 0;
-			// Check if robot is on the path
-			for (int i = pathCopy.length - 1; i >= 0; i--)
-			{
-				counter++;
-				// If it's on the path
-				if (Arrays.equals(map.getRobotPosition(), pathCopy[i]))
-				{
-					// Pop Stack to be able to follow it from now on
-					while (counter != 0)
-					{
-						pathWithUnknowns.pop();
-						counter--;
-					}
-					break;
-				}
-			}
-			
-			// On the path
-			if (oldStackSize != pathWithUnknowns.size())
-			{
-				// Follow the path from now on
-				while (!pathWithUnknowns.isEmpty())
-				{
-					int[] path = pathWithUnknowns.peek();
-					if (map.getMazeMap()[path[0]][path[1]] != 0)
-					{
-						boolean usual = moveToTileFromStack(map, pathWithUnknowns);
-						if (!usual)
-							return;
-					}
-					else
-					{
-						scanSurrounding(map);
-						moveCarefullyAndMeasure(map, map.getAngleToSquare(pathWithUnknowns.peek()));
-						map.visitStack.removeAllElements();
-						break;
-					}
-					EV3Server.sendMap();
-				}
-				return;
-			}
-			
-			
-			// Otherwise
-			// Not on the path
-			
-			// Move back to endOfTile
-			Stack<int[]> pathToEndTile = new Stack<>();
-			pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
-			while (!pathToEndTile.isEmpty())
-			{
-				boolean usual = moveToTileFromStack(map, pathToEndTile);
-				EV3Server.sendMap();
-				if (!usual)
-					return;
-			}
-	}
 
 	/**
 	 * Moves to the top of the stack + Use after endtile: if green return false
@@ -316,32 +139,33 @@ public class Action
 	 * @param map
 	 * @param stack
 	 * @return true if performed as expected, false if found green
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public static boolean moveToTileFromStack(CustomOccupancyMap map, Stack<int[]> stack) throws IOException
+	public static boolean moveToTileFromStack(CustomOccupancyMap map, Stack<int[]> stack)
+		throws IOException
 	{
 		if (stack.isEmpty())
 			System.exit(1);
 
 		int[] backtrackSquare = stack.pop();
 		int angle = map.getAngleToSquare(backtrackSquare);
-		
+
 		if (angle == 180 || angle == -180)
 		{
-			Coordinator.pilot.rotate(angle/2);
-			map.updateRobotOrientation(angle/2);
-			Coordinator.pilot.rotate(angle/2);
-			map.updateRobotOrientation(angle/2);
+			Coordinator.pilot.rotate(angle / 2);
+			map.updateRobotOrientation(angle / 2);
+			Coordinator.pilot.rotate(angle / 2);
+			map.updateRobotOrientation(angle / 2);
 		}
 		else
 		{
 			Coordinator.pilot.rotate(angle);
 			map.updateRobotOrientation(angle);
 		}
-		
-		Coordinator.pilot.travel(Coordinator.DISTANCE,true);
+
+		Coordinator.pilot.travel(Coordinator.DISTANCE, true);
 		float[] RGB = new float[3];
-		
+
 		while (Coordinator.pilot.isMoving())
 		{
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
@@ -375,27 +199,6 @@ public class Action
 	}
 
 	/**
-	 * NOT functional, detects significant offset of the robot and performs a
-	 * appropriate correction turn
-	 */
-	public static void recalibrateOrientation()
-	{
-		// Measure current orientation
-		float[] Gyro = new float[1];
-		Coordinator.GyroSampler.fetchSample(Gyro, 0);
-		Delay.msDelay(30);
-
-		int robotOrientation = Coordinator.map.getRobotOrientation();
-		int offsetInDegrees = (int) (Math.abs(robotOrientation) - Math.abs(Gyro[0])); // TODO Care, cast float to
-
-		// If significant offset in degrees
-		if (offsetInDegrees > Coordinator.RECALIBRATION_THRESHHOLD && robotOrientation > Gyro[0])
-			Coordinator.pilot.rotate(offsetInDegrees);
-		if (offsetInDegrees < Coordinator.RECALIBRATION_THRESHHOLD && robotOrientation < Gyro[0])
-			Coordinator.pilot.rotate(-1 * offsetInDegrees);
-	}
-
-	/**
 	 * Returns colour name
 	 * 
 	 * @param RGB
@@ -408,23 +211,22 @@ public class Action
 			return "RED";
 		if (RGB[1] > 1.3 * average && average > 0.05)
 			return "GREEN";
-		
+
 		//Anything else is considered white
 		return "WHITE";
 	}
-	
+
 	/**
 	 * Moves to the next tile and simultaneously checks for coloured tiles.
 	 * Handles all situations of coloured tiles internally
 	 * 
 	 * @param map
 	 * @param direction
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public static void moveCarefullyAndMeasure(CustomOccupancyMap map, int direction) throws IOException
+	public static void moveCarefullyAndMeasure(CustomOccupancyMap map, int direction)
+		throws IOException
 	{
-		//recalibrateOrientation();
-		
 		map.visitStack.push(map.getRobotPosition().clone());
 
 		float[] RGB = new float[3];
@@ -433,12 +235,12 @@ public class Action
 		map.updateRobotOrientation(direction);
 		// True means it returns right away and allows for measurements while moving
 		Coordinator.pilot.travel(Coordinator.DISTANCE, true);
-		
+
 		while (Coordinator.pilot.getMovement().getDistanceTraveled() < Coordinator.DETECT_COLOUR_WHILE_MOVING_THRESHOLD)
 		{
 			Coordinator.ColourSampler.fetchSample(RGB, 0);
 			Delay.msDelay(30);
-			
+
 			String detectedColour = determineColour(RGB);
 
 			if (detectedColour == "GREEN")
@@ -472,8 +274,125 @@ public class Action
 		map.updateRobotPosition();
 		int[] robotPosition = map.getRobotPosition();
 		map.updateMazeMap(robotPosition[0], robotPosition[1], 1);
-			
+
 		scanSurrounding(map);
 		EV3Server.sendMap();
+	}
+
+	/**
+	 * Calculates possible shortest paths based on the known and unknown state
+	 * of the map until the shortest path is found (explored as path). Then it
+	 * travels back to the end of the maze and follows the shortest path back to
+	 * the start of the maze.
+	 * 
+	 * @param map
+	 */
+	public static void shortestPathBack(CustomOccupancyMap map)
+		throws IOException
+	{
+		PathFinder pathFinder = new PathFinder(map.getMazeMap());
+		int[] startTile = new int[] { 1, 1 };
+
+		scanSurrounding(map);
+
+		Stack<int[]> pathWithoutUnknowns = new Stack<>();
+		Stack<int[]> pathWithUnknowns = new Stack<>();
+
+		pathWithUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, true);
+		pathWithoutUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, false);
+
+		// if there exists a route without unknowns so with only observed paths, that is the shortest possible path
+		if (pathWithUnknowns.size() == pathWithoutUnknowns.size())
+		{
+
+			Stack<int[]> pathToEndTile = new Stack<>();
+			pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
+			// Go to end of maze
+			while (!pathToEndTile.isEmpty())
+			{
+				boolean usual = Action.moveToTileFromStack(map, pathToEndTile);
+				EV3Server.sendMap();
+				if (!usual)
+					return;
+			}
+			// Go from end back to the start
+			while (!pathWithoutUnknowns.isEmpty())
+			{
+				boolean usual = Action.moveToTileFromStack(map, pathWithoutUnknowns);
+				EV3Server.sendMap();
+				if (!usual)
+					return;
+			}
+			return;
+		}
+
+		int[][] pathCopy = new int[pathWithUnknowns.size()][2];
+		pathWithUnknowns.toArray(pathCopy);
+		int oldStackSize = pathWithUnknowns.size();
+
+		if (Arrays.equals(map.getRobotPosition(), map.getEndTilePosition()))
+		{
+			Action.scanSurrounding(map);
+			moveCarefullyAndMeasure(map, map.getAngleToSquare(pathWithUnknowns.peek()));
+			map.visitStack.removeAllElements();
+			return;
+		}
+
+		int counter = 0;
+		// Check if robot is on the path
+		for (int i = pathCopy.length - 1; i >= 0; i--)
+		{
+			counter++;
+			// If it's on the path
+			if (Arrays.equals(map.getRobotPosition(), pathCopy[i]))
+			{
+				// Pop Stack to be able to follow it from now on
+				while (counter != 0)
+				{
+					pathWithUnknowns.pop();
+					counter--;
+				}
+				break;
+			}
+		}
+
+		// On the path
+		if (oldStackSize != pathWithUnknowns.size())
+		{
+			// Follow the path from now on
+			while (!pathWithUnknowns.isEmpty())
+			{
+				int[] path = pathWithUnknowns.peek();
+				if (map.getMazeMap()[path[0]][path[1]] != 0)
+				{
+					boolean usual = moveToTileFromStack(map, pathWithUnknowns);
+					if (!usual)
+						return;
+				}
+				else
+				{
+					scanSurrounding(map);
+					moveCarefullyAndMeasure(map, map.getAngleToSquare(pathWithUnknowns.peek()));
+					map.visitStack.removeAllElements();
+					break;
+				}
+				EV3Server.sendMap();
+			}
+			return;
+		}
+
+		// Otherwise
+		// Not on the path
+
+		// Move back to endOfTile
+		Stack<int[]> pathToEndTile = new Stack<>();
+		pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
+		while (!pathToEndTile.isEmpty())
+		{
+			boolean usual = moveToTileFromStack(map, pathToEndTile);
+			EV3Server.sendMap();
+			if (!usual)
+				return;
+		}
 	}
 }

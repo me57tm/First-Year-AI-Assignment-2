@@ -54,26 +54,27 @@ public class Setup
 	 * Distance to travel from one centre of a path grid to the centre of the
 	 * next path grid.
 	 */
-	public static final double            DISTANCE                 = 39.65;
+	public static final double            DISTANCE                             = 39.65;
 
 	/**
 	 * Long front side of the maze
 	 */
-	public static final int               MAP_WIDTH                = 19;
+	public static final int               MAP_WIDTH                            = 19;
 	/**
 	 * Height seen as bird's eye perspective on the maze
 	 */
-	public static final int               MAP_HEIGHT               = 13;
+	public static final int               MAP_HEIGHT                           = 13;
 
 	/**
 	 * Offset necessary to perform a correction in orientation of the robot
 	 */
-	public static final int               RECALIBRATION_THRESHHOLD = 3;
+	public static final int               RECALIBRATION_THRESHHOLD             = 3;
 
 	/**
-	 * Manipulate to change time point when scanning colours is ignored and scanning walls begins in careful movement method
+	 * Manipulate to change time point when scanning colours is ignored and
+	 * scanning walls begins in careful movement method
 	 */
-	public static final double            DETECT_COLOUR_WHILE_MOVING_THRESHOLD   = 0.66 * Coordinator.DISTANCE;
+	public static final double            DETECT_COLOUR_WHILE_MOVING_THRESHOLD = 0.66 * Coordinator.DISTANCE;
 
 	/* 
 	 * 						VISUALISATION OF GRID OBJECTS
@@ -125,26 +126,6 @@ public class Setup
 		LCD.drawString("until new text", 0, 4);
 		LCD.drawString("appears...", 0, 5);
 
-		// TODO OLD Initiate the map object, waits until button has been pressed and detected
-		/*
-		while (true)
-		{
-			// Robot faces along the shorter side
-			if (buttons.getButtons() == Keys.ID_DOWN)
-			{
-				map = new CustomOccupancyMap(MAP_WIDTH, MAP_HEIGHT, 0);
-				break;
-			}
-			// Robot faces along the longer side
-			if (buttons.getButtons() == Keys.ID_LEFT)
-			{
-				map = new CustomOccupancyMap(MAP_WIDTH, MAP_HEIGHT, 90);
-				break;
-			}
-		}
-		*/
-
-		// TODO NEW
 		map = new CustomOccupancyMap(MAP_WIDTH, MAP_HEIGHT, 90);
 
 		LCD.clear();

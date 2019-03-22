@@ -1,7 +1,7 @@
 package mazeSolver;
 
 /**
- * ?
+ * Helper Class for PathFinder
  */
 public class GridSquare implements Comparable<GridSquare>
 {

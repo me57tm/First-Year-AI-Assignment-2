@@ -24,10 +24,10 @@ public class Coordinator extends Setup
 		setup();
 		Action.scanSurrounding(map);//TODO new
 		findEndOfMaze(map);
-		
+
 		//Scan once after red square
 		Action.scanSurrounding(map);
-		
+
 		moveBack(map);
 
 		EV3Server.closeBluetoothConnection();
@@ -47,14 +47,15 @@ public class Coordinator extends Setup
 			Action.makeMoveStep(map);
 			Action.checkForRed(map);
 		}
-		
+
 		map.visitStack.removeAllElements();
 	}
 
-	public static void moveBack(CustomOccupancyMap map) 
-			throws IOException
+	public static void moveBack(CustomOccupancyMap map)
+		throws IOException
 	{
-		while (!Arrays.equals(map.getRobotPosition(),new int[] {1,1})) {
+		while (!Arrays.equals(map.getRobotPosition(), new int[] { 1, 1 }))
+		{
 			Action.shortestPathBack(map);
 			EV3Server.sendMap();
 		}
