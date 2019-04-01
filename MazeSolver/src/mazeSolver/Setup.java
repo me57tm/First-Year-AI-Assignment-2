@@ -24,7 +24,8 @@ import lejos.utility.Delay;
 /**
  * Setup exported to have a clearer Coordinator class
  *
- * @author jonasschafer
+ * Main @author jonasschafer
+ * Calibration by @author jakepierrepont
  */
 public class Setup
 {
