@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 /**
  * Main class.
+ * 
+ * @author jonasschafer
  */
 public class Coordinator extends Setup
 {

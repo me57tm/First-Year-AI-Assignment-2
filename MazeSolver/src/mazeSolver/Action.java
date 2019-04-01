@@ -9,6 +9,9 @@ import lejos.utility.Delay;
 
 /**
  * Implement all actions the robot takes while mapping and solving the maze.
+ * 
+ * Main @author jonasschafer with additions of @author jonathancaines
+ * and @author jakepierrepont
  */
 public class Action
 {
@@ -149,12 +152,12 @@ public class Action
 
 		int[] backtrackSquare = stack.pop();
 		int angle = map.getAngleToSquare(backtrackSquare);
-		
+
 		if (angle == -270)
 			angle = 90;
 		if (angle == 270)
 			angle = -90;
-		
+
 		if (angle == 180 || angle == -180)
 		{
 			Coordinator.pilot.rotate(angle / 2);

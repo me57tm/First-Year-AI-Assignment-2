@@ -5,6 +5,8 @@ import java.util.Stack;
 
 /**
  * Calculates A* path
+ * 
+ * @author jonathancaines
  */
 public class PathFinder
 {
@@ -40,7 +42,6 @@ public class PathFinder
 
 		while (currentSquare.coords[0] != end[0] || currentSquare.coords[1] != end[1])
 		{
-			//System.out.println(currentSquare.coords[0] + " " + currentSquare.coords[1]);
 			for (int i = 0; i < 360; i += 90)
 			{
 				newCoords = currentSquare.coords.clone();
@@ -136,14 +137,14 @@ public class PathFinder
 	{
 		int x1 = coordsWall[0];
 		int y1 = coordsWall[1];
-		
+
 		int x2 = coordsTile[0];
 		int y2 = coordsTile[1];
-		
+
 		try
 		{
-		if (map[x1][y1] != 1 || map[x2][y2] != 1)
-			return 7500 + x1 + y1;
+			if (map[x1][y1] != 1 || map[x2][y2] != 1)
+				return 7500 + x1 + y1;
 		}
 		catch (IndexOutOfBoundsException e)
 		{

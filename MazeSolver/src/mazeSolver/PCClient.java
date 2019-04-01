@@ -5,6 +5,8 @@ import java.net.*;
 
 /**
  * The Client that receives information from the EV3 Server.
+ * 
+ * @author jonasschaefer
  */
 public class PCClient
 {

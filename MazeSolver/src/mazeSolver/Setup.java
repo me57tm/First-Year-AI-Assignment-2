@@ -24,6 +24,7 @@ import lejos.utility.Delay;
 /**
  * Setup exported to have a clearer Coordinator class
  *
+ * @author jonasschafer
  */
 public class Setup
 {
@@ -66,13 +67,16 @@ public class Setup
 	public static final int               MAP_HEIGHT                           = 13;
 
 	/**
-	 * Offset necessary to perform a correction in orientation of the robot
+	 * NOT USED Offset necessary to perform a correction in orientation of the
+	 * robot
 	 */
 	public static final int               RECALIBRATION_THRESHHOLD             = 3;
 
 	/**
 	 * Manipulate to change time point when scanning colours is ignored and
-	 * scanning walls begins in careful movement method
+	 * scanning walls begins in moveCarefully method. Set to 0 to abandon colour
+	 * checking and set close to Coordinator.DISTANCE to measure walls only when
+	 * movement has (almost) finished
 	 */
 	public static final double            DETECT_COLOUR_WHILE_MOVING_THRESHOLD = 0.66 * Coordinator.DISTANCE;
 

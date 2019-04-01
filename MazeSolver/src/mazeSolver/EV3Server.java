@@ -8,6 +8,8 @@ import lejos.utility.Delay;
 
 /**
  * Set up EV3 as a server to send data to the PCClient.
+ * 
+ * @author jonasschafer
  */
 public class EV3Server
 {

@@ -6,6 +6,9 @@ import java.util.Stack;
 
 /**
  * Custom Map Object to represent a to-be-explored Maze.
+ * 
+ * Main @author jonasschafer with additions of @author jonathancaines
+ * and @author jakepierrepont
  */
 public class CustomOccupancyMap implements Serializable
 {
