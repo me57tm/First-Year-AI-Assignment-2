@@ -62,12 +62,13 @@ public class Setup
 	 */
 	public static final int               MAP_WIDTH                            = 19;
 	/**
-	 * Height seen as bird's eye perspective on the maze
+	 * Height seen as bird's eye perspective on the maze, equivalent to "length"
+	 * or "depth"
 	 */
 	public static final int               MAP_HEIGHT                           = 13;
 
 	/**
-	 * NOT USED Offset necessary to perform a correction in orientation of the
+	 * CURRENTLY NOT USED Offset necessary to perform a correction in orientation of the
 	 * robot
 	 */
 	public static final int               RECALIBRATION_THRESHHOLD             = 3;
@@ -84,7 +85,7 @@ public class Setup
 	 * 						VISUALISATION OF GRID OBJECTS
 	 * 
 	 * Paths are always 30x30 squares, small paths of 10x10 can exist at corners 
-	 * but are mostly ignored as the robot cannot move here.
+	 * but are ignored as the robot cannot move here.
 	 * 
 	 *   30(W)
 	 *   _____
@@ -95,7 +96,7 @@ public class Setup
 	 */
 
 	/*
-	 * Walls can be 10x10, 30x10 or 10x30
+	 * Walls can be 10x10, 30x10 or 10x30. Again 10x10 segments are not perceived by the robot and ignored
 	 * 
 	 *   10(W)               10(W)            30(W)  
 	 *    __                  __            ________    
@@ -112,7 +113,7 @@ public class Setup
 
 	/**
 	 * Sets values for all motors, sensors, controls and sets up a Bluetooth
-	 * connection with the Client.
+	 * connection with the PClient.
 	 * 
 	 * @throws IOException
 	 *             Default exception
@@ -146,9 +147,9 @@ public class Setup
 		wheel2 = WheeledChassis.modelWheel(RIGHT_MOTOR, 5.5).offset(4.9); //4.6
 		chassis = new WheeledChassis(new Wheel[] { wheel1, wheel2 }, WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(chassis);
-		pilot.setAngularSpeed(50);//50
-		pilot.setLinearSpeed(50);//40
-		pilot.setLinearAcceleration(30);//30
+		pilot.setAngularSpeed(50);
+		pilot.setLinearSpeed(50);
+		pilot.setLinearAcceleration(30);
 		ROTATION_MOTOR.setAcceleration(10000);
 
 		LCD.clear();

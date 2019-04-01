@@ -26,7 +26,8 @@ public class PathFinder
 	 * @param end
 	 *            end of the path
 	 * @param unknown
-	 *            true allows unknowns, false does not
+	 *            true allows travelling over unknowns, false only allows known
+	 *            paths
 	 * @return Stack of paths to travel from start to end
 	 */
 	public Stack<int[]> getPath(int[] start, int[] end, boolean unknown)
@@ -72,11 +73,25 @@ public class PathFinder
 		return gridStack;
 	}
 
+	/**
+	 * Getter for the path
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	public Stack<int[]> getPath(int[] start, int[] end)
 	{
 		return getPath(start, end, false);
 	}
 
+	/**
+	 * updates Coordinates
+	 * 
+	 * @param i
+	 * @param c
+	 * @return
+	 */
 	private int[] coordUpdater(int i, int[] c)
 	{
 		if (i == 0)
@@ -92,7 +107,7 @@ public class PathFinder
 
 	/**
 	 * Get the cost for the robot to travel across this tile treating unknowns
-	 * as driveable.
+	 * similar to paths.
 	 * 
 	 * @param coords
 	 *            The coordinates of the tile.
@@ -127,8 +142,11 @@ public class PathFinder
 	 * Get the cost for the robot to travel across this tile treating unknowns
 	 * as walls.
 	 * 
-	 * @param coords
-	 *            The coordinates of the tile.
+	 * @param coordsWall
+	 *            The coordinates of the wall tile.
+	 * @param coordsTile
+	 *            The tile from the robot's perspective behind the wall tile
+	 *            (i.e. the tile the robot would drive onto)
 	 * @param direction
 	 *            The direction the robot will cross this tile in
 	 * @return Cost to cross this tile
@@ -150,6 +168,7 @@ public class PathFinder
 		{
 			return 8000 + x1 + y1;
 		}
+
 		if (direction == 0 || direction == 270)
 		{
 			if (x1 % 2 == 0)

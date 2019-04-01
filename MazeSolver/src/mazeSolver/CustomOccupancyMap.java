@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Stack;
 
 /**
- * Custom Map Object to represent a to-be-explored Maze.
+ * Custom Map Object to represent a maze.
  * 
  * Main @author jonasschafer with additions of @author jonathancaines
  * and @author jakepierrepont
@@ -26,30 +26,35 @@ public class CustomOccupancyMap implements Serializable
 
 	/**
 	 * Representation of the maze: every entry represents a
-	 * "square"/"tile"/"place"/... in the maze that has a value -1 for an
-	 * obstacle, 0 for unknown and 1 for a pathable surface.
+	 * "square"/"tile"/"place" or similar, in the maze that has a value -1 for
+	 * an obstacle, 0 if it is unknown and 1 for a path surface.
 	 */
 	private int[][]           mazeMap;
 
 	/**
 	 * Orientation the robot is facing (0 = front, 90 = right, 180 = back, 270 =
-	 * left) - when bottom-left is seen as start
+	 * left) where front means the robot looks along the HEIGHT side of the map
+	 * and right means it looks along the WIDTH side each out of perspective of
+	 * point [0,0]
 	 */
 	private int               robotOrientation;
 
 	/**
-	 * Current position of the robot in the arrayMap (array of length 2 with
-	 * value 0 = width and value 1 = height).
+	 * Current position of the robot in the mazeyMap. Is an array of length 2
+	 * with value 0 = width and value 1 = height).
 	 */
 	private int[]             robotPosition;
 
 	/**
-	 * The end of the maze
+	 * The position of the end of the maze tile (red)
 	 */
 	private int[]             endTilePosition;
 
 	/**
-	 * Creates arrayMap of size of parameters.
+	 * Creates maze map of size set by parameters. Remember that the maze needs
+	 * to be surrounded by walls to improve efficiency of the measuring method
+	 * and avoid errors and OutOfBoundsExceptions as this is assumed for the
+	 * implementation
 	 * 
 	 * @param width
 	 *            The total number of sections being either walls or paths in
@@ -72,21 +77,20 @@ public class CustomOccupancyMap implements Serializable
 					mazeMap[i][j] = 0;
 			}
 
-		// Origin is a path
+		// Set starting position of the robot to a path
 		mazeMap[1][1] = 1;
 
 		robotPosition = new int[] { 1, 1 };
 		robotOrientation = orientation;
-
 		visitStack = new Stack<int[]>();
 	}
 
 	/**
-	 * Returns angle to turn to face the given square
+	 * Returns angle to turn by to face the given square
 	 * 
 	 * @param square
 	 *            coordinates to turn to
-	 * @return angle
+	 * @return angle to turn by
 	 */
 	public int getAngleToSquare(int[] square)
 	{
@@ -144,7 +148,7 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Gets mazeMap array.
+	 * Getter for mazeMap.
 	 * 
 	 * @return mazeMap.
 	 */
@@ -161,8 +165,8 @@ public class CustomOccupancyMap implements Serializable
 	 * @param length
 	 *            The length-position of the tile.
 	 * @param value
-	 *            The new value assigned, -1 for wall, 0 for unknown (should not
-	 *            be used) and 1 for path.
+	 *            The new value assigned, -1 for wall, 0 for unknown (not used
+	 *            in this implementation) and 1 for path.
 	 */
 	public void updateMazeMap(int width, int height, int value)
 	{
@@ -170,9 +174,9 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Returns position of the Robot in the maze.
+	 * Gets position of the robot in the maze.
 	 * 
-	 * @return robotPosition Position of the robot.
+	 * @return position of the robot.
 	 */
 	public int[] getRobotPosition()
 	{
@@ -180,10 +184,8 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Updates robotPosition, execute when robot moves.
-	 * 
-	 * @param orientation
-	 *            The orientation the robot faces for the movement.
+	 * Updates robotPosition. Execute whenever robot moved to keep the position
+	 * of the robot updated. robot orientation must be updated beforehand.
 	 */
 	public void updateRobotPosition()
 	{
@@ -221,9 +223,9 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Returns current orientation.
+	 * Returns current robot orientation.
 	 * 
-	 * @return orientation
+	 * @return orientation the robot is facing
 	 */
 	public int getRobotOrientation()
 	{
@@ -231,11 +233,11 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Updates orientation of robot relative to the Maze by the number of
-	 * degrees the robot is instructed to turn.
+	 * Updates orientation of the robot by the number of degrees the robot
+	 * turned.
 	 * 
 	 * @param degrees
-	 *            Degrees of turning.
+	 *            Degrees the robot turned.
 	 */
 	public void updateRobotOrientation(int degrees)
 	{
@@ -247,44 +249,29 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * Function to return positions of a square adjacent to the robot
+	 * Function to return the position of a square adjacent to the current robot
+	 * position
 	 * 
 	 * @param direction
-	 *            to face to check for square (out of the view of the robot): 0
-	 *            = front, 90/-270 = right, 180/-180 = behind, 270/-90 = left.
-	 *            Can take negatives too.
+	 *            from the perspective from the robot (out of the view of the
+	 *            robot): 0 = front of the robot, 90/-270 = right, 180/-180 =
+	 *            behind, 270/-90 = left.
 	 * @return Square Coordinates as int[2]
 	 */
 	public int[] getSquareInDirection(int direction)
 	{
-		direction += robotOrientation;
-
-		if (direction >= 360)
-			direction -= 360;
-		if (direction < 0)
-			direction += 360;
-
-		if (direction == 0)
-			return new int[] { robotPosition[0], robotPosition[1] + 1 };
-		if (direction == 90)
-			return new int[] { robotPosition[0] + 1, robotPosition[1] };
-		if (direction == 180)
-			return new int[] { robotPosition[0], robotPosition[1] - 1 };
-		if (direction == 270 || direction == -90)
-			return new int[] { robotPosition[0] - 1, robotPosition[1] };
-		// Illegal input
-		System.exit(1);
-		return null;
+		return getSquareInDirection(robotPosition, direction);
 	}
 
 	/**
-	 * Returns neighbour in defined direction of a given square
+	 * Returns neighbour in defined direction (relative to the robotOrientation
+	 * of a given square
 	 * 
 	 * @param square
 	 *            given square
 	 * @param direction
 	 *            direction to look to from given square
-	 * @return square in direction from the given square
+	 * @return square coordinates as int[2]
 	 */
 	public int[] getSquareInDirection(int[] square, int direction)
 	{
@@ -301,8 +288,9 @@ public class CustomOccupancyMap implements Serializable
 			return new int[] { square[0] + 1, square[1] };
 		if (direction == 180)
 			return new int[] { square[0], square[1] - 1 };
-		if (direction == 270 || direction == -90)
+		if (direction == 270)
 			return new int[] { square[0] - 1, square[1] };
+		
 		// Illegal input
 		System.exit(1);
 		return null;
@@ -313,18 +301,18 @@ public class CustomOccupancyMap implements Serializable
 	 * 
 	 * @param square
 	 *            the square to test
-	 * @return
+	 * @return true if it's a outer wall
 	 */
 	public boolean isOuterWall(int[] square)
 	{
 		if (square[0] == 0 || square[0] == getMazeMap().length || square[1] == 0 || square[1] == getMazeMap()[0].length)
 			return true;
-		else
-			return false;
+		
+		return false;
 	}
 
 	/**
-	 * 
+	 * Get number of explored walls
 	 * @return number of Walls
 	 */
 	public int getNumberOfWalls()
@@ -340,7 +328,7 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * 
+	 * Get number of explored paths
 	 * @return number of Paths
 	 */
 	public int getNumberOfPaths()
@@ -356,7 +344,7 @@ public class CustomOccupancyMap implements Serializable
 	}
 
 	/**
-	 * 
+	 * Get number of unexplored tiles
 	 * @return number of Unknowns
 	 */
 	public int getNumberOfUnknowns()
@@ -373,33 +361,12 @@ public class CustomOccupancyMap implements Serializable
 
 	/**
 	 * Returns the number of explored squares to determine the progress of the
-	 * mapping process
+	 * mapping process. Ignores outermost layer of walls
 	 * 
-	 * @return number of measured squares
+	 * @return progress value
 	 */
 	public int getCompletion()
 	{
-		return getNumberOfPaths() + getNumberOfWalls() - 34 - 26;
+		return getNumberOfPaths() + getNumberOfWalls() - (2 * mazeMap.length) - (2 * (mazeMap[0].length - 2));
 	}
-
-	/**
-	 * Getter to get the width of the mazeMap.
-	 * 
-	 * @return mazeMap.length - The width of the mazeMap.
-	 */
-	public int getMapWidth()
-	{
-		return mazeMap.length;
-	}
-
-	/**
-	 * Getter to get the length of the mazeMap.
-	 * 
-	 * @return mazeMap[0].length - The length of the mazeMap.
-	 */
-	public int getMapLength()
-	{
-		return mazeMap[0].length;
-	}
-
 }

@@ -45,13 +45,11 @@ public class Display
 	public void updateMap(int[][] map)
 	{
 		for (int i = 0; i < GRID_HEIGHT; i++)
-		{
 			for (int j = 0; j < GRID_WIDTH; j++)
 			{
 				grid[i][j].setBackground(getBGColour(map[j][i]));
 				grid[i][j].setForeground(getFGColour(map[j][i]));
 			}
-		}
 	}
 
 	/**
@@ -103,6 +101,12 @@ public class Display
 		grid[position[1]][position[0]].setForeground(Color.BLACK);
 	}
 
+	/**
+	 * Draws given stack on the GUI in specified colour
+	 * 
+	 * @param stack
+	 * @param colour
+	 */
 	public void drawStack(Stack<int[]> stack, Color colour)
 	{
 		int[] path;
@@ -117,7 +121,7 @@ public class Display
 	 * Get the correct background colour for the grid square.
 	 * 
 	 * @param state
-	 *            The state of the grid square (-1 occupied, 0 unknown, 1,
+	 *            The state of the grid square (-1 occupied, 0 unknown, 1
 	 *            clear).
 	 * @return The colour for the GUI to display for this state.
 	 */
@@ -160,23 +164,10 @@ public class Display
 	 */
 	public Display()
 	{
-		//this.activeButtons = false;
 		initialize();
 		frmEvMazeSolver.setVisible(true);
 		grid[1][0].setBackground(Color.BLUE);
 	}
-
-	/**
-	 * Create the application.
-	 * 
-	 * @param active
-	 *            Whether or not the buttons should be active.
-	 */
-	/*public Display(boolean active) {
-		this.activeButtons = active;
-		initialize();
-		frmEvMazeSolver.setVisible(true);
-	}*/
 
 	/**
 	 * Get the grid.
@@ -249,6 +240,7 @@ public class Display
 		pnlGridMap.setSize(new Dimension(740, 500));
 		frmEvMazeSolver.getContentPane().add(pnlGridMap, BorderLayout.CENTER);
 		GridBagLayout gbl_pnlGridMap = new GridBagLayout();
+		
 		gbl_pnlGridMap.rowHeights = new int[] { 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20 };
 		gbl_pnlGridMap.columnWidths = new int[] { 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20, 60, 20 };
 		pnlGridMap.setLayout(gbl_pnlGridMap);

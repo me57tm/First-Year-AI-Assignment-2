@@ -39,18 +39,12 @@ public class GridSquare implements Comparable<GridSquare>
 		return cost + heuristic;
 	}
 
-	/**
-	 * Compare ?
-	 */
 	@Override
 	public int compareTo(GridSquare arg0)
 	{
 		return getTotalCost() - arg0.getTotalCost();
 	}
 
-	/**
-	 * returns toString representation
-	 */
 	@Override
 	public String toString()
 	{

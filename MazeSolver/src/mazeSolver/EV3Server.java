@@ -52,6 +52,21 @@ public class EV3Server
 		oOut.flush();
 		Delay.msDelay(100);
 	}
+	
+	/**
+	 * Sends map to the Client
+	 * 
+	 * @throws IOException
+	 */
+	public static void sendMap()
+		throws IOException
+	{
+		OutputStream out = client.getOutputStream();
+		ObjectOutputStream oOut = new ObjectOutputStream(out);
+		oOut.writeObject(Coordinator.map);
+		oOut.flush();
+		Delay.msDelay(100);
+	}
 
 	/**
 	 * Ends connection with the PCClient.
@@ -68,21 +83,4 @@ public class EV3Server
 		out.close();
 		server.close();
 	}
-
-	/**
-	 * Sends map to the Client
-	 * 
-	 * @throws IOException
-	 */
-	public static void sendMap()
-		throws IOException
-	{
-		OutputStream out = client.getOutputStream();
-		ObjectOutputStream oOut = new ObjectOutputStream(out);
-		oOut.writeObject(Coordinator.map);
-		oOut.flush();
-		Delay.msDelay(100);
-	}
-
-	// Send Map + Orientation + Voltage
 }

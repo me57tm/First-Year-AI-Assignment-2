@@ -29,7 +29,6 @@ public class PCClient
 		throws IOException,
 			ClassNotFoundException
 	{
-		// Setup
 		setup(args);
 
 		while (true)

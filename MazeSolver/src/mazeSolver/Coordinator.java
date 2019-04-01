@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * Main class.
+ * Main class of the maze exploration.
  * 
  * @author jonasschafer
  */
@@ -24,35 +24,44 @@ public class Coordinator extends Setup
 	{
 		// Sets up map, sensors, motors, Bluetooth, etc.
 		setup();
-		Action.scanSurrounding(map);//TODO new
+		// Scan once
+		Action.scanSurrounding(map);
+
 		findEndOfMaze(map);
 
-		//Scan once after red square
+		// Scan once now as red square was found
 		Action.scanSurrounding(map);
 
 		moveBack(map);
 
+		// Done exploring
 		EV3Server.closeBluetoothConnection();
 	}
 
 	/**
-	 * Maps the maze until it finds the end of the maze
+	 * Maps the maze until it finds the end tile (red)
 	 * 
+	 * @param map
 	 * @throws IOException
 	 */
 	public static void findEndOfMaze(CustomOccupancyMap map)
 		throws IOException
 	{
-		while (map.getEndTilePosition() == null) // TODO untested
+		while (map.getEndTilePosition() == null)
 		{
-			//Action.scanSurrounding(map);
 			Action.makeMoveStep(map);
 			Action.checkForRed(map);
 		}
-
 		map.visitStack.removeAllElements();
 	}
 
+	/**
+	 * While the robot has not returned to the beginning i.e. not followed or
+	 * found the shortest path to the start, keep looking for such a path
+	 * 
+	 * @param map
+	 * @throws IOException
+	 */
 	public static void moveBack(CustomOccupancyMap map)
 		throws IOException
 	{

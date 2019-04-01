@@ -19,7 +19,8 @@ public class Action
 	/**
 	 * Measuring fields around the robot if they have not already been measured
 	 * before. Fetching each one sample. Avoids re-measuring already measured
-	 * grids as measurements are reliable
+	 * grids as measurements of IR sensor are reliable. Make multiple measures
+	 * and take average to get more accurate values.
 	 * 
 	 * @throws IOException
 	 */
@@ -116,7 +117,7 @@ public class Action
 	}
 
 	/**
-	 * Checks for red
+	 * Checks for a red tile
 	 * 
 	 * @param map
 	 * @throws IOException
@@ -289,7 +290,7 @@ public class Action
 
 	/**
 	 * Calculates possible shortest paths based on the known and unknown state
-	 * of the map until the shortest path is found (explored as path). Then it
+	 * of the map until the shortest path is found (explored as a path). Then it
 	 * travels back to the end of the maze and follows the shortest path back to
 	 * the start of the maze.
 	 * 
@@ -308,14 +309,17 @@ public class Action
 
 		pathWithUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, true);
 		pathWithoutUnknowns = pathFinder.getPath(map.getEndTilePosition(), startTile, false);
-
-		// if there exists a route without unknowns so with only observed paths, that is the shortest possible path
+		
+		/*
+		 * Segment 1: Check if there exists a shortest explored route
+		 * 
+		 * If so, travel back to the end of the maze and follow the route to the start
+		 */
 		if (pathWithUnknowns.size() == pathWithoutUnknowns.size())
 		{
 
 			Stack<int[]> pathToEndTile = new Stack<>();
 			pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
-			// Go to end of maze
 			while (!pathToEndTile.isEmpty())
 			{
 				boolean usual = Action.moveToTileFromStack(map, pathToEndTile);
@@ -323,7 +327,6 @@ public class Action
 				if (!usual)
 					return;
 			}
-			// Go from end back to the start
 			while (!pathWithoutUnknowns.isEmpty())
 			{
 				boolean usual = Action.moveToTileFromStack(map, pathWithoutUnknowns);
@@ -338,6 +341,11 @@ public class Action
 		pathWithUnknowns.toArray(pathCopy);
 		int oldStackSize = pathWithUnknowns.size();
 
+		/*
+		 * Segment 2: Check if robot is on end tile
+		 * 
+		 * Move one tile along the unexplored shortest path
+		 */
 		if (Arrays.equals(map.getRobotPosition(), map.getEndTilePosition()))
 		{
 			Action.scanSurrounding(map);
@@ -346,15 +354,17 @@ public class Action
 			return;
 		}
 
+		/*
+		 * Segment 3: Check if robot is currently on the to-be-explored path
+		 * 
+		 * Manipulate stack so that the robot can follow the currently unexplored path from where he is
+		 */
 		int counter = 0;
-		// Check if robot is on the path
 		for (int i = pathCopy.length - 1; i >= 0; i--)
 		{
 			counter++;
-			// If it's on the path
 			if (Arrays.equals(map.getRobotPosition(), pathCopy[i]))
 			{
-				// Pop Stack to be able to follow it from now on
 				while (counter != 0)
 				{
 					pathWithUnknowns.pop();
@@ -364,10 +374,13 @@ public class Action
 			}
 		}
 
-		// On the path
+		/*
+		 * Segment 4: If the stack has been changed i.e. if the robot is on the to-be-explored path
+		 * 
+		 * Follow the path from now on
+		 */
 		if (oldStackSize != pathWithUnknowns.size())
 		{
-			// Follow the path from now on
 			while (!pathWithUnknowns.isEmpty())
 			{
 				int[] path = pathWithUnknowns.peek();
@@ -389,10 +402,12 @@ public class Action
 			return;
 		}
 
-		// Otherwise
-		// Not on the path
-
-		// Move back to endOfTile
+		/*
+		 * Segment 5: Not on any earlier segment means the robot is not on the to-be-explored path, 
+		 * has not found a shortest path
+		 * 
+		 * Return on a known route back to the end of the maze and follow the to-be-explored route
+		 */
 		Stack<int[]> pathToEndTile = new Stack<>();
 		pathToEndTile = pathFinder.getPath(map.getRobotPosition(), map.getEndTilePosition(), false);
 		while (!pathToEndTile.isEmpty())
